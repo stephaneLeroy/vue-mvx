@@ -4,8 +4,10 @@
     <h1>Elrond ERD Example APP</h1>
     <div v-if="address">
       <div>Logged with address : {{address}}</div>
-      <div @click="logout()">Logout</div>
-      <div @click="sendTransaction()">Test transaction</div>
+      <div class="cta">
+        <div class="button" @click="sendTransaction()">Test transaction</div>
+        <div class="button" @click="logout()">Logout</div>
+      </div>
     </div>
 
     <h2>Maiar App</h2>
@@ -121,6 +123,24 @@ h1, h2 {
 .qrcode svg {
   width: 300px;
   height: 300px;
+}
+
+.cta {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.cta .button {
+  color: cornsilk;
+  font-size: large;
+  min-width: 150px;
+  background-color: #254dc4;
+  margin: 2px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 ul {

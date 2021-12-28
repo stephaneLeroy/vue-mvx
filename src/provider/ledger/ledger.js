@@ -2,9 +2,9 @@ import {HWProvider} from "@elrondnetwork/erdjs";
 
 class LedgerProviderManager {
 
-  constructor(manager, options) {
+  constructor(manager, proxy, options) {
     this._manager = manager;
-    this._proxy = options.proxy;
+    this._proxy = proxy;
     this._hwProvider = new HWProvider(this._proxy);
     this._addressIndex = 0;
   }
