@@ -3,10 +3,10 @@
     <div @click="fetchAccounts()">
       <slot></slot>
     </div>
-    <div v-if="error" v-bind:error="error">
+    <div v-if="error" :error="error">
       <slot name="error">{{error}}</slot>
     </div>
-    <slot name="accounts" v-bind:accounts="accounts"></slot>
+    <slot name="accounts" :accounts="accounts" :login="login"></slot>
   </div>
 </template>
 
@@ -27,6 +27,9 @@ export default {
       this.accounts = await this.$erd.ledger.accounts(this.startIndex, 5).catch((error) => {
         this.error = error;
       });
+    },
+    login(index) {
+      this.$erd.ledger.login(index)
     }
   }
 }

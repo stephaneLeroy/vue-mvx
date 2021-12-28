@@ -25,6 +25,10 @@ class ElrondVueStore {
     return this.state.$data.providers.ledger;
   }
 
+  get provider() {
+    return this.state.$data.providers;
+  }
+
   logout() {
     this.state.$data.providers.logout();
   }

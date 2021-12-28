@@ -1,42 +1,47 @@
-import MaiarAppManager from "./maiar-app/maiar-app";
-import LedgerManager from './ledger/ledger'
+import MaiarAppStrategy from "./maiar-app/maiar-app";
+import LedgerStrategy from './ledger/ledger'
 
 class ProviderStrategy {
 
   constructor(proxy, options, onLogin, onLogout) {
-    this.currentProvider = null;
+    this.currentStrategy = null;
     this.onLogin = onLogin;
     this.onLogout = onLogout;
-    this.walletConnect = new MaiarAppManager(this, proxy, options.maiar);
-    this.ledgerConnect = new LedgerManager(this, proxy, options.ledger);
+    this.walletStrategy = new MaiarAppStrategy(this, proxy, options.maiar);
+    this.ledgerStrategy = new LedgerStrategy(this, proxy, options.ledger);
+  }
+
+  sendTransaction(transaction) {
+    console.log("Current provider", this.currentStrategy.provider);
+    return this.currentStrategy.provider.sendTransaction(transaction);
   }
 
   get provider() {
-    return this.currentProvider;
+    return this.currentStrategy.provider;
   }
 
   get ledger() {
-    return this.ledgerConnect;
+    return this.ledgerStrategy;
   }
 
   get maiarApp() {
-    return this.walletConnect;
+    return this.walletStrategy;
   }
 
   logout() {
-    if(this.currentProvider) {
-      this.currentProvider.logout();
+    if(this.currentStrategy) {
+      this.currentStrategy.logout();
     }
-    this.handleLogout(this.currentProvider);
+    this.handleLogout(this.currentStrategy);
   }
 
   handleLoginStart(provider) {
     console.log("Login start", provider);
   }
 
-  handleLogin(provider, address) {
-    console.log("Login", provider, address);
-    this.currentProvider = provider;
+  handleLogin(strategy, address) {
+    console.log("Login", strategy, address);
+    this.currentStrategy = strategy;
     this.onLogin(address);
   }
 
@@ -47,7 +52,7 @@ class ProviderStrategy {
 
   handleLogout(provider) {
     console.log("Logout", provider);
-    this.currentProvider = null;
+    this.currentStrategy = null;
     this.onLogout();
   }
 

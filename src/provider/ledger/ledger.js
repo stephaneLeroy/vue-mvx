@@ -1,4 +1,4 @@
-import { HWProvider } from "@elrondnetwork/erdjs/out";
+import {HWProvider} from "@elrondnetwork/erdjs";
 
 class LedgerProviderManager {
 
@@ -6,6 +6,7 @@ class LedgerProviderManager {
     this._manager = manager;
     this._proxy = options.proxy;
     this._hwProvider = new HWProvider(this._proxy);
+    this._addressIndex = 0;
   }
 
   init() {
@@ -15,6 +16,7 @@ class LedgerProviderManager {
       .then((success) => {
         if (!success) {
           this._manager.handleLoginError(this);
+          throw new Error("Ledger initialisation error")
         }
       });
 
@@ -35,6 +37,7 @@ class LedgerProviderManager {
         this._hwProvider
           .login({ addressIndex: accountIndex })
           .then((address) => {
+            this._addressIndex = accountIndex;
             this._manager.handleLogin(this, address);
           })
           .catch((err) => {
@@ -47,7 +50,11 @@ class LedgerProviderManager {
   }
 
   logout() {
+    this._addressIndex = 0;
+  }
 
+  get provider() {
+    return this._hwProvider;
   }
 }
 

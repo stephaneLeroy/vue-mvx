@@ -1,11 +1,11 @@
-import {WalletConnectProvider} from "@elrondnetwork/erdjs/out";
+import {WalletConnectProvider} from "@elrondnetwork/erdjs";
 
 class MaiarAppManager {
 
-    constructor(manager, provider, options) {
+    constructor(manager, proxy, options) {
         console.log("Loading Maiar App");
         this._manager = manager;
-        this._provider = provider;
+        this._proxy = proxy;
         this._walletConnectDeepLink = options.walletConnectDeepLink;
         this._walletConnectBridgeUrl = options.walletConnectBridgeUrl;
         this._onClientLogin = options.onClientLogin;
@@ -15,11 +15,11 @@ class MaiarAppManager {
 
         const that = this;
         this._walletConnect = new WalletConnectProvider(
-            that._provider,
+            that._proxy,
             that._walletConnectBridgeUrl,
             {
-                onClientLogin: () => that.handleOnClientLogin() && that._onClientLogin(that._walletConnect),
-                onClientLogout: () => that.handleOnClientLogout() && that._onClientLogout(that._walletConnect),
+                onClientLogin: () => that.handleOnClientLogin(),
+                onClientLogout: () => that.handleOnClientLogout(),
             }
         );
 
@@ -97,7 +97,7 @@ class MaiarAppManager {
     }
 
     get provider() {
-        return this._provider;
+        return this._walletConnect;
     }
 
     logout() {

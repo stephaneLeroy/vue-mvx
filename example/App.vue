@@ -2,25 +2,29 @@
   <div id="app">
     <img alt="Elrond Logo" src="/assets/elrond-logo.png">
     <h1>Elrond ERD Example APP</h1>
-    <div v-if="address">Logged with address : {{address}} <span @click="logout()">Logout</span></div>
+    <div v-if="address">
+      <div>Logged with address : {{address}}</div>
+      <div @click="logout()">Logout</div>
+      <div @click="sendTransaction()">Test transaction</div>
+    </div>
 
     <h2>Maiar App</h2>
       <maiar-login>
         <a href="#">Login with Maiar App</a>
-        <template v-slot:qrcode="slot">
-          <q-r-code class="qrcode" :qrcode="slot.qrcode"></q-r-code>
+        <template v-slot:qrcode="{ qrcode }">
+          <q-r-code class="qrcode" :qrcode="qrcode"></q-r-code>
         </template>
-        <template v-slot:deeplink="slot">
-          <a :href="slot.deeplink">Maiar App DeepLink</a>
+        <template v-slot:deeplink="{ deeplink }">
+          <a :href="deeplink">Maiar App DeepLink</a>
         </template>
       </maiar-login>
 
     <h2>Ledger</h2>
     <ledger-login>
       <a href="#">Show accounts</a>
-      <template v-slot:accounts="accounts">
+      <template v-slot:accounts="{accounts, login}">
         <ul>
-          <li v-for="(account, index) in accounts"><a @click="$erd.ledger.login(index)" href="#">{{account}}</a></li>
+          <li v-for="(account, index) in accounts"><a @click="login(index)" href="#">{{account}}</a></li>
         </ul>
       </template>
     </ledger-login>
@@ -31,6 +35,15 @@
 import LedgerLogin from "../src/components/ledger/LedgerLogin";
 import MaiarLogin from "../src/components/maiar/MaiarLogin";
 import QRCode from "./QRCode";
+import {
+  Account,
+  Address,
+  Balance,
+  ContractFunction,
+  GasLimit,
+  Transaction,
+  TransactionPayload
+} from "@elrondnetwork/erdjs";
 
 
 export default {
@@ -48,6 +61,31 @@ export default {
   methods: {
     logout() {
       this.$erd.logout();
+    },
+    async sendTransaction() {
+      console.log("Send transaction", this.$erd.provider, this.$erd.walletAddress);
+
+      let erdAddress = new Address(this.$erd.walletAddress);
+      let account = new Account(erdAddress);
+      await account.sync(this.$erdProxy);
+
+      const payload = TransactionPayload.contractCall()
+        .setFunction(new ContractFunction("ping"))
+        .setArgs([])
+        .build();
+
+      const transaction = new Transaction({
+        sender: erdAddress,
+        receiver: new Address("erd1qqqqqqqqqqqqqpgquvt728n40ssd8n2qns9jrlqpwq2jc4rj4cysfuj3ad"),
+        gasLimit: new GasLimit(10000000),
+        value: Balance.egld(0.01),
+        data: payload,
+      });
+      transaction.setNonce(account.nonce);
+
+      this.$erd.provider.sendTransaction(transaction).then((transaction) => {
+        console.log("Transaction sent",transaction);
+      });
     }
   },
   watch: {

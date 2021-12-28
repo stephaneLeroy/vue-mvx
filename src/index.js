@@ -1,7 +1,7 @@
 console.log('loading vue-erd');
 import ElrondVueStore from './elrond-vue-store';
 import ProviderStrategy from "./provider/provider-strategy";
-import {NetworkConfig, ApiProvider, ProxyProvider} from "@elrondnetwork/erdjs/out";
+import {NetworkConfig, ApiProvider, ProxyProvider} from "@elrondnetwork/erdjs";
 import Components from "./components";
 
 const store = new ElrondVueStore();
