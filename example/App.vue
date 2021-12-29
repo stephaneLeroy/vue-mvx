@@ -45,7 +45,7 @@ import {
   GasLimit,
   Transaction,
   TransactionPayload
-} from "@elrondnetwork/erdjs/out";
+} from "@elrondnetwork/erdjs";
 
 
 export default {
