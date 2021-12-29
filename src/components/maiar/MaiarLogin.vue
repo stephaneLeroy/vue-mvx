@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div @click="login()">
+    <div v-if="!qrcode" @click="login()">
       <slot>Maiar App login</slot>
     </div>
     <slot name="qrcode" v-bind:qrcode="qrcode">{{qrcode}}</slot>
