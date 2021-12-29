@@ -1,7 +1,7 @@
 {
   "name": "vue-erdjs",
   "description": "erdjs (Elrond javascript SDK) integration for vuejs",
-  "version": "0.0.1-alpha1",
+  "version": "0.0.1-alpha2",
   "author": "leroys",
   "license": "MIT",
   "main": "dist/index.js",
