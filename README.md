@@ -27,8 +27,10 @@ npm run build
 - [ ] Add Ledger Login
 - [ ] Add Web Wallet Login
 - [ ] Add Defi Wallet
+- [ ] Token login signature for backend authentication
 - [ ] Add Local storage login cache
 - [ ] Fancier DApp UI
 - [ ] Optimize production build
+- [ ] Parameters documentation
 - [ ] Publish DApp example on github page
 - [ ] release candidate :tada:

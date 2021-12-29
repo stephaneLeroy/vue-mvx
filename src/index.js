@@ -1,7 +1,8 @@
-console.log('loading vue-erd');
 import ElrondVueStore from './elrond-vue-store';
 import ProviderStrategy from "./provider/provider-strategy";
-import {NetworkConfig, ApiProvider, ProxyProvider} from "@elrondnetwork/erdjs";
+import { NetworkConfig } from "@elrondnetwork/erdjs/out/networkConfig";
+import { ApiProvider } from "@elrondnetwork/erdjs/out/apiProvider";
+import { ProxyProvider} from "@elrondnetwork/erdjs/out/proxyProvider";
 import Components from "./components";
 
 const store = new ElrondVueStore();
@@ -20,8 +21,6 @@ export default {
   },
 
   install(Vue, options) {
-    console.log(options);
-
     erdApi = new ApiProvider(options.api.url, { timeout: options.api.timeout });
     erdProxy = new ProxyProvider(options.proxy.url, { timeout: options.proxy.timeout });
 
@@ -40,11 +39,15 @@ export default {
         this.$erd = store;
         this.$erdProxy = erdProxy;
         this.$erdApi = erdApi;
+      },
+      mounted() {
+        store.state.$data.providers.init();
       }
     })
 
     for (const component of Components) {
       Vue.component(component.name, component)
     }
+
   }
 }

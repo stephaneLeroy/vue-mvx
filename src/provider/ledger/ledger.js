@@ -1,4 +1,6 @@
-import {HWProvider} from "@elrondnetwork/erdjs";
+import { HWProvider } from "@elrondnetwork/erdjs/out/dapp/hwProvider";
+
+const LEDGER_STORAGE="ledger-strategy-storage"
 
 class LedgerProviderManager {
 
@@ -9,17 +11,18 @@ class LedgerProviderManager {
     this._addressIndex = 0;
   }
 
+  get name() {
+    return "ledger";
+  }
+
   init() {
-    this._hwProvider = new HWProvider(this._proxy);
     return this._hwProvider
       .init()
       .then((success) => {
         if (!success) {
           this._manager.handleLoginError(this);
-          throw new Error("Ledger initialisation error")
         }
       });
-
   }
 
   async accounts(startIndex, addressesPerPage) {
@@ -29,15 +32,15 @@ class LedgerProviderManager {
       });
   }
 
-  login(accountIndex) {
-    console.log(accountIndex);
+  login(addressIndex) {
     this.init()
       .then(() => {
         this._manager.handleLoginStart(this);
         this._hwProvider
-          .login({ addressIndex: accountIndex })
+          .login({ addressIndex: addressIndex })
           .then((address) => {
-            this._addressIndex = accountIndex;
+            this.store(address, addressIndex)
+            this._addressIndex = addressIndex;
             this._manager.handleLogin(this, address);
           })
           .catch((err) => {
@@ -51,6 +54,25 @@ class LedgerProviderManager {
 
   logout() {
     this._addressIndex = 0;
+  }
+
+  store(wallet, addressIndex) {
+    if (!window) return;
+
+    window.localStorage.setItem(LEDGER_STORAGE, JSON.stringify({
+      wallet: wallet,
+      addressIndex: addressIndex
+    }));
+  }
+
+  load() {
+    if (!window) return;
+
+    let ledgerStorage = window.localStorage.getItem(LEDGER_STORAGE);
+    if(!ledgerStorage) return;
+
+    let ledger = JSON.parse(ledgerStorage);
+    this._addressIndex = ledger.addressIndex;
   }
 
   get provider() {

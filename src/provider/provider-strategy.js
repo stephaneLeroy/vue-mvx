@@ -1,5 +1,7 @@
 import MaiarAppStrategy from "./maiar-app/maiar-app";
-import LedgerStrategy from './ledger/ledger'
+import LedgerStrategy from './ledger/ledger';
+
+const PROVIDER_STRATEGY_STORAGE="provider-strategy-storage"
 
 class ProviderStrategy {
 
@@ -7,8 +9,28 @@ class ProviderStrategy {
     this.currentStrategy = null;
     this.onLogin = onLogin;
     this.onLogout = onLogout;
-    this.walletStrategy = new MaiarAppStrategy(this, proxy, options.maiar);
-    this.ledgerStrategy = new LedgerStrategy(this, proxy, options.ledger);
+    this._maiarApp = new MaiarAppStrategy(this, proxy, options.maiar);
+    this._ledger = new LedgerStrategy(this, proxy, options.ledger);
+    this.initialised = false;
+  }
+
+  async init() {
+    if (!window || this.initialised) return;
+
+    this.initialised = true;
+
+    let strategyStorage = window.localStorage.getItem(PROVIDER_STRATEGY_STORAGE);
+    if(!strategyStorage) return;
+
+    let strategy = JSON.parse(strategyStorage);
+    let storedStrategy;
+    if (strategy.name === this.maiarApp.name) {
+      storedStrategy = this.maiarApp;
+    } else if (strategy.name === this.ledger.name) {
+      storedStrategy = this.ledger;
+    }
+
+    storedStrategy.load();
   }
 
   sendTransaction(transaction) {
@@ -21,11 +43,11 @@ class ProviderStrategy {
   }
 
   get ledger() {
-    return this.ledgerStrategy;
+    return this._ledger;
   }
 
   get maiarApp() {
-    return this.walletStrategy;
+    return this._maiarApp;
   }
 
   logout() {
@@ -41,6 +63,7 @@ class ProviderStrategy {
 
   handleLogin(strategy, address) {
     console.log("Login", strategy, address);
+    window.localStorage.setItem(PROVIDER_STRATEGY_STORAGE, JSON.stringify({ name: strategy.name }));
     this.currentStrategy = strategy;
     this.onLogin(address);
   }
