@@ -1,8 +1,6 @@
 import ElrondVueStore from './elrond-vue-store';
 import ProviderStrategy from "./provider/provider-strategy";
-import { NetworkConfig } from "@elrondnetwork/erdjs/out/networkConfig";
-import { ApiProvider } from "@elrondnetwork/erdjs/out/apiProvider";
-import { ProxyProvider} from "@elrondnetwork/erdjs/out/proxyProvider";
+import { NetworkConfig, ApiProvider, ProxyProvider } from "@elrondnetwork/erdjs";
 import Components from "./components";
 
 const store = new ElrondVueStore();

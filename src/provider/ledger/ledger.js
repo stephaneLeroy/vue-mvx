@@ -1,4 +1,4 @@
-import { HWProvider } from "@elrondnetwork/erdjs/out/dapp/hwProvider";
+import { HWProvider } from "@elrondnetwork/erdjs";
 
 const LEDGER_STORAGE="ledger-strategy-storage"
 

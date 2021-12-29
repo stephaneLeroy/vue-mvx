@@ -25,6 +25,7 @@ module.exports = {
       amd: 'vue',
       root: 'Vue'
     },
+    '@elrondnetwork/erdjs': '@elrondnetwork/erdjs'
   },
   plugins: [
     new VueLoaderPlugin(),
