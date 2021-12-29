@@ -1,10 +1,12 @@
 <template>
   <div>
-    <div v-if="!qrcode" @click="login()">
+    <div v-if="!qrcode" @click.stop="login()">
       <slot>Maiar App login</slot>
     </div>
     <slot name="qrcode" v-bind:qrcode="qrcode">{{qrcode}}</slot>
-    <slot v-if="deeplink && isMobile()" name="deeplink" v-bind:deeplink="deeplink"><a href="#">{{deepLink}}</a></slot>
+    <div v-if="deeplink && isMobile()">
+      <slot name="deeplink" v-bind:deeplink="deeplink"><a :href="deepLink">Login with Maiar App</a></slot>
+    </div>
   </div>
 </template>
 
