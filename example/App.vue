@@ -30,12 +30,16 @@
         </ul>
       </template>
     </ledger-login>
+    <h2>Web Wallet</h2>
+    <a href="#" @click.prevent="webWalletLogin()" >Web wallet login</a>
+    <web-wallet-callback></web-wallet-callback>
   </div>
 </template>
 
 <script>
 import LedgerLogin from "../src/components/ledger/LedgerLogin";
 import MaiarLogin from "../src/components/maiar/MaiarLogin";
+import WebWalletCallback from "../src/components/web/WebWalletCallback";
 import QRCode from "./QRCode";
 import {
   Account,
@@ -50,7 +54,7 @@ import {
 
 export default {
   name: 'app',
-  components: {QRCode, MaiarLogin, LedgerLogin},
+  components: {WebWalletCallback, QRCode, MaiarLogin, LedgerLogin},
   data () {
     return {
       address: null,
@@ -63,6 +67,9 @@ export default {
   methods: {
     logout() {
       this.$erd.logout();
+    },
+    webWalletLogin() {
+      this.$erd.webWallet.login(window.location + 'web-callback');
     },
     async sendTransaction() {
       console.log("Send transaction", this.$erd.provider, this.$erd.walletAddress);

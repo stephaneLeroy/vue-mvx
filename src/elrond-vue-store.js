@@ -25,6 +25,10 @@ class ElrondVueStore {
     return this.state.$data.providers.ledger;
   }
 
+  get webWallet() {
+    return this.state.$data.providers.webWallet;
+  }
+
   get provider() {
     return this.state.$data.providers;
   }

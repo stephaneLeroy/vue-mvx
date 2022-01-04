@@ -1,7 +1,8 @@
-import MaiarAppStrategy from "./maiar-app/maiar-app";
+import MaiarAppStrategy from './maiar-app/maiar-app';
 import LedgerStrategy from './ledger/ledger';
+import WebWalletStrategy from './web/web-wallet';
 
-const PROVIDER_STRATEGY_STORAGE="provider-strategy-storage"
+const PROVIDER_STRATEGY_STORAGE="vue-erdjs-provider-strategy-storage";
 
 class ProviderStrategy {
 
@@ -11,6 +12,7 @@ class ProviderStrategy {
     this.onLogout = onLogout;
     this._maiarApp = new MaiarAppStrategy(this, proxy, options.maiar);
     this._ledger = new LedgerStrategy(this, proxy, options.ledger);
+    this._webWallet = new WebWalletStrategy(this, options.webWallet);
     this.initialised = false;
   }
 
@@ -28,6 +30,8 @@ class ProviderStrategy {
       storedStrategy = this.maiarApp;
     } else if (strategy.name === this.ledger.name) {
       storedStrategy = this.ledger;
+    } else if(strategy.name === this.webWallet.name) {
+      storedStrategy = this.webWallet
     }
 
     storedStrategy.load();
@@ -48,6 +52,10 @@ class ProviderStrategy {
 
   get maiarApp() {
     return this._maiarApp;
+  }
+
+  get webWallet() {
+    return this._webWallet;
   }
 
   logout() {
@@ -75,7 +83,8 @@ class ProviderStrategy {
 
   handleLogout(provider) {
     console.log("Logout", provider);
-    this.currentStrategy = null;
+    window.localStorage.removeItem(PROVIDER_STRATEGY_STORAGE);
+    this.currentStrategy = undefined;
     this.onLogout();
   }
 

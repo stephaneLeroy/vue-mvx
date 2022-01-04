@@ -6,7 +6,11 @@
     <div v-if="error" :error="error">
       <slot name="error">{{error}}</slot>
     </div>
-    <slot name="accounts" :accounts="accounts" :login="login"></slot>
+    <slot name="accounts" :accounts="accounts" :login="login">
+      <ul>
+        <li v-for="(account, index) in accounts"><a @click="login(startIndex + index)" :key="index">{{account}}</a></li>
+      </ul>
+    </slot>
   </div>
 </template>
 
@@ -20,13 +24,33 @@ export default {
       error: null
     }
   },
+  props: {
+    addressPageSize: {
+      type: Number,
+      default: 5
+    },
+  },
   methods: {
     async fetchAccounts() {
       this.error = null;
-      this.accounts = [];
-      this.accounts = await this.$erd.ledger.accounts(this.startIndex, 5).catch((error) => {
+      this.accounts.splice(0);
+      this.accounts = await this.$erd.ledger.accounts(this.startIndex, this.startIndex + this.addressPageSize).catch((error) => {
         this.error = error;
       });
+    },
+    next() {
+      this.startIndex = this.startIndex + this.addressPageSize;
+      this.fetchAccounts();
+    },
+    previous() {
+      if (this.startIndex == 0) {
+        return;
+      }
+      this.startIndex=this.startIndex - this.addressPageSize;
+      if(this.startIndex <= 0) {
+        this.startIndex = 0;
+      }
+      this.fetchAccounts();
     },
     login(index) {
       this.$erd.ledger.login(index)
