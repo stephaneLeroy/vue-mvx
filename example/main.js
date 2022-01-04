@@ -17,7 +17,8 @@ Vue.use(ElronVue, {
   maiar: {
     walletConnectBridgeUrl: "https://bridge.walletconnect.org",
     walletConnectDeepLink: "https://maiar.page.link/?apn=com.elrond.maiar.wallet&isi=1519405832&ibi=com.elrond.maiar.wallet.dev&link=https://maiar.com/",
-    heartbeatInterval: 5000
+    heartbeatInterval: 5000,
+    heartbeatEnabled: false
   },
   webWallet: {
     url:"https://devnet-wallet.elrond.com"

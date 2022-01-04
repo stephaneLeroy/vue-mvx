@@ -1,16 +1,19 @@
 class MaiarConnexionManager {
 
-  constructor(walletConnect, connexionTimeout, heartbeatTimeout) {
+  constructor(walletConnect, connexionTimeout, heartbeatTimeout, heartbeatEnabled) {
     this._walletConnect = walletConnect;
     this._heartbeatTimeout = heartbeatTimeout;
+    this._hearbeatEnabled = heartbeatEnabled ? heartbeatEnabled : false ;
     this._connexionTimeout = connexionTimeout;
-    //this._onConnexionLost = onConnexionLost;
 
     this._heartbeatDisconnectInterval = null;
     this._heartbeatInterval = null;
   }
 
   startConnexionLostDetection() {
+    if(!this._hearbeatEnabled) {
+      return;
+    }
     if (this._walletConnect.walletConnector.peerMeta.description.match(/(iPad|iPhone|iPod)/g)) {
       console.log("heartbeat - iPad/iPhone/iPod : no heartbeat");
       return;

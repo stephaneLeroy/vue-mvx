@@ -22,7 +22,7 @@ class MaiarAppManager {
       if(!this._walletConnect.isInitialized()) {
           this._walletConnect.init();
       }
-      this._connexionManager = new MaiarConnexionManager(this._walletConnect, 15000, options.heartbeatInterval);
+      this._connexionManager = new MaiarConnexionManager(this._walletConnect, 15000, options.heartbeatInterval, options.heartbeatEnabled);
     }
 
     get name() {
