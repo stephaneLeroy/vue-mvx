@@ -24,13 +24,15 @@ npm run build
 - [x] Init project and build management
 - [x] In project DApp example
 - [x] Add Maiar App Login
-- [ ] Add Ledger Login
-- [ ] Add Web Wallet Login
-- [ ] Add Defi Wallet
+- [x] Add Ledger Login
+- [x] Add Web Wallet Login
+- [ ] Add Defi Wallet?
 - [ ] Token login signature for backend authentication
-- [ ] Add Local storage login cache
+- [x] Add Local storage login cache
+- [x] Migrate to typescript
 - [ ] Fancier DApp UI
 - [ ] Optimize production build
+- [ ] Factorize webpack configuration
 - [ ] Parameters documentation
 - [ ] Publish DApp example on github page
 - [ ] release candidate :tada:

@@ -53,7 +53,7 @@ export default {
       this.fetchAccounts();
     },
     login(index) {
-      this.$erd.ledger.login(index)
+      this.$erd.ledger.login({ addressIndex: index })
     }
   }
 }

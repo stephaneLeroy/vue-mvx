@@ -31,7 +31,7 @@
       </template>
     </ledger-login>
     <h2>Web Wallet</h2>
-    <a href="#" @click.prevent="webWalletLogin()" >Web wallet login</a>
+    <web-wallet-login></web-wallet-login>
     <web-wallet-callback></web-wallet-callback>
   </div>
 </template>
@@ -50,11 +50,12 @@ import {
   Transaction,
   TransactionPayload
 } from "@elrondnetwork/erdjs";
+import WebWalletLogin from "../src/components/web/WebWalletLogin";
 
 
 export default {
   name: 'app',
-  components: {WebWalletCallback, QRCode, MaiarLogin, LedgerLogin},
+  components: {WebWalletLogin, WebWalletCallback, QRCode, MaiarLogin, LedgerLogin},
   data () {
     return {
       address: null,

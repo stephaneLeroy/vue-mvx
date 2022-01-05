@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import ElronVue from '../src/index'
+import ElronVue from '../src'
 
 Vue.use(ElronVue, {
   api: {

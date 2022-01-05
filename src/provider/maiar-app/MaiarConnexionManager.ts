@@ -1,17 +1,26 @@
+import {WalletConnectProvider} from "@elrondnetwork/erdjs";
+import {MaiarAppOption} from "../config";
+
 class MaiarConnexionManager {
+  private _walletConnect: WalletConnectProvider;
+  private _heartbeatTimeout: number;
+  private _hearbeatEnabled: boolean;
+  private _connexionTimeout: number;
+  private _heartbeatDisconnectInterval?: any;
+  private _heartbeatInterval?: any;
 
-  constructor(walletConnect, connexionTimeout, heartbeatTimeout, heartbeatEnabled) {
+  constructor(walletConnect: WalletConnectProvider, options: MaiarAppOption) {
     this._walletConnect = walletConnect;
-    this._heartbeatTimeout = heartbeatTimeout;
-    this._hearbeatEnabled = heartbeatEnabled ? heartbeatEnabled : false ;
-    this._connexionTimeout = connexionTimeout;
+    this._heartbeatTimeout = options.heartbeatInterval;
+    this._hearbeatEnabled = options.heartbeatEnabled ;
+    this._connexionTimeout = options.connexionTimeout;
 
-    this._heartbeatDisconnectInterval = null;
-    this._heartbeatInterval = null;
+    this._heartbeatDisconnectInterval = undefined;
+    this._heartbeatInterval = undefined;
   }
 
   startConnexionLostDetection() {
-    if(!this._hearbeatEnabled) {
+    if(!this._hearbeatEnabled || !this._walletConnect.walletConnector || !this._walletConnect.walletConnector.peerMeta) {
       return;
     }
     if (this._walletConnect.walletConnector.peerMeta.description.match(/(iPad|iPhone|iPod)/g)) {
@@ -67,6 +76,7 @@ class MaiarConnexionManager {
   isConnected() {
     return this._walletConnect &&
       "walletConnector" in this._walletConnect &&
+      this._walletConnect.walletConnector &&
       this._walletConnect.walletConnector.connected
   }
 }

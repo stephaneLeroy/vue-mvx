@@ -1,15 +1,15 @@
-import ElrondVueStore from './elrond-vue-store';
-import ProviderStrategy from "./provider/provider-strategy";
-import { NetworkConfig, ApiProvider, ProxyProvider } from "@elrondnetwork/erdjs";
+import ElrondVueStore from './ElrondVueStore';
+import Providers from "./provider/Providers";
+import { Address, NetworkConfig, ApiProvider, ProxyProvider } from "@elrondnetwork/erdjs";
 import Components from "./components";
+import {ProviderOption} from "./provider/config";
 
 const store = new ElrondVueStore();
-let erdProxy;
-let erdApi;
+let erdProxy: ProxyProvider, erdApi: ApiProvider;
 
 export default {
   isLogged() {
-    return store.state.walletAddress != null;
+    return store.walletAddress != null;
   },
   erdProxy() {
     return erdProxy;
@@ -18,13 +18,13 @@ export default {
     return erdApi;
   },
 
-  install(Vue, options) {
+  install(Vue:any, options:ProviderOption) {
     erdApi = new ApiProvider(options.api.url, { timeout: options.api.timeout });
     erdProxy = new ProxyProvider(options.proxy.url, { timeout: options.proxy.timeout });
 
     NetworkConfig.getDefault().sync(erdProxy);
-    store.state.$data.providers = new ProviderStrategy(erdProxy, options,
-      (address) => {
+    store.state.$data.providers = new Providers(erdProxy, options,
+      (address: Address) => {
          store.state.$data.walletAddress = address;
       },
       () => {

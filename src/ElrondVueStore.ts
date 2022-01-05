@@ -1,6 +1,9 @@
 import Vue from 'vue';
+import {Transaction} from "@elrondnetwork/erdjs";
 
 class ElrondVueStore {
+  state: Vue;
+
   constructor () {
     this.state = new Vue({ data: {
         providers :  null,
@@ -37,8 +40,8 @@ class ElrondVueStore {
     this.state.$data.providers.logout();
   }
 
-  explorerTransactionUrl(transaction){
-    return `${this.state.$data.explorerUrl}/transactions/${transaction.hash}`;
+  explorerTransactionUrl(transaction: Transaction){
+    return `${this.state.$data.explorerUrl}/transactions/${transaction.getHash()}`;
   }
 
 }
