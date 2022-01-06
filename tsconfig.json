@@ -7,6 +7,7 @@
     // if using webpack 2+ or rollup, to leverage tree shaking:
     "module": "es2015",
     "moduleResolution": "node",
-    "allowJs": true
+    "allowJs": true,
+    "declaration": true
   }
 }

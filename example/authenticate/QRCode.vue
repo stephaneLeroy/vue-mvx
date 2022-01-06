@@ -6,7 +6,7 @@
 import QRCode from 'qrcode';
 
 export default {
-  name: 'QRCode',
+  name: 'QrCode',
   data () {
     return {
       qrcodeSvg: null,

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import router from './router/index';
 import ElronVue from '../src'
 
 Vue.use(ElronVue, {
@@ -26,6 +27,7 @@ Vue.use(ElronVue, {
 });
 
 new Vue({
+  router,
   el: '#app',
   render: h => h(App)
 })

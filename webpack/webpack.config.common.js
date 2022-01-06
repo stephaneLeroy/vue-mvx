@@ -1,16 +1,8 @@
-var path = require('path')
 var webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
 
 module.exports = {
-  mode: 'development',
-  entry: './example/main.ts',
-  output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'build-example.js',
-    clean: true
-  },
   plugins: [
     new VueLoaderPlugin(),
     new webpack.ProvidePlugin({
@@ -19,12 +11,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       process: 'process/browser',
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'Vue Erd example App',
-      template: path.resolve(__dirname, 'example/template.html'),
-      showErrors: true
-    })
+    new RemoveEmptyScriptsPlugin()
   ],
   module: {
     rules: [
@@ -54,6 +41,7 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+        exclude: /node_modules/,
         options: {
           loaders: {
             // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
@@ -77,6 +65,9 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         exclude: /node_modules/,
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        }
       },
       {
         test: /\.js$/,
@@ -104,46 +95,7 @@ module.exports = {
     },
     extensions: ['.ts', '.js', '.vue', '.json']
   },
-  devServer: {
-    static: [
-      {
-        directory: 'dist'
-      },
-      {
-        directory: 'example'
-      }
-    ],
-    client: {
-      overlay: {
-        errors: true,
-        warnings: false,
-      },
-    },
-    historyApiFallback: true,
-  },
   performance: {
     hints: false
-  },
-  devtool: 'inline-source-map'
-}
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
-  // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ])
+  }
 }
