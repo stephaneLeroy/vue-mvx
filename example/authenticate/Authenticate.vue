@@ -1,17 +1,13 @@
 <template>
-    <div>
-        <div>
-            <router-link to="/authenticate/maiar">Maiar App</router-link>
-            <router-link to="/authenticate/ledger">Ledger</router-link>
-            <router-link to="/authenticate/webwallet">WebWallet</router-link>
-        </div>
-        <router-view></router-view>
-    </div>
+    <VueErdjsConnect></VueErdjsConnect>
 </template>
 
 <script>
-
+import VueErdjsConnect from  '../../src/components/VueErdjsConnect';
 export default {
-    name: 'Authenticate'
+    name: 'Authenticate',
+    components: {
+        VueErdjsConnect
+    }
 }
 </script>

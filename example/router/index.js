@@ -27,21 +27,7 @@ const routes = [
   {
     path: '/authenticate',
     name: 'Authenticate',
-    component: Authenticate,
-    children: [
-      {
-        path: 'maiar',
-        component: Maiar
-      },
-      {
-        path: 'ledger',
-        component: Ledger
-      },
-      {
-        path: 'webwallet',
-        component: WebWallet
-      }
-    ]
+    component: Authenticate
   }
 ]
 
