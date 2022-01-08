@@ -120,10 +120,12 @@
 
     .vue3rdj5 {
         &__modes {
+            align-items: flex-start;
             display: flex;
             flex-wrap: wrap;
             margin: 0 auto;
             max-width: 1200px;
+            min-height: 585px;
 
             &-open {
                 margin: 0 12px;
@@ -131,13 +133,17 @@
             }
         }
         &__mode {
+            align-items: center;
+            display: flex;
             margin: 0 auto;
+            min-height: 505px;
             order: 100;
             padding: 52px 24px;
             width: calc(100% - 24px);
 
             &-qr {
                 max-width: 400px;
+                width: 100%;
             }
         }
         &__ledger {
