@@ -13,10 +13,6 @@
 <script>
 export default {
   name: 'DefiWalletLogin',
-  mounted() {
-    console.log(this.logo);
-    this.$erd.defiWallet.callbackReceived(window.location.search);
-  },
   methods: {
     login() {
       this.$erd.defiWallet.login();

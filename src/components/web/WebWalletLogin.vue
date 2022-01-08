@@ -14,7 +14,6 @@
 export default {
   name: 'WebWalletLogin',
   mounted() {
-    console.log(this.logo);
     this.$erd.webWallet.callbackReceived(window.location.search);
   },
   methods: {

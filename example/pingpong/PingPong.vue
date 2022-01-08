@@ -1,5 +1,8 @@
 <template>
+  <div>
     <h1>PingPong</h1>
+    <button @click.prevent="ping()">Ping!</button>
+  </div>
 </template>
 
 <script>
@@ -25,7 +28,7 @@ export default {
         logout() {
             this.$erd.logout();
         },
-        async sendTransaction() {
+        async ping() {
             console.log("Send transaction", this.$erd.provider, this.$erd.walletAddress);
 
             let erdAddress = new Address(this.$erd.walletAddress);

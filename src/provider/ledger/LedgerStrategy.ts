@@ -1,92 +1,90 @@
-import { HWProvider } from "@elrondnetwork/erdjs";
+import {HWProvider} from "@elrondnetwork/erdjs";
 import IProviderStrategy from "../IProviderStrategy";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import {Address, ProxyProvider} from "@elrondnetwork/erdjs";
 import {LedgerOption} from "../config";
-
-const LEDGER_STORAGE="ledger-strategy";
+import StorageProvider from "../storage/StorageProvider";
+import * as dayjs from "dayjs";
 
 class LedgerProviderManager implements IProviderStrategy {
-  private _eventHandler: IProviderStrategyEventHandler;
-  private _proxy: ProxyProvider;
-  private _hwProvider: HWProvider;
-  private _addressIndex: number;
+    private _eventHandler: IProviderStrategyEventHandler;
+    private _proxy: ProxyProvider;
+    private _hwProvider: HWProvider;
+    private _storage = new StorageProvider('ledger-strategy');
 
-  constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: LedgerOption) {
-    this._eventHandler = eventHandler;
-    this._proxy = proxy;
-    this._hwProvider = new HWProvider(this._proxy);
-    this._addressIndex = 0;
-  }
+    constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: LedgerOption) {
+        this._eventHandler = eventHandler;
+        this._proxy = proxy;
+        this._hwProvider = new HWProvider(this._proxy);
+        this.init();
+    }
 
-  name() {
-    return "ledger";
-  }
+    name() {
+        return "ledger";
+    }
 
-  init() {
-    return this._hwProvider
-      .init()
-      .then((success) => {
-        if (!success) {
-          this._eventHandler.handleLoginError(this, new Error("Initialisation Error"));
-        }
-      });
-  }
+    init() {
+        return this._hwProvider
+            .init()
+            .then((success) => {
+                if (!success) {
+                    let error = new Error("Initialisation Error");
+                    this._eventHandler.handleLoginError(this, error);
+                    throw error;
+                }
+            });
+    }
 
-  async accounts(startIndex: number, addressesPerPage: number) {
-    return await this.init()
-      .then(() => {
-        return this._hwProvider.getAccounts(startIndex, addressesPerPage);
-      });
-  }
+    async accounts(startIndex: number, addressesPerPage: number) {
+        return await this.init()
+            .then(() => {
+                return this._hwProvider.getAccounts(startIndex, addressesPerPage);
+            });
+    }
 
-  login(options?: { addressIndex?: number, callbackUrl?: string }): Promise<any> {
-    const addressIndex = options ? options.addressIndex ? options.addressIndex : 0 : 0;
-    return this.init()
-      .then(() => {
-        this._eventHandler.handleLoginStart(this);
-        this._hwProvider
-          .login(options)
-          .then((address) => {
-            this._addressIndex = addressIndex;
-            this.store(address, this._addressIndex)
-            this._eventHandler.handleLogin(this, new Address(address));
-          })
-          .catch((err) => {
-            this._eventHandler.handleLoginError(this, err);
-          });
-      })
-      .catch((error) => {
-        this._eventHandler.handleLoginError(this, error);
-      });
-  }
+    login(options?: { addressIndex?: number, callbackUrl?: string }): Promise<any> {
+        const addressIndex = options ? options.addressIndex ? options.addressIndex : 0 : 0;
+        return this.init()
+            .then(() => {
+                this._eventHandler.handleLoginStart(this);
+                this._hwProvider
+                    .login(options)
+                    .then((address) => {
+                        this._storage.set({
+                            wallet: address,
+                            addressIndex: addressIndex
+                        }, dayjs().add(30, 'minute'));
+                        this._eventHandler.handleLogin(this, new Address(address));
+                    })
+                    .catch((err) => {
+                        this._eventHandler.handleLoginError(this, err);
+                    });
+            })
+            .catch((error) => {
+                this._eventHandler.handleLoginError(this, error);
+            });
+    }
 
-  logout() {
-    this._addressIndex = 0;
-  }
+    logout() {
+        this._hwProvider.logout().then(() => {
+            this._storage.clear();
+            this._eventHandler.handleLogout(this);
+        })
+    }
 
-  store(wallet: string, addressIndex: number) {
-    if (!window) return;
+    load() {
+        if (!window) return;
 
-    window.localStorage.setItem(LEDGER_STORAGE, JSON.stringify({
-      wallet: wallet,
-      addressIndex: addressIndex
-    }));
-  }
+        console.log("Loading ledger strategy")
+        let stored = this._storage.get();
+        if (!stored) return;
 
-  load() {
-    if (!window) return;
+        this._eventHandler.handleLogin(this, new Address(stored.wallet));
+    }
 
-    let ledgerStorage = window.localStorage.getItem(LEDGER_STORAGE);
-    if(!ledgerStorage) return;
-
-    let ledger = JSON.parse(ledgerStorage);
-    this._addressIndex = ledger.addressIndex;
-  }
-
-  provider() {
-    return this._hwProvider;
-  }
+    provider() {
+        return this._hwProvider;
+    }
 }
 
 export default LedgerProviderManager

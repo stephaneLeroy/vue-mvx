@@ -42,6 +42,7 @@ class Providers implements IProviderStrategyEventHandler {
     let strategy = JSON.parse(strategyStorage);
 
     let storedStrategy;
+    console.log("Strategy stored", strategy);
     if (strategy.name === this.maiarApp.name()) {
       storedStrategy = this.maiarApp;
     } else if (strategy.name === this.ledger.name()) {
