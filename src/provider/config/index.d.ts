@@ -14,6 +14,9 @@ declare class WebWalletOption {
     url: string;
     constructor(options?: JSON);
 }
+declare class DefiWalletOption {
+    constructor(options?: JSON);
+}
 declare class ApiOption {
     url: string;
     timeout: number;
@@ -32,9 +35,10 @@ declare class ProviderOption {
     maiar: MaiarAppOption;
     ledger: LedgerOption;
     webWallet: WebWalletOption;
+    defiWallet: DefiWalletOption;
     api: ApiOption;
     proxy: ProxyOption;
     explorer: ExplorerOption;
     constructor(options?: JSON);
 }
-export { ProviderOption, MaiarAppOption, LedgerOption, WebWalletOption, ProxyOption, ApiOption, ExplorerOption };
+export { ProviderOption, MaiarAppOption, LedgerOption, WebWalletOption, DefiWalletOption, ProxyOption, ApiOption, ExplorerOption };

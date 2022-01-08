@@ -1,14 +1,14 @@
-import { WalletProvider } from "@elrondnetwork/erdjs";
+import { ExtensionProvider } from "@elrondnetwork/erdjs";
 import IProviderStrategy from "../IProviderStrategy";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
-import { WebWalletOption } from "../config";
-declare class WebWalletProviderStrategy implements IProviderStrategy {
+import { DefiWalletOption } from "../config";
+declare class DefiWalletProviderStrategy implements IProviderStrategy {
     private _eventHandler;
-    private _webWallet;
+    private _defiWallet;
     private _lastStatus?;
-    constructor(eventHandler: IProviderStrategyEventHandler, options: WebWalletOption);
+    constructor(eventHandler: IProviderStrategyEventHandler, options: DefiWalletOption);
     name(): string;
-    provider(): WalletProvider;
+    provider(): ExtensionProvider;
     load(): void;
     callbackReceived(url: string): void;
     get lastStatus(): string | undefined;
@@ -17,5 +17,6 @@ declare class WebWalletProviderStrategy implements IProviderStrategy {
         callbackUrl?: string;
     }): Promise<any>;
     logout(): void;
+    store(wallet: string): void;
 }
-export default WebWalletProviderStrategy;
+export default DefiWalletProviderStrategy;

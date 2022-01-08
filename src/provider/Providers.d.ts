@@ -1,10 +1,11 @@
 import MaiarAppStrategy from './maiar-app/MaiarAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
-import WebWalletStrategy from './web/web-wallet';
+import WebWalletStrategy from './web/WebWalletStrategy';
 import { Address, ProxyProvider, Transaction } from "@elrondnetwork/erdjs";
 import { ProviderOption } from "./config";
 import IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import IProviderStrategy from "./IProviderStrategy";
+import DefiWallet from "./defi/DefiWalletStrategy";
 declare class Providers implements IProviderStrategyEventHandler {
     currentStrategy?: IProviderStrategy;
     private onLogin;
@@ -12,6 +13,7 @@ declare class Providers implements IProviderStrategyEventHandler {
     private _maiarApp;
     private _ledger;
     private _webWallet;
+    private _defiWallet;
     private initialised;
     constructor(proxy: ProxyProvider, options: ProviderOption, onLogin: Function, onLogout: Function);
     init(): Promise<void>;
@@ -20,6 +22,7 @@ declare class Providers implements IProviderStrategyEventHandler {
     get ledger(): LedgerStrategy;
     get maiarApp(): MaiarAppStrategy;
     get webWallet(): WebWalletStrategy;
+    get defiWallet(): DefiWallet;
     logout(): void;
     handleLoginStart(provider: IProviderStrategy): void;
     handleLogin(provider: IProviderStrategy, address: Address): void;
