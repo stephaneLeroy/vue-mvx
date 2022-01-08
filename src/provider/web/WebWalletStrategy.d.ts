@@ -6,10 +6,10 @@ declare class WebWalletProviderStrategy implements IProviderStrategy {
     private _eventHandler;
     private _webWallet;
     private _lastStatus?;
+    private _storage;
     constructor(eventHandler: IProviderStrategyEventHandler, options: WebWalletOption);
     name(): string;
     provider(): WalletProvider;
-    load(): void;
     callbackReceived(url: string): void;
     get lastStatus(): string | undefined;
     login(options?: {
@@ -17,5 +17,6 @@ declare class WebWalletProviderStrategy implements IProviderStrategy {
         callbackUrl?: string;
     }): Promise<any>;
     logout(): void;
+    load(): void;
 }
 export default WebWalletProviderStrategy;

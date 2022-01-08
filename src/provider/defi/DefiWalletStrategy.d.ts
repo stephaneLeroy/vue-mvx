@@ -6,17 +6,16 @@ declare class DefiWalletProviderStrategy implements IProviderStrategy {
     private _eventHandler;
     private _defiWallet;
     private _lastStatus?;
+    private _storage;
     constructor(eventHandler: IProviderStrategyEventHandler, options: DefiWalletOption);
     name(): string;
     provider(): ExtensionProvider;
     load(): void;
-    callbackReceived(url: string): void;
     get lastStatus(): string | undefined;
     login(options?: {
         addressIndex?: number;
         callbackUrl?: string;
     }): Promise<any>;
     logout(): void;
-    store(wallet: string): void;
 }
 export default DefiWalletProviderStrategy;
