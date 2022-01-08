@@ -11,7 +11,8 @@ module.exports = merge(common,
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: 'build-example.js',
-    clean: true
+    clean: true,
+    publicPath: '/'
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

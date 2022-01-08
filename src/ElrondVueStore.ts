@@ -20,6 +20,16 @@ class ElrondVueStore {
     return this.state.$data.walletAddress;
   }
 
+  get obfuscatedWalletAddress () {
+    if(!this.walletAddress || this.walletAddress.isEmpty()) {
+      return undefined;
+    }
+    const keepNbChar = 6;
+    return this.walletAddress.bech32().slice(0,keepNbChar) +
+      '...' +
+      this.walletAddress.bech32().slice(-keepNbChar);
+  }
+
   get maiarApp () {
     return this.state.$data.providers.maiarApp;
   }
@@ -30,6 +40,10 @@ class ElrondVueStore {
 
   get webWallet() {
     return this.state.$data.providers.webWallet;
+  }
+
+  get defiWallet() {
+    return this.state.$data.providers.defiWallet;
   }
 
   get provider() {

@@ -4,7 +4,7 @@ import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import {Address, ProxyProvider} from "@elrondnetwork/erdjs";
 import {LedgerOption} from "../config";
 
-const LEDGER_STORAGE="ledger-strategy-storage"
+const LEDGER_STORAGE="ledger-strategy";
 
 class LedgerProviderManager implements IProviderStrategy {
   private _eventHandler: IProviderStrategyEventHandler;

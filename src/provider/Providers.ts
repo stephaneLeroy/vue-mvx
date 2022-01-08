@@ -1,10 +1,11 @@
 import MaiarAppStrategy from './maiar-app/MaiarAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
-import WebWalletStrategy from './web/web-wallet';
+import WebWalletStrategy from './web/WebWalletStrategy';
 import {Address, ProxyProvider, Transaction} from "@elrondnetwork/erdjs";
 import {ProviderOption} from "./config";
 import IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import IProviderStrategy from "./IProviderStrategy";
+import DefiWallet from "./defi/DefiWalletStrategy";
 
 const PROVIDER_STRATEGY_STORAGE="vue-erdjs-strategy";
 
@@ -15,6 +16,7 @@ class Providers implements IProviderStrategyEventHandler {
   private _maiarApp: MaiarAppStrategy;
   private _ledger: LedgerStrategy;
   private _webWallet: WebWalletStrategy;
+  private _defiWallet: DefiWallet;
   private initialised: boolean;
 
   constructor(proxy: ProxyProvider, options: ProviderOption, onLogin: Function, onLogout: Function) {
@@ -24,6 +26,7 @@ class Providers implements IProviderStrategyEventHandler {
     this._maiarApp = new MaiarAppStrategy(this, proxy, options.maiar);
     this._ledger = new LedgerStrategy(this, proxy, options.ledger);
     this._webWallet = new WebWalletStrategy(this, options.webWallet);
+    this._defiWallet = new DefiWallet(this, options.defiWallet);
     this.initialised = false;
   }
 
@@ -37,13 +40,16 @@ class Providers implements IProviderStrategyEventHandler {
     if(!strategyStorage) return;
 
     let strategy = JSON.parse(strategyStorage);
+
     let storedStrategy;
-    if (strategy.name === this.maiarApp.name) {
+    if (strategy.name === this.maiarApp.name()) {
       storedStrategy = this.maiarApp;
-    } else if (strategy.name === this.ledger.name) {
+    } else if (strategy.name === this.ledger.name()) {
       storedStrategy = this.ledger;
-    } else if(strategy.name === this.webWallet.name) {
+    } else if(strategy.name === this.webWallet.name()) {
       storedStrategy = this.webWallet
+    } else if(strategy.name === this.defiWallet.name()) {
+      storedStrategy = this.defiWallet
     }
 
     if(storedStrategy) {
@@ -76,6 +82,10 @@ class Providers implements IProviderStrategyEventHandler {
 
   get webWallet() {
     return this._webWallet;
+  }
+
+  get defiWallet() {
+    return this._defiWallet;
   }
 
   logout() {

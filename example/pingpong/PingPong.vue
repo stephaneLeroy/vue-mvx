@@ -1,5 +1,5 @@
 <template>
-    <h2>PingPong</h2>
+    <h1>PingPong</h1>
 </template>
 
 <script>

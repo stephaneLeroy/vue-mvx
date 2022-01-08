@@ -1,17 +1,23 @@
 <template>
     <div id="app">
-        <div>
-            <router-link to="/">Home</router-link>
-            <router-link to="/pingpong">Ping Pong</router-link>
-            <router-link to="/authenticate">Authenticate</router-link>
+        <nav class="menu">
+          <div class="menu__title">
+            <router-link class="menu__title-link" exact-active-class="menu__title--active" to="/">Vue-ERD-JS</router-link>
+          </div>
+          <div class="menu__items">
+            <router-link class="menu__items-link" active-class="menu__items-link--active" to="/pingpong">Ping Pong</router-link>
+            <router-link class="menu__items-link" to="/authenticate">{{$erd.walletAddress ? $erd.obfuscatedWalletAddress : 'Authenticated' }}</router-link>
+          </div>
+        </nav>
+        <div class="main__content">
+          <router-view ></router-view>
         </div>
-        <router-view></router-view>
     </div>
 </template>
 
 <script>
 export default {
-  name: 'app',
+  name: 'app'
 }
 </script>
 

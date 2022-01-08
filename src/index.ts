@@ -39,7 +39,7 @@ export default {
         this.$erdApi = erdApi;
       },
       mounted() {
-        store.state.$data.providers.init();
+        this.$erd.provider.init();
       }
     })
 

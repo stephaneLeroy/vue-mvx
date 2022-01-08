@@ -1,6 +1,8 @@
+import VueErdjsConnect from "./VueErdjsConnect";
 import MaiarLogin from './maiar/MaiarLogin';
 import LedgerLogin from './ledger/LedgerLogin';
-import WebwalletLogin from './web/WebWalletLogin';
-import WebwalletCallback from './web/WebwalletCallback';
+import WebWalletLogin from './web/WebWalletLogin';
+import DefiWalletLogin from './defi/DefiWalletLogin';
+import WebWalletCallback from './web/WebWalletCallback';
 
-export default [MaiarLogin, LedgerLogin, WebwalletLogin, WebwalletCallback];
+export default [VueErdjsConnect, MaiarLogin, LedgerLogin, WebWalletLogin, DefiWalletLogin, WebWalletCallback];

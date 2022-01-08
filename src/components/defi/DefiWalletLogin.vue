@@ -5,7 +5,7 @@
       <img class="vue3rdj5__mode-logo vue3rdj5__mode-logo-webwallet"
            :src="logo"
            alt="Elrond Wallet Logo">
-      Web Wallet login
+      Defi Wallet login
     </button>
   </div>
 </template>
@@ -13,7 +13,7 @@
 <script>
 import WebWalletLogo from '../../assets/web-wallet-logo.png';
 export default {
-  name: 'WebWalletLogin',
+  name: 'DefiWalletLogin',
   data() {
     return {
       logo: WebWalletLogo
@@ -21,11 +21,11 @@ export default {
   },
   mounted() {
     console.log(this.logo);
-    this.$erd.webWallet.callbackReceived(window.location.search);
+    this.$erd.defiWallet.callbackReceived(window.location.search);
   },
   methods: {
     login() {
-      this.$erd.webWallet.login();
+      this.$erd.defiWallet.login();
     }
   }
 }

@@ -3,13 +3,12 @@ import IProviderStrategy from "../IProviderStrategy";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import {WebWalletOption} from "../config";
 
-class WebWalletProviderManager implements IProviderStrategy {
+class WebWalletProviderStrategy implements IProviderStrategy {
   private _eventHandler: IProviderStrategyEventHandler;
   private _webWallet: WalletProvider;
   private _lastStatus?: string;
 
   constructor(eventHandler: IProviderStrategyEventHandler, options: WebWalletOption) {
-    console.log("WebWallet", options)
     this._eventHandler = eventHandler;
     this._webWallet = new WalletProvider(`${options.url}/init`);
     this._lastStatus = undefined;
@@ -61,4 +60,4 @@ class WebWalletProviderManager implements IProviderStrategy {
   }
 }
 
-export default WebWalletProviderManager;
+export default WebWalletProviderStrategy;

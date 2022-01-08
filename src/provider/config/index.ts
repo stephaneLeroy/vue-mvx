@@ -26,6 +26,12 @@ class WebWalletOption {
   }
 }
 
+class DefiWalletOption {
+  constructor(options?: JSON) {
+    options && Object.assign(this, options);
+  }
+}
+
 class ApiOption {
   url: string = "https://devnet-api.elrond.com";
   timeout: number = 2000;
@@ -56,6 +62,7 @@ class ProviderOption {
   maiar: MaiarAppOption = new MaiarAppOption();
   ledger: LedgerOption = new LedgerOption();
   webWallet: WebWalletOption = new WebWalletOption();
+  defiWallet: DefiWalletOption = new DefiWalletOption();
   api: ApiOption = new ApiOption();
   proxy: ProxyOption = new ProxyOption();
   explorer: ExplorerOption = new ExplorerOption();
@@ -66,4 +73,4 @@ class ProviderOption {
 
 }
 
-export { ProviderOption, MaiarAppOption, LedgerOption, WebWalletOption, ProxyOption, ApiOption, ExplorerOption };
+export { ProviderOption, MaiarAppOption, LedgerOption, WebWalletOption, DefiWalletOption, ProxyOption, ApiOption, ExplorerOption };

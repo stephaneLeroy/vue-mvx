@@ -80,4 +80,30 @@
             text-overflow: ellipsis;
         }
     }
+    &__logged {
+      margin: 0 auto 16px;
+      max-width: 300px;
+      width: 100%;
+      text-align: center;
+
+      &-address {
+        font-size: 1.5rem;
+        margin: 5px 5px 15px;
+      }
+      &-logout {
+        background: #474340;
+        color: #fff;
+        cursor: pointer;
+        font-family: inherit, sans-serif;
+        font-size: 1.9em;
+        font-weight: 600;
+        justify-content: center;
+        margin-top: 16px;
+        padding: 12px;
+        text-align: center;
+        text-decoration: none;
+        width: 100%;
+        border-radius: 6px;
+      }
+    }
 }
