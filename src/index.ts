@@ -23,7 +23,7 @@ export default {
     erdProxy = new ProxyProvider(options.proxy.url, { timeout: options.proxy.timeout });
 
     NetworkConfig.getDefault().sync(erdProxy);
-    store.state.$data.providers = new Providers(erdProxy, options,
+    store.state.$data.providers = new Providers(erdProxy, erdApi, options,
       (address: Address) => {
          store.state.$data.walletAddress = address;
       },
@@ -39,7 +39,7 @@ export default {
         this.$erdApi = erdApi;
       },
       mounted() {
-        this.$erd.provider.init();
+        this.$erd.providers.init();
       }
     })
 

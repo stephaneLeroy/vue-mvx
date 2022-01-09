@@ -15,7 +15,7 @@
                 @select-mode="selectedMode = $event"
                 :selected-mode="selectedMode"></vue-erdjs-tab>
             <maiar-login
-                :selected-mode="selectedMode"></maiar-login>
+                :selected-mode="selectedMode" :qrcodeHandler="qrcodeHandler"></maiar-login>
             <vue-erdjs-tab
                 name="Ledger"
                 @select-mode="selectedMode = $event"
@@ -31,9 +31,19 @@
 
 <script>
 import VueErdjsTab from './VueErdjsTab.vue';
+import QRCodeHandler from "./maiar/IQRCodeHandler";
+import QRCodeDefaultHandler from "./maiar/QRCodeDefaultHandler";
+
 export default {
     components: { VueErdjsTab },
     name:"VueErdjsConnect",
+    props: {
+        qrcodeHandler: {
+            type: QRCodeHandler,
+            require: true,
+            default: function() { return new QRCodeDefaultHandler() }
+        }
+    },
     data () {
         return {
             selectedMode: ''
@@ -50,8 +60,8 @@ export default {
         }
     },
     watch: {
-        "$erd.walletAddress": (address) => {
-            if(address != null && this){
+    "$erd.walletAddress": function(address) {
+      if(address != null){
                 this.redirect();
             }
         }

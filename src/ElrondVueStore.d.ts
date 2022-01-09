@@ -10,7 +10,9 @@ declare class ElrondVueStore {
     get ledger(): any;
     get webWallet(): any;
     get defiWallet(): any;
-    get provider(): any;
+    get providers(): any;
+    get currentProvider(): any;
+    transactionResult(transaction: Transaction): any;
     logout(): void;
     explorerTransactionUrl(transaction: Transaction): string;
 }

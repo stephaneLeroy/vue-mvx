@@ -16,7 +16,6 @@ class LedgerProviderManager implements IProviderStrategy {
         this._eventHandler = eventHandler;
         this._proxy = proxy;
         this._hwProvider = new HWProvider(this._proxy);
-        this.init();
     }
 
     name() {
@@ -80,6 +79,7 @@ class LedgerProviderManager implements IProviderStrategy {
         if (!stored) return;
 
         this._eventHandler.handleLogin(this, new Address(stored.wallet));
+        this.init();
     }
 
     provider() {

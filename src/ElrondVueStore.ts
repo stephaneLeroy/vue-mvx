@@ -2,61 +2,71 @@ import Vue from 'vue';
 import {Transaction} from "@elrondnetwork/erdjs";
 
 class ElrondVueStore {
-  state: Vue;
+    state: Vue;
 
-  constructor () {
-    this.state = new Vue({ data: {
-        providers :  null,
-        walletAddress : null,
-        explorerUrl: null
-      } });
-  }
-
-  get logged () {
-    return this.state.$data.walletAddress != null
-  }
-
-  get walletAddress () {
-    return this.state.$data.walletAddress;
-  }
-
-  get obfuscatedWalletAddress () {
-    if(!this.walletAddress || this.walletAddress.isEmpty()) {
-      return undefined;
+    constructor() {
+        this.state = new Vue({
+            data: {
+                providers: null,
+                walletAddress: null,
+                explorerUrl: null
+            }
+        });
     }
-    const keepNbChar = 6;
-    return this.walletAddress.bech32().slice(0,keepNbChar) +
-      '...' +
-      this.walletAddress.bech32().slice(-keepNbChar);
-  }
 
-  get maiarApp () {
-    return this.state.$data.providers.maiarApp;
-  }
+    get logged() {
+        return this.state.$data.walletAddress != null
+    }
 
-  get ledger() {
-    return this.state.$data.providers.ledger;
-  }
+    get walletAddress() {
+        return this.state.$data.walletAddress;
+    }
 
-  get webWallet() {
-    return this.state.$data.providers.webWallet;
-  }
+    get obfuscatedWalletAddress() {
+        if (!this.walletAddress || this.walletAddress.isEmpty()) {
+            return undefined;
+        }
+        const keepNbChar = 6;
+        return this.walletAddress.bech32().slice(0, keepNbChar) +
+            '...' +
+            this.walletAddress.bech32().slice(-keepNbChar);
+    }
 
-  get defiWallet() {
-    return this.state.$data.providers.defiWallet;
-  }
+    get maiarApp() {
+        return this.state.$data.providers.maiarApp;
+    }
 
-  get provider() {
-    return this.state.$data.providers;
-  }
+    get ledger() {
+        return this.state.$data.providers.ledger;
+    }
 
-  logout() {
-    this.state.$data.providers.logout();
-  }
+    get webWallet() {
+        return this.state.$data.providers.webWallet;
+    }
 
-  explorerTransactionUrl(transaction: Transaction){
-    return `${this.state.$data.explorerUrl}/transactions/${transaction.getHash()}`;
-  }
+    get defiWallet() {
+        return this.state.$data.providers.defiWallet;
+    }
+
+    get providers() {
+        return this.state.$data.providers;
+    }
+
+    get currentProvider() {
+        return this.state.$data.providers.currentProvider;
+    }
+
+    transactionResult(transaction: Transaction) {
+        return this.state.$data.providers.transactionResult(transaction);
+    }
+
+    logout() {
+        this.state.$data.providers.logout();
+    }
+
+    explorerTransactionUrl(transaction: Transaction) {
+        return `${this.state.$data.explorerUrl}/transactions/${transaction.getHash()}`;
+    }
 
 }
 

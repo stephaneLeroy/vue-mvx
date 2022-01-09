@@ -1,10 +1,9 @@
 <template>
-    <div 
+    <div
         class="vue3rdj5__mode"
         v-if="openContent">
-        <QrCode
-            class="vue3rdj5__mode-qr"
-            :qrcode="qrcode"></QrCode>
+        <div ref="qrcode"></div>
+        <div v-if="qrcode" v-html="qrcode"></div>
         <a
             class="vue3rdj5__mode-link vue3rdj5__mode-link-maiar"
             :href="deeplink"
@@ -17,13 +16,11 @@
 
 <script>
 import platform from "platform";
-import QrCode from "../QrCode";
+import QRCodeDefaultHandler from "./QRCodeDefaultHandler";
+import IQRCodeHandler from "./IQRCodeHandler";
 
 export default {
     name: 'MaiarLogin',
-    components: {
-        QrCode
-    },
     data () {
         return {
             openContent: false,
@@ -35,6 +32,11 @@ export default {
         selectedMode: {
             type: String,
             default: ''
+        },
+        qrcodeHandler: {
+            type: IQRCodeHandler,
+            require: true,
+            default: function() { return new QRCodeDefaultHandler() }
         }
     },
     watch: {
@@ -57,7 +59,12 @@ export default {
             this.deepLink = null;
             const that = this;
             this.$erd.maiarApp.login().then((loginData) => {
-                that.qrcode = loginData.qrCodeData;
+                console.log(loginData)
+                this.qrcodeHandler.handle(loginData.qrCodeData, this.$refs.qrcode).then((svg) => {
+                    if(svg) {
+                        this.qrcode = svg;
+                    }
+                })
                 that.deeplink = loginData.deeplink;
                 that.$emit('login', loginData);
             });

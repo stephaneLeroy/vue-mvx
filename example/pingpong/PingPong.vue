@@ -1,57 +1,66 @@
 <template>
   <div>
-    <h1>PingPong</h1>
-    <button @click.prevent="ping()">Ping!</button>
+    <h1>Ping pong smartcontract</h1>
+      <div class="pingpong__error">{{error ? error : ' '}}</div>
+      <div class="pingpong">
+          <div class="pingpong__left" :class="{ 'pingpong__left--animated': goLeft || goRight}"/>
+          <button :class="{ 'pingpong__ball--goright': goRight, 'pingpong__ball--goleft': goLeft}" class="pingpong__ball" @click.prevent="ping()">
+              {{goRight ? 'Pong!' : 'Ping!'}}
+          </button>
+          <div class="pingpong__right" :class="{ 'pingpong__right--animated': goLeft || goRight}"/>
+          <div class="pingpong__clear"></div>
+      </div>
   </div>
 </template>
 
 <script>
-import {
-    Account,
-    Address,
-    Balance,
-    ContractFunction,
-    GasLimit,
-    Transaction,
-    TransactionPayload
-} from "@elrondnetwork/erdjs";
+import PingPongSC from './PingPongSC'
 
 export default {
     name: 'PingPong',
     data () {
         return {
             qrcode: null,
-            deepLink: null
+            deepLink: null,
+            goRight: false,
+            goLeft: false,
+            error: null,
+            pingPong: null,
+            pingAmount: 0
         }
+    },
+    mounted() {
+        this.pingPong = new PingPongSC(this.$erd.currentProvider, this.$erdProxy);
+        this.pingPong.pingAmount().then((amount) => {
+            console.log("ping amount", amount);
+            this.pingAmount = amount;
+        });
     },
     methods: {
         logout() {
             this.$erd.logout();
         },
         async ping() {
-            console.log("Send transaction", this.$erd.provider, this.$erd.walletAddress);
+            this.goLeft = false;
+            this.goRight = true;
+            this.pingPong.dateToPong(this.$erd.walletAddress);
 
-            let erdAddress = new Address(this.$erd.walletAddress);
-            let account = new Account(erdAddress);
-            await account.sync(this.$erdProxy);
+            try {
+                let transaction = await this.pingPong.ping(this.$erd.walletAddress, this.pingAmount);
 
-            const payload = TransactionPayload.contractCall()
-                .setFunction(new ContractFunction("ping"))
-                .setArgs([])
-                .build();
-
-            const transaction = new Transaction({
-                sender: erdAddress,
-                receiver: new Address("erd1qqqqqqqqqqqqqpgquvt728n40ssd8n2qns9jrlqpwq2jc4rj4cysfuj3ad"),
-                gasLimit: new GasLimit(10000000),
-                value: Balance.egld(0.01),
-                data: payload,
-            });
-            transaction.setNonce(account.nonce);
-
-            this.$erd.provider.sendTransaction(transaction).then((transaction) => {
-                console.log("Transaction sent",transaction);
-            });
+                await this.$erd.transactionResult(transaction).then((transaction) => {
+                    if (!transaction.status.isSuccessful()) {
+                        throw new Error(`Transaction failed : ${transaction.getSmartContractResults().getImmediate().getReturnMessage()}`)
+                    }
+                })
+            } catch (error) {
+                this.goRight = false;
+                this.error = error.message;
+            }
+        },
+        pong() {
+          this.goRight = false;
+          this.goLeft = true;
         }
     },
 }

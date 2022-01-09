@@ -1,11 +1,12 @@
 import MaiarAppStrategy from './maiar-app/MaiarAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
 import WebWalletStrategy from './web/WebWalletStrategy';
-import {Address, ProxyProvider, Transaction} from "@elrondnetwork/erdjs";
+import {Address, ProxyProvider, ApiProvider, Transaction} from "@elrondnetwork/erdjs";
 import {ProviderOption} from "./config";
 import IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import IProviderStrategy from "./IProviderStrategy";
 import DefiWallet from "./defi/DefiWalletStrategy";
+import TransactionResult from "./TransactionResult";
 
 const PROVIDER_STRATEGY_STORAGE="vue-erdjs-strategy";
 
@@ -18,9 +19,13 @@ class Providers implements IProviderStrategyEventHandler {
   private _webWallet: WebWalletStrategy;
   private _defiWallet: DefiWallet;
   private initialised: boolean;
+  private _proxy: ProxyProvider;
+  private _api: ApiProvider
 
-  constructor(proxy: ProxyProvider, options: ProviderOption, onLogin: Function, onLogout: Function) {
+  constructor(proxy: ProxyProvider, api: ApiProvider, options: ProviderOption, onLogin: Function, onLogout: Function) {
     this.currentStrategy = undefined;
+    this._proxy = proxy;
+    this._api = api;
     this.onLogin = onLogin;
     this.onLogout = onLogout;
     this._maiarApp = new MaiarAppStrategy(this, proxy, options.maiar);
@@ -58,19 +63,11 @@ class Providers implements IProviderStrategyEventHandler {
     }
   }
 
-  sendTransaction(transaction: Transaction) {
-    if (this.currentStrategy === undefined) {
-      return Promise.reject(new Error("No strategy available"));
-    }
-    console.log("Current provider", this.currentStrategy.provider);
-    return this.currentStrategy.provider().sendTransaction(transaction);
-  }
-
-  get provider() {
+  get currentProvider() {
     if (this.currentStrategy === undefined) {
       return undefined;
     }
-    return this.currentStrategy.provider;
+    return this.currentStrategy.provider();
   }
 
   get ledger() {
@@ -94,6 +91,10 @@ class Providers implements IProviderStrategyEventHandler {
       this.currentStrategy.logout();
       this.handleLogout(this.currentStrategy);
     }
+  }
+
+  transactionResult(transaction: Transaction) {
+      return new TransactionResult(transaction, this._proxy, this._api).watch();
   }
 
   handleLoginStart(provider: IProviderStrategy) {
