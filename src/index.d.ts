@@ -1,9 +1,4 @@
-import { ApiProvider, ProxyProvider } from "@elrondnetwork/erdjs";
-import { ProviderOption } from "./provider/config";
-declare const _default: {
-    isLogged(): boolean;
-    erdProxy(): ProxyProvider;
-    erdApi(): ApiProvider;
-    install(Vue: any, options: ProviderOption): void;
-};
-export default _default;
+import VueErdJsPlugin from "./VueErdJsPlugin";
+import * as qrcode from "./components/maiar/IQRCodeHandler";
+export declare type IQRCodeHandler = qrcode.IQRCodeHandler;
+export default VueErdJsPlugin;

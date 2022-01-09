@@ -31,7 +31,7 @@
 
 <script>
 import VueErdjsTab from './VueErdjsTab.vue';
-import QRCodeHandler from "./maiar/IQRCodeHandler";
+import { IQRCodeHandler } from "./maiar/IQRCodeHandler";
 import QRCodeDefaultHandler from "./maiar/QRCodeDefaultHandler";
 
 export default {
@@ -39,7 +39,6 @@ export default {
     name:"VueErdjsConnect",
     props: {
         qrcodeHandler: {
-            type: QRCodeHandler,
             require: true,
             default: function() { return new QRCodeDefaultHandler() }
         }

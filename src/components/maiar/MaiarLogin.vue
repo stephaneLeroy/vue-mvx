@@ -2,8 +2,8 @@
     <div
         class="vue3rdj5__mode"
         v-if="openContent">
-        <div ref="qrcode"></div>
-        <div v-if="qrcode" v-html="qrcode"></div>
+        <div class="vue3rdj5__mode-qr" ref="qrcode"></div>
+        <div class="vue3rdj5__mode-qr" v-if="qrcode" v-html="qrcode"></div>
         <a
             class="vue3rdj5__mode-link vue3rdj5__mode-link-maiar"
             :href="deeplink"
@@ -17,7 +17,6 @@
 <script>
 import platform from "platform";
 import QRCodeDefaultHandler from "./QRCodeDefaultHandler";
-import IQRCodeHandler from "./IQRCodeHandler";
 
 export default {
     name: 'MaiarLogin',
@@ -34,7 +33,6 @@ export default {
             default: ''
         },
         qrcodeHandler: {
-            type: IQRCodeHandler,
             require: true,
             default: function() { return new QRCodeDefaultHandler() }
         }
