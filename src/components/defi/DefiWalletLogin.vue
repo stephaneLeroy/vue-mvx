@@ -1,15 +1,51 @@
 <template>
-    <vue-erdjs-tab
-        name="Defi Wallet"
-        @select-mode="login($event)"></vue-erdjs-tab>
+    <div
+        class="vue3rdj5__mode"
+        v-if="openContent">
+        <div
+            class="vue3rdj5__mode-error"
+            v-if="error">
+            {{error}}
+        </div>
+        <div v-else class="vue3rdj5__infos">
+            <p class="vue3rdj5__infos-txt">
+                Please unlock your Defi Extension and select the wallet you want to connect.
+            </p>
+            <p class="vue3rdj5__infos-txt">
+                If Nothing happen, you migth not have installed the Maiar Defi Wallet Extension.
+            </p>
+            <p class="vue3rdj5__infos-txt">
+                You can download it <a class="vue3rdj5__infos-link" href="https://chrome.google.com/webstore/detail/maiar-defi-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm">here</a>
+            </p>
+        </div>
+    </div>
 </template>
 
 <script>
-import VueErdjsTab from './../VueErdjsTab.vue';
 export default {
     name: 'DefiWalletLogin',
-    components: {
-        VueErdjsTab
+    data () {
+        return {
+            error: null,
+            openContent: false
+        }
+    },
+    props: {
+        selectedMode: {
+            type: String,
+            default: ''
+        }
+    },
+    watch: {
+        selectedMode (selectedMode) {
+            console.log("Defi", selectedMode)
+            if ( selectedMode === 'Defi Wallet' ) {
+                this.login(selectedMode)
+                this.openContent = true;
+            } else {
+                this.openContent = false;
+            }
+        }
     },
     methods: {
         login (name) {

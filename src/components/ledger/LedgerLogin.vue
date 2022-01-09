@@ -8,6 +8,10 @@
             :error="error">
             {{error}}
         </div>
+        <div v-else-if="accounts.length === 0" class="vue3rdj5__infos">
+            <p class="vue3rdj5__infos-txt">Please connect and unlock your Ledger Wallet.</p>
+            <p class="vue3rdj5__infos-txt">Don't forget to open Elrond APP</p>
+        </div>
         <div class="vue3rdj5__ledger">
             <ul class="vue3rdj5__ledger-list">
                 <li
@@ -60,7 +64,8 @@ export default {
             this.error = null;
             this.accounts.splice(0);
             this.accounts = await this.$erd.ledger.accounts(this.startIndex, this.startIndex + this.addressPageSize).catch((error) => {
-                this.error = error;
+                this.error = "Error while trying to read your Ledger wallet. " +
+                    "Please make sure you have unlock it and that your Elrond app is opened";
                 return [];
             });
         },

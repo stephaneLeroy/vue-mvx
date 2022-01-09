@@ -70,6 +70,44 @@
             margin: 0 auto;
             max-width: 300px;
         }
+        &-error {
+            display: flex;
+            font-family: inherit;
+            font-size: 1.9em;
+            font-weight: 600;
+            justify-content: center;
+            width: 100%;
+            color: #a13341;
+        }
+    }
+    &__infos {
+        display: flex;
+        flex-direction: column;
+        font-family: inherit;
+        font-size: 1.9em;
+        font-weight: 600;
+        justify-content: center;
+        width: 100%;
+
+        &-txt {
+            width: 100%;
+        }
+        &-link {
+            text-decoration: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #474340;
+            color: white;
+            border-radius: 8px;
+            border: white solid 1px;
+
+            &:hover,
+            &:active {
+                background-color: white;
+                color: #474340;
+                border: black solid 1px;
+            }
+        }
     }
     &__ledger {
         &-item {

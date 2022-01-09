@@ -7,8 +7,11 @@
         <div
             class="vue3rdj5__modes"
             v-if="!$erd.walletAddress">
-            <defi-wallet-login
+            <vue-erdjs-tab
+                name="Defi Wallet"
                 @select-mode="selectedMode = $event"
+                :selected-mode="selectedMode"></vue-erdjs-tab>
+            <defi-wallet-login
                 :selected-mode="selectedMode"></defi-wallet-login>
             <vue-erdjs-tab
                 name="Maiar"
@@ -31,7 +34,6 @@
 
 <script>
 import VueErdjsTab from './VueErdjsTab.vue';
-import { IQRCodeHandler } from "./maiar/IQRCodeHandler";
 import QRCodeDefaultHandler from "./maiar/QRCodeDefaultHandler";
 
 export default {
