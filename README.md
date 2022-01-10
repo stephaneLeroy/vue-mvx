@@ -2,11 +2,19 @@
 
 > erdjs (Elrond javascript SDK) integration for vuejs
 
-> Warning, this library is under construction. Use at your own risk (You are welcome if you want to help)
+> Library is now in release candidate (You are welcome if you want to help)
 
-You can find a DApp example in example folder
+![](docs/authenticate.png)
 
-## Getting started
+## [Try it](https://stephaneleroy.github.io/vue-erdjs/authenticate)
+
+You can find this DApp example in [example folder](example).
+
+## Getting started with the plugin
+
+You can find the documentation [here](https://stephaneleroy.github.io/vue-erdjs/vue-erdjs.md)
+
+## Getting started for developers
 
 ``` bash
 # install dependencies
