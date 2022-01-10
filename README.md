@@ -6,7 +6,7 @@
 
 ![](docs/authenticate.png)
 
-## [Try it](https://stephaneleroy.github.io/vue-erdjs/authenticate)
+[Go to the demo](https://stephaneleroy.github.io/vue-erdjs/authenticate)
 
 You can find this DApp example in [example folder](example).
 
