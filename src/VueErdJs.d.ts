@@ -8,6 +8,7 @@ export default class VueErdJs {
     constructor(providers: Providers, store: ElrondVueStore, explorerUrl: string);
     get logged(): boolean;
     get walletAddress(): any;
+    get token(): any;
     get obfuscatedWalletAddress(): string | undefined;
     get maiarApp(): import("./providers/maiar-app/MaiarAppStrategy").default;
     get ledger(): import("./providers/ledger/LedgerStrategy").default;

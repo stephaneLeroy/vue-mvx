@@ -29,13 +29,12 @@ class MaiarAppStrategy implements IProviderStrategy {
       this._walletConnectDeepLink = options.walletConnectDeepLink;
       this._walletConnectBridgeUrl = options.walletConnectBridgeUrl;
 
-      const that = this;
       this._walletConnect = new WalletConnectProvider(
-          that._proxy,
-          that._walletConnectBridgeUrl,
+          this._proxy,
+          this._walletConnectBridgeUrl,
           {
-              onClientLogin: () => that.handleOnClientLogin(),
-              onClientLogout: () => that.handleOnClientLogout(),
+              onClientLogin: () => this.handleOnClientLogin(),
+              onClientLogout: () => this.handleOnClientLogout(),
           }
       );
 
@@ -57,8 +56,10 @@ class MaiarAppStrategy implements IProviderStrategy {
       return this._walletConnect
         .getAddress()
         .then((address) => {
-          this.eventHandler.handleLogin(this, new Address(address));
-          this._connexionManager.startConnexionLostDetection();
+            return this._walletConnect.getSignature().then((signature: string) => {
+                this.eventHandler.handleLogin(this, new Address(address), signature);
+                this._connexionManager.startConnexionLostDetection();
+            })
         })
         .catch((err) => {
           this.eventHandler.handleLoginError(this, err);
@@ -70,10 +71,14 @@ class MaiarAppStrategy implements IProviderStrategy {
       this.eventHandler.handleLogout(this);
     }
 
-    login(options?: { addressIndex?: number, callbackUrl?: string }): Promise<any> {
+    login(options?: { addressIndex?: number, callbackUrl?: string, token: string }): Promise<any> {
       return this._walletConnect.login().then((walletConnectUri) => {
         if (walletConnectUri) {
-          return new MaiarAppLoginData(walletConnectUri, this.deeplink(walletConnectUri))
+            if(options && options.token) {
+                const walletConectUriWithToken = `${walletConnectUri}&token=${options.token}`;
+                return new MaiarAppLoginData(walletConectUriWithToken, this.deeplink(walletConectUriWithToken))
+            }
+            return new MaiarAppLoginData(walletConnectUri, this.deeplink(walletConnectUri))
         }
       });
     }

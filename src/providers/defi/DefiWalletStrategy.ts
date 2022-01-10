@@ -10,6 +10,7 @@ class DefiWalletProviderStrategy implements IProviderStrategy {
   private _defiWallet: ExtensionProvider;
   private _lastStatus?: string;
   private _storage = new StorageProvider("defi-wallet-strategy");
+  private _timeoutInMinutes = 30;
 
   constructor(eventHandler: IProviderStrategyEventHandler, options: DefiWalletOption) {
     this._eventHandler = eventHandler;
@@ -38,7 +39,7 @@ class DefiWalletProviderStrategy implements IProviderStrategy {
     this._defiWallet.setAddress(stored.wallet);
     this._defiWallet.init().then((success) => {
       if(success) {
-        this._eventHandler.handleLogin(this, new Address(stored.wallet));
+        this._eventHandler.handleLogin(this, new Address(stored.wallet), stored.token);
       } else {
         console.log("Login failed", success);
       }
@@ -49,14 +50,16 @@ class DefiWalletProviderStrategy implements IProviderStrategy {
     return this._lastStatus;
   }
 
-  login(options?: { addressIndex?: number, callbackUrl?: string }): Promise<any> {
+  login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any> {
     this._eventHandler.handleLoginStart(this);
     if(!this._defiWallet.isInitialized()) {
       this._defiWallet.init()
     }
-    return this._defiWallet.login().then((address) => {
-        this._storage.set( { wallet: address}, dayjs().add(30, 'minute'));
-        this._eventHandler.handleLogin(this, new Address(address));
+    return this._defiWallet.login( options ).then(() => {
+        const { signature, address } = this._defiWallet.account;
+        const token = signature ? { token: signature } : {};
+        this._storage.set( { wallet: address, ...token }, dayjs().add(this._timeoutInMinutes, 'minute'));
+        this._eventHandler.handleLogin(this, new Address(address), signature);
     }).catch((error) => {
         this._eventHandler.handleLoginError(this, error);
     });

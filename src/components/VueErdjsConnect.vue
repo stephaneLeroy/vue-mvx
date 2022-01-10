@@ -12,22 +12,27 @@
                 @select-mode="selectedMode = $event"
                 :selected-mode="selectedMode"></vue-erdjs-tab>
             <defi-wallet-login
-                :selected-mode="selectedMode"></defi-wallet-login>
+                :selected-mode="selectedMode"
+                :token="token"></defi-wallet-login>
             <vue-erdjs-tab
                 name="Maiar"
                 @select-mode="selectedMode = $event"
                 :selected-mode="selectedMode"></vue-erdjs-tab>
             <maiar-login
-                :selected-mode="selectedMode" :qrcodeHandler="qrcodeHandler"></maiar-login>
+                :selected-mode="selectedMode"
+                :qrcodeHandler="qrcodeHandler"
+                :token="token"></maiar-login>
             <vue-erdjs-tab
                 name="Ledger"
                 @select-mode="selectedMode = $event"
                 :selected-mode="selectedMode"></vue-erdjs-tab>
             <ledger-login
-                :selected-mode="selectedMode"></ledger-login>
+                :selected-mode="selectedMode"
+                :token="token"></ledger-login>
             <web-wallet-login
                 @select-mode="selectedMode = $event"
-                :selected-mode="selectedMode"></web-wallet-login>
+                :selected-mode="selectedMode"
+                :token="token"></web-wallet-login>
         </div>
     </div>
 </template>
@@ -43,6 +48,10 @@ export default {
         qrcodeHandler: {
             require: true,
             default: function() { return new QRCodeDefaultHandler() }
+        },
+        token: {
+            require: false,
+            type: String
         }
     },
     data () {

@@ -122,11 +122,11 @@ class Providers implements IProviderStrategyEventHandler {
         console.log("Login start", provider);
     }
 
-    handleLogin(provider: IProviderStrategy, address: Address) {
-        console.log("Login", provider, address);
+    handleLogin(provider: IProviderStrategy, address: Address, token?:string) {
+        console.log("Login", provider, address, token);
         window.localStorage.setItem(PROVIDER_STRATEGY_STORAGE, JSON.stringify({name: provider.id()}));
         this.currentStrategy = provider;
-        this.onLogin(address);
+        this.onLogin(address, token);
     }
 
     handleLoginError(provider: IProviderStrategy, err: Error) {

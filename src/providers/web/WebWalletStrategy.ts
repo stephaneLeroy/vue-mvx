@@ -10,6 +10,7 @@ class WebWalletProviderStrategy implements IProviderStrategy {
     private _webWallet: WalletProvider;
     private _lastStatus?: string;
     private _storage = new StorageProvider('web-wallet-strategy');
+    private _timeoutInMinutes = 30;
 
     constructor(eventHandler: IProviderStrategyEventHandler, options: WebWalletOption) {
         this._eventHandler = eventHandler;
@@ -33,8 +34,9 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         const urlSearchParams = new URLSearchParams(url);
 
         const address = urlSearchParams.get('address');
+        const token = urlSearchParams.get('token');
         if (address) {
-            this._storage.set({ wallet: address } , dayjs().add(30, 'minute'))
+            this._storage.set({ wallet: address, token: token  } , dayjs().add(this._timeoutInMinutes, 'minute'))
             this._eventHandler.handleLogin(this, new Address(address))
         }
 
@@ -50,11 +52,8 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         return this._lastStatus;
     }
 
-    login(options?: { addressIndex?: number, callbackUrl?: string }): Promise<any> {
-        const callbackUrl = options ? options.callbackUrl ? options.callbackUrl : '' : ''
-        return this._webWallet.login({
-            callbackUrl: callbackUrl
-        });
+    login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any> {
+        return this._webWallet.login(options);
     }
 
     logout() {
@@ -65,7 +64,7 @@ class WebWalletProviderStrategy implements IProviderStrategy {
     load() {
         let stored = this._storage.get();
         if (stored) {
-            this._eventHandler.handleLogin(this, new Address(stored.wallet));
+            this._eventHandler.handleLogin(this, new Address(stored.wallet), stored.token);
         }
     }
 }

@@ -5,6 +5,7 @@ interface IProviderStrategy {
     login(options?: {
         addressIndex?: number;
         callbackUrl?: string;
+        token?: string;
     }): Promise<any>;
     logout(): void;
     load(): void;

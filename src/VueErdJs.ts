@@ -21,6 +21,10 @@ export default class VueErdJs {
         return this._store.walletAddress;
     }
 
+    get token() {
+        return this._store.token;
+    }
+
     get obfuscatedWalletAddress() {
         if (!this.walletAddress || this.walletAddress.isEmpty()) {
             return undefined;

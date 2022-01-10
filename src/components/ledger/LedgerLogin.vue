@@ -47,6 +47,10 @@ export default {
         selectedMode: {
             type: String,
             default: ''
+        },
+        token: {
+            require: false,
+            type: String
         }
     },
     watch: {
@@ -84,7 +88,8 @@ export default {
             this.fetchAccounts();
         },
         login(index) {
-            this.$erd.ledger.login({ addressIndex: index })
+            const token = this.token ? { token: this.token } : {}
+            this.$erd.ledger.login({ addressIndex: index, ...token })
         }
     }
 }

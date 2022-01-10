@@ -34,6 +34,10 @@ export default {
         selectedMode: {
             type: String,
             default: ''
+        },
+        token: {
+            require: false,
+            type: String
         }
     },
     watch: {
@@ -50,7 +54,8 @@ export default {
     methods: {
         login (name) {
             this.$emit('select-mode', name);
-            this.$erd.defiWallet.login();
+            const options = this.token ? { token: this.token, callbackUrl: window.location  } : {};
+            this.$erd.defiWallet.login(options);
         }
     }
 }

@@ -31,7 +31,7 @@ declare class Providers implements IProviderStrategyEventHandler {
     signAndSend(transaction: Transaction): Promise<Transaction>;
     transactionResult(transaction: Transaction): Promise<import("@elrondnetwork/erdjs/out/transactionOnNetwork").TransactionOnNetwork>;
     handleLoginStart(provider: IProviderStrategy): void;
-    handleLogin(provider: IProviderStrategy, address: Address): void;
+    handleLogin(provider: IProviderStrategy, address: Address, token?: string): void;
     handleLoginError(provider: IProviderStrategy, err: Error): void;
     handleLogout(provider: IProviderStrategy): void;
 }

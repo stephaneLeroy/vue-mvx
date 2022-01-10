@@ -26,7 +26,7 @@ const routes = [
         path: '/authenticate',
         name: 'VueErdjsConnect',
         component: VueErdjsConnect,
-        props: { qrcodeHandler: new CustomQRCodeHandler()}
+        props: { qrcodeHandler: new CustomQRCodeHandler(), token:"hello"}
     }
 ]
 

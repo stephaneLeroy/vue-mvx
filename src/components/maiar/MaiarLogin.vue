@@ -35,6 +35,10 @@ export default {
         qrcodeHandler: {
             require: true,
             default: function() { return new QRCodeDefaultHandler() }
+        },
+        token: {
+            require: false,
+            type: String
         }
     },
     watch: {
@@ -56,7 +60,8 @@ export default {
             this.qrcode = null;
             this.deepLink = null;
             const that = this;
-            this.$erd.maiarApp.login().then((loginData) => {
+            const options = this.token ? { token: this.token } : {}
+            this.$erd.maiarApp.login(options).then((loginData) => {
                 console.log(loginData)
                 this.qrcodeHandler.handle(loginData.qrCodeData, this.$refs.qrcode).then((svg) => {
                     if(svg) {

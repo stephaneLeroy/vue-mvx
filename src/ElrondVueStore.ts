@@ -6,13 +6,18 @@ class ElrondVueStore {
     constructor() {
         this.state = new Vue({
             data: {
-                walletAddress: null
+                walletAddress: null,
+                token: null
             }
         });
     }
 
     get walletAddress() {
         return this.state.$data.walletAddress;
+    }
+
+    get token() {
+        return this.state.$data.token;
     }
 
 }

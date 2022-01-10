@@ -17,6 +17,7 @@ declare class MaiarAppStrategy implements IProviderStrategy {
     login(options?: {
         addressIndex?: number;
         callbackUrl?: string;
+        token: string;
     }): Promise<any>;
     load(): Promise<void> | (() => void);
     provider(): WalletConnectProvider;

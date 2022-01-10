@@ -27,12 +27,13 @@ npm run build
 - [x] Add Ledger Login
 - [x] Add Web Wallet Login
 - [x] Add Defi Wallet
-- [ ] Token login signature for backend authentication
+- [x] Token login signature for backend authentication
 - [x] Add Local storage login cache
 - [x] Migrate to typescript
-- [ ] Fancier DApp UI (in progress)
+- [x] Fancier DApp UI
 - [x] Optimize production build
 - [x] Factorize webpack configuration
-- [ ] Parameters documentation
-- [ ] Publish DApp example on github page
+- [x] Publish DApp example on github page
 - [ ] release candidate :tada:
+- [ ] Parameters, library and styling documentation
+- [ ] Vuex support

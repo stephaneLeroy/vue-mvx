@@ -16,8 +16,9 @@
     "vue"
   ],
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server",
-    "build": "cross-env NODE_ENV=production webpack --progress"
+      "dev": "cross-env NODE_ENV=development webpack-dev-server",
+      "build-github": "cross-env NODE_ENV=development webpack --progress",
+      "build": "cross-env NODE_ENV=production webpack --progress"
   },
   "dependencies": {
     "dayjs": "^1.10.7",

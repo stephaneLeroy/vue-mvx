@@ -1,6 +1,6 @@
 import ElrondVueStore from './ElrondVueStore';
 import Providers from "./providers/Providers";
-import { Address, NetworkConfig, ApiProvider, ProxyProvider } from "@elrondnetwork/erdjs";
+import {Address, NetworkConfig, ApiProvider, ProxyProvider} from "@elrondnetwork/erdjs";
 import Components from "./components";
 import {ProviderOption} from "./providers/config";
 import VueErdJs from "./VueErdJs";
@@ -25,11 +25,15 @@ export default {
 
         NetworkConfig.getDefault().sync(erdProxy);
         let providers = new Providers(erdProxy, erdApi, options,
-            (address: Address) => {
+            (address: Address, token?: string) => {
                 store.state.$data.walletAddress = address;
+                if (token) {
+                    store.state.$data.token = token;
+                }
             },
             () => {
                 store.state.$data.walletAddress = null;
+                store.state.$data.token = null;
             });
         vueErdJs = new VueErdJs(providers, store, options.explorer.url);
 

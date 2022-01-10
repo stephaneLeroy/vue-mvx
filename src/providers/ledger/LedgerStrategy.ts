@@ -11,6 +11,7 @@ class LedgerProviderManager implements IProviderStrategy {
     private _proxy: ProxyProvider;
     private _hwProvider: HWProvider;
     private _storage = new StorageProvider('ledger-strategy');
+    private _timeoutInMinutes = 30;
 
     constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: LedgerOption) {
         this._eventHandler = eventHandler;
@@ -45,26 +46,48 @@ class LedgerProviderManager implements IProviderStrategy {
             });
     }
 
-    login(options?: { addressIndex?: number, callbackUrl?: string }): Promise<any> {
+    login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any> {
         const addressIndex = options ? options.addressIndex ? options.addressIndex : 0 : 0;
+        const token = options ? options.token ? options.token : undefined : undefined;
+
         return this.init()
             .then(() => {
-                this._eventHandler.handleLoginStart(this);
-                this._hwProvider
-                    .login(options)
-                    .then((address) => {
-                        this._storage.set({
-                            wallet: address,
-                            addressIndex: addressIndex
-                        }, dayjs().add(30, 'minute'));
-                        this._eventHandler.handleLogin(this, new Address(address));
-                    })
-                    .catch((err) => {
-                        this._eventHandler.handleLoginError(this, err);
-                    });
+                return token ? this.tokenLogin(addressIndex, token) : this.standardLogin(addressIndex)
             })
             .catch((error) => {
-                this._eventHandler.handleLoginError(this, error);
+                console.log(error);
+                this.logout();
+            });
+    }
+
+    standardLogin(addressIndex: number): Promise<any>{
+        return this._hwProvider.login({addressIndex})
+            .then((address) => {
+                this._storage.set({
+                    wallet: address,
+                    addressIndex: addressIndex
+                }, dayjs().add(this._timeoutInMinutes, 'minute'));
+                this._eventHandler.handleLogin(this, new Address(address));
+            })
+            .catch((err) => {
+                this._eventHandler.handleLoginError(this, err);
+            });
+    }
+
+    tokenLogin(addressIndex: number, token: string): Promise<any> {
+        const that = this;
+        return this._hwProvider.tokenLogin({token: Buffer.from(`${token}{}`)})
+            .then(({ address, signature }) => {
+                let signedToken = signature.hex();
+                this._storage.set({
+                    wallet: address,
+                    addressIndex: addressIndex,
+                    token: signedToken
+                }, dayjs().add(this._timeoutInMinutes, 'minute'));
+                this._eventHandler.handleLogin(this, new Address(address), signedToken);
+            })
+            .catch((err) => {
+                this._eventHandler.handleLoginError(this, err);
             });
     }
 

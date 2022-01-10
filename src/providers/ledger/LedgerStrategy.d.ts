@@ -8,6 +8,7 @@ declare class LedgerProviderManager implements IProviderStrategy {
     private _proxy;
     private _hwProvider;
     private _storage;
+    private _timeoutInMinutes;
     constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: LedgerOption);
     id(): string;
     name(): string;
@@ -16,7 +17,10 @@ declare class LedgerProviderManager implements IProviderStrategy {
     login(options?: {
         addressIndex?: number;
         callbackUrl?: string;
+        token?: string;
     }): Promise<any>;
+    standardLogin(addressIndex: number): Promise<any>;
+    tokenLogin(addressIndex: number, token: string): Promise<any>;
     logout(): void;
     load(): void;
     provider(): HWProvider;

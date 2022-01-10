@@ -7,6 +7,7 @@ declare class DefiWalletProviderStrategy implements IProviderStrategy {
     private _defiWallet;
     private _lastStatus?;
     private _storage;
+    private _timeoutInMinutes;
     constructor(eventHandler: IProviderStrategyEventHandler, options: DefiWalletOption);
     id(): string;
     name(): string;
@@ -16,6 +17,7 @@ declare class DefiWalletProviderStrategy implements IProviderStrategy {
     login(options?: {
         addressIndex?: number;
         callbackUrl?: string;
+        token?: string;
     }): Promise<any>;
     logout(): void;
 }

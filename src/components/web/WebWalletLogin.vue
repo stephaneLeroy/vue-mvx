@@ -11,13 +11,20 @@ export default {
     components: {
         VueErdjsTab
     },
+    props: {
+        token: {
+            require: false,
+            type: String
+        }
+    },
     mounted() {
         this.$erd.webWallet.callbackReceived(window.location.search);
     },
     methods: {
         login (name) {
             this.$emit('select-mode', name);
-            this.$erd.webWallet.login();
+            const options = this.token ? { token: this.token } : {};
+            this.$erd.webWallet.login(options);
         }
     }
 }
