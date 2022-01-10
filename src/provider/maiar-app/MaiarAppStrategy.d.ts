@@ -10,6 +10,7 @@ declare class MaiarAppStrategy implements IProviderStrategy {
     private _walletConnect;
     private _connexionManager;
     constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: MaiarAppOption);
+    id(): string;
     name(): string;
     handleOnClientLogin(): Promise<void>;
     handleOnClientLogout(): void;

@@ -1,10 +1,12 @@
-import { IDappProvider, IProvider, Address, Transaction } from "@elrondnetwork/erdjs";
+import { Address } from "@elrondnetwork/erdjs";
+import { BigNumber } from "bignumber.js";
+import Providers from "../../src/provider/Providers";
 declare class PingPongSC {
     private readonly smartContractAddress;
     private _provider;
-    private _proxy;
-    constructor(provider: IDappProvider, proxy: IProvider);
-    ping(wallet: Address, amount: number): Promise<Transaction>;
+    constructor(provider: Providers);
+    ping(wallet: Address, amount: BigNumber): Promise<import("@elrondnetwork/erdjs/out/transactionOnNetwork").TransactionOnNetwork>;
+    didUserPing(wallet: Address): Promise<any>;
     dateToPong(wallet: Address): Promise<import("@elrondnetwork/erdjs").QueryResponse>;
     pingAmount(): Promise<any>;
 }

@@ -9,6 +9,7 @@ declare class LedgerProviderManager implements IProviderStrategy {
     private _hwProvider;
     private _storage;
     constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: LedgerOption);
+    id(): string;
     name(): string;
     init(): Promise<void>;
     accounts(startIndex: number, addressesPerPage: number): Promise<string[]>;

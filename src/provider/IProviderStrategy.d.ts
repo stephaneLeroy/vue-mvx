@@ -1,5 +1,6 @@
 import { IDappProvider } from "@elrondnetwork/erdjs";
 interface IProviderStrategy {
+    id(): string;
     name(): string;
     login(options?: {
         addressIndex?: number;

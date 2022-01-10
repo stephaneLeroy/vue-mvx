@@ -12,6 +12,8 @@ declare class ElrondVueStore {
     get defiWallet(): any;
     get providers(): any;
     get currentProvider(): any;
+    signAndSend(transaction: Transaction): any;
+    sendAndWatch(transaction: Transaction): any;
     transactionResult(transaction: Transaction): any;
     logout(): void;
     explorerTransactionUrl(transaction: Transaction): string;

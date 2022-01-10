@@ -24,7 +24,10 @@ declare class Providers implements IProviderStrategyEventHandler {
     get maiarApp(): MaiarAppStrategy;
     get webWallet(): WebWalletStrategy;
     get defiWallet(): DefiWallet;
+    get proxy(): ProxyProvider;
     logout(): void;
+    sendAndWatch(transaction: Transaction): Promise<import("@elrondnetwork/erdjs/out/transactionOnNetwork").TransactionOnNetwork>;
+    signAndSend(transaction: Transaction): Promise<Transaction>;
     transactionResult(transaction: Transaction): Promise<import("@elrondnetwork/erdjs/out/transactionOnNetwork").TransactionOnNetwork>;
     handleLoginStart(provider: IProviderStrategy): void;
     handleLogin(provider: IProviderStrategy, address: Address): void;
