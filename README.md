@@ -12,7 +12,7 @@ You can find this DApp example in [example folder](example).
 
 ## Getting started with the plugin
 
-You can find the documentation [here](https://stephaneleroy.github.io/vue-erdjs/vue-erdjs.md)
+You can find the documentation [here](docs/vue-erdjs.md)
 
 ## Getting started for developers
 
