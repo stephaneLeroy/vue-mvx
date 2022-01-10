@@ -20,6 +20,7 @@ declare class Providers implements IProviderStrategyEventHandler {
     constructor(proxy: ProxyProvider, api: ApiProvider, options: ProviderOption, onLogin: Function, onLogout: Function);
     init(): Promise<void>;
     get currentProvider(): import("@elrondnetwork/erdjs").IDappProvider | undefined;
+    get currentProviderName(): string | undefined;
     get ledger(): LedgerStrategy;
     get maiarApp(): MaiarAppStrategy;
     get webWallet(): WebWalletStrategy;

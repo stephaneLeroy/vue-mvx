@@ -1,6 +1,6 @@
 import { BooleanType, BigUIntType, BinaryCodec, AddressValue, SmartContract, IDappProvider, IProvider, Address, Balance, ContractFunction, GasLimit, TransactionPayload, Account, Transaction } from "@elrondnetwork/erdjs";
 import { BigNumber } from "bignumber.js";
-import Providers from "../../src/provider/Providers";
+import Providers from "../../src/providers/Providers";
 
 const Codec = new BinaryCodec();
 

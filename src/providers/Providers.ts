@@ -64,10 +64,11 @@ class Providers implements IProviderStrategyEventHandler {
     }
 
     get currentProvider() {
-        if (this.currentStrategy === undefined) {
-            return undefined;
-        }
-        return this.currentStrategy.provider();
+        return this.currentStrategy?.provider();
+    }
+
+    get currentProviderName() {
+        return this.currentStrategy?.name();
     }
 
     get ledger() {
@@ -109,7 +110,6 @@ class Providers implements IProviderStrategyEventHandler {
             throw new Error("No available provider");
         }
         return this.currentProvider.signTransaction(transaction).then((transaction) => {
-            console.log(transaction);
             return transaction.send(this._proxy).then(() => transaction);
         });
     }

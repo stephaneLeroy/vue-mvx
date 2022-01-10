@@ -1,6 +1,6 @@
 import { Address } from "@elrondnetwork/erdjs";
 import { BigNumber } from "bignumber.js";
-import Providers from "../../src/provider/Providers";
+import Providers from "../../src/providers/Providers";
 declare class PingPongSC {
     private readonly smartContractAddress;
     private _provider;

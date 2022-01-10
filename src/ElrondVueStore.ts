@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import {Transaction} from "@elrondnetwork/erdjs";
 
 class ElrondVueStore {
     state: Vue;
@@ -7,73 +6,13 @@ class ElrondVueStore {
     constructor() {
         this.state = new Vue({
             data: {
-                providers: null,
-                walletAddress: null,
-                explorerUrl: null
+                walletAddress: null
             }
         });
     }
 
-    get logged() {
-        return this.state.$data.walletAddress != null
-    }
-
     get walletAddress() {
         return this.state.$data.walletAddress;
-    }
-
-    get obfuscatedWalletAddress() {
-        if (!this.walletAddress || this.walletAddress.isEmpty()) {
-            return undefined;
-        }
-        const keepNbChar = 6;
-        return this.walletAddress.bech32().slice(0, keepNbChar) +
-            '...' +
-            this.walletAddress.bech32().slice(-keepNbChar);
-    }
-
-    get maiarApp() {
-        return this.state.$data.providers.maiarApp;
-    }
-
-    get ledger() {
-        return this.state.$data.providers.ledger;
-    }
-
-    get webWallet() {
-        return this.state.$data.providers.webWallet;
-    }
-
-    get defiWallet() {
-        return this.state.$data.providers.defiWallet;
-    }
-
-    get providers() {
-        return this.state.$data.providers;
-    }
-
-    get currentProvider() {
-        return this.state.$data.providers.currentProvider;
-    }
-
-    signAndSend(transaction: Transaction) {
-        return this.state.$data.providers.signAndSend(transaction);
-    }
-
-    sendAndWatch(transaction: Transaction) {
-        return this.state.$data.providers.sendAndWatch(transaction);
-    }
-
-    transactionResult(transaction: Transaction) {
-        return this.state.$data.providers.transactionResult(transaction);
-    }
-
-    logout() {
-        this.state.$data.providers.logout();
-    }
-
-    explorerTransactionUrl(transaction: Transaction) {
-        return `${this.state.$data.explorerUrl}/transactions/${transaction.getHash()}`;
     }
 
 }

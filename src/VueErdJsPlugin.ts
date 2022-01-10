@@ -1,11 +1,12 @@
 import ElrondVueStore from './ElrondVueStore';
-import Providers from "./provider/Providers";
+import Providers from "./providers/Providers";
 import { Address, NetworkConfig, ApiProvider, ProxyProvider } from "@elrondnetwork/erdjs";
 import Components from "./components";
-import {ProviderOption} from "./provider/config";
+import {ProviderOption} from "./providers/config";
+import VueErdJs from "./VueErdJs";
 
 const store = new ElrondVueStore();
-let erdProxy: ProxyProvider, erdApi: ApiProvider;
+let erdProxy: ProxyProvider, erdApi: ApiProvider, vueErdJs: VueErdJs;
 
 export default {
     isLogged() {
@@ -23,18 +24,18 @@ export default {
         erdProxy = new ProxyProvider(options.proxy.url, {timeout: options.proxy.timeout});
 
         NetworkConfig.getDefault().sync(erdProxy);
-        store.state.$data.providers = new Providers(erdProxy, erdApi, options,
+        let providers = new Providers(erdProxy, erdApi, options,
             (address: Address) => {
                 store.state.$data.walletAddress = address;
             },
             () => {
                 store.state.$data.walletAddress = null;
             });
-        store.state.$data.explorerUrl = options.explorer.url;
+        vueErdJs = new VueErdJs(providers, store, options.explorer.url);
 
         Vue.mixin({
             beforeCreate() {
-                this.$erd = store;
+                this.$erd = vueErdJs;
                 this.$erdProxy = erdProxy;
                 this.$erdApi = erdApi;
             },
