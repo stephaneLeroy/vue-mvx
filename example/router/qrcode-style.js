@@ -1,7 +1,7 @@
 export default {
     width: 300,
     height: 300,
-    image: "/elrond-logo.png",
+    image: "/vue-erdjs/elrond-logo.png",
     data: "https://elrondtrees.com",
     type: 'svg',
     margin: 0,

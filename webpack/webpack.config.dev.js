@@ -12,7 +12,7 @@ module.exports = merge(common,
             path: path.resolve(__dirname, '../docs'),
             filename: 'build-example.js',
             clean: true,
-            publicPath: '/'
+            publicPath: '/vue-erdjs/'
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
@@ -29,7 +29,9 @@ module.exports = merge(common,
                     warnings: false,
                 },
             },
-            historyApiFallback: true,
+            historyApiFallback: {
+                index: '/vue-erdjs/index.html'
+            },
         },
         devtool: 'inline-source-map'
     }
