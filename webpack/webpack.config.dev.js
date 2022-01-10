@@ -9,7 +9,7 @@ module.exports = merge(common,
         mode: 'development',
         entry: './example/main.ts',
         output: {
-            path: path.resolve(__dirname, '../_github'),
+            path: path.resolve(__dirname, '../docs'),
             filename: 'build-example.js',
             clean: true,
             publicPath: '/'
@@ -23,14 +23,6 @@ module.exports = merge(common,
             })
         ],
         devServer: {
-            static: [
-                {
-                    directory: 'dist'
-                },
-                {
-                    directory: 'example'
-                }
-            ],
             client: {
                 overlay: {
                     errors: true,
