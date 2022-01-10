@@ -42,6 +42,6 @@ npm run build
 - [x] Optimize production build
 - [x] Factorize webpack configuration
 - [x] Publish DApp example on github page
-- [ ] release candidate :tada:
+- [x] release candidate :tada:
 - [ ] Parameters, library and styling documentation
 - [ ] Vuex support
