@@ -56,6 +56,14 @@ class ElrondVueStore {
         return this.state.$data.providers.currentProvider;
     }
 
+    signAndSend(transaction: Transaction) {
+        return this.state.$data.providers.signAndSend(transaction);
+    }
+
+    sendAndWatch(transaction: Transaction) {
+        return this.state.$data.providers.sendAndWatch(transaction);
+    }
+
     transactionResult(transaction: Transaction) {
         return this.state.$data.providers.transactionResult(transaction);
     }

@@ -1,20 +1,19 @@
-import { BinaryCodec, AddressValue, SmartContract, IDappProvider, IProvider, Address, Balance, ContractFunction, GasLimit, TransactionPayload, Account, Transaction } from "@elrondnetwork/erdjs";
-import {BigIntType, BigUIntType, U64Type} from "@elrondnetwork/erdjs/out";
+import { BooleanType, BigUIntType, BinaryCodec, AddressValue, SmartContract, IDappProvider, IProvider, Address, Balance, ContractFunction, GasLimit, TransactionPayload, Account, Transaction } from "@elrondnetwork/erdjs";
+import { BigNumber } from "bignumber.js";
+import Providers from "../../src/provider/Providers";
 
 const Codec = new BinaryCodec();
 
 class PingPongSC {
-    private readonly smartContractAddress: string = "erd1qqqqqqqqqqqqqpgquvt728n40ssd8n2qns9jrlqpwq2jc4rj4cysfuj3ad";
-    private _provider: IDappProvider;
-    private _proxy: IProvider
-    constructor(provider: IDappProvider, proxy: IProvider) {
+    private readonly smartContractAddress: string = "erd1qqqqqqqqqqqqqpgqcsu3pkp7jhp72028vag8lz58luj9garw0eqqn9j476";
+    private _provider: Providers;
+    constructor(provider: Providers) {
         this._provider = provider;
-        this._proxy = proxy;
     }
 
-    async ping(wallet: Address, amount: number) {
+    async ping(wallet: Address, amount: BigNumber) {
         let account = new Account(wallet);
-        await account.sync(this._proxy);
+        await account.sync(this._provider.proxy);
 
         const payload = TransactionPayload.contractCall()
             .setFunction(new ContractFunction("ping"))
@@ -29,13 +28,23 @@ class PingPongSC {
             data: payload,
         });
         transaction.setNonce(account.nonce);
+        return this._provider.sendAndWatch(transaction);
+    }
 
-        return this._provider.sendTransaction(transaction);
+    async didUserPing(wallet: Address) {
+        let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
+        let result = await contract.runQuery(this._provider.proxy, {
+            func: new ContractFunction("didUserPing"),
+            args: [ new AddressValue(wallet) ]
+        });
+        let decoded = Codec.decodeTopLevel(new Buffer(result.outputUntyped()[0]), new BooleanType());
+        console.log("didUserPing", decoded.valueOf())
+        return decoded.valueOf();
     }
 
     async dateToPong(wallet: Address) {
         let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
-        let result = await contract.runQuery(this._proxy, {
+        let result = await contract.runQuery(this._provider.proxy, {
             func: new ContractFunction("getTimeToPong"),
             args: [ new AddressValue(wallet) ]
         });
@@ -45,12 +54,13 @@ class PingPongSC {
 
     async pingAmount() {
         let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
-        let result = await contract.runQuery(this._proxy, {
+        let result = await contract.runQuery(this._provider.proxy, {
             func: new ContractFunction("getPingAmount"),
             args: []
         });
-        let decoded = Codec.decodeTopLevel(new Buffer(result.returnData), new BigUIntType());
-        return decoded.valueOf().toNumber();
+        let decoded = Codec.decodeTopLevel(new Buffer(result.outputUntyped()[0]), new BigUIntType());
+        console.log("getPingAmount", decoded.valueOf())
+        return decoded.valueOf();
     }
 }
 

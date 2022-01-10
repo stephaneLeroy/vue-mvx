@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Ping pong smartcontract</h1>
+    <h1>Ping pong smartcontract ({{ pingEgldPrice }})</h1>
       <div class="pingpong__error">{{error ? error : ' '}}</div>
       <div class="pingpong">
           <div class="pingpong__left" :class="{ 'pingpong__left--animated': goLeft || goRight}"/>
@@ -15,6 +15,7 @@
 
 <script>
 import PingPongSC from './PingPongSC'
+import {Balance} from "@elrondnetwork/erdjs";
 
 export default {
     name: 'PingPong',
@@ -26,15 +27,28 @@ export default {
             goLeft: false,
             error: null,
             pingPong: null,
-            pingAmount: 0
+            pingAmount: 0,
+            hasPing: false
         }
     },
     mounted() {
-        this.pingPong = new PingPongSC(this.$erd.currentProvider, this.$erdProxy);
+        this.pingPong = new PingPongSC(this.$erd.providers, this.$erdProxy);
         this.pingPong.pingAmount().then((amount) => {
-            console.log("ping amount", amount);
             this.pingAmount = amount;
         });
+        this.pingPong.didUserPing(this.$erd.walletAddress).then((hasPing) => {
+            this.hasPing = hasPing;
+        })
+    },
+    computed: {
+      pingEgldPrice() {
+          if(this.pingAmount) {
+              let amount = Balance.egld(this.pingAmount.valueOf());
+              let denominated = amount.valueOf().shiftedBy(-amount.token.decimals).toFixed(2);
+              return `${denominated} ${amount.token.getTokenIdentifier()}`;
+          }
+          return '- EGLD';
+      }
     },
     methods: {
         logout() {
@@ -46,13 +60,11 @@ export default {
             this.pingPong.dateToPong(this.$erd.walletAddress);
 
             try {
-                let transaction = await this.pingPong.ping(this.$erd.walletAddress, this.pingAmount);
-
-                await this.$erd.transactionResult(transaction).then((transaction) => {
-                    if (!transaction.status.isSuccessful()) {
-                        throw new Error(`Transaction failed : ${transaction.getSmartContractResults().getImmediate().getReturnMessage()}`)
-                    }
-                })
+                 await this.pingPong.ping(this.$erd.walletAddress, this.pingAmount).then((transaction) => {
+                     if (!transaction.status.isSuccessful()) {
+                         throw new Error(`Transaction failed : ${transaction.getSmartContractResults().getImmediate().getReturnMessage()}`)
+                     }
+                 });
             } catch (error) {
                 this.goRight = false;
                 this.error = error.message;

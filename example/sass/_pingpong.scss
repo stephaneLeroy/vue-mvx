@@ -49,11 +49,11 @@
         margin-top:165px;
 
         &--goright {
-            -webkit-animation:bounce_ball_right 12s linear forwards;
+            -webkit-animation:bounce_ball_right 20s linear forwards;
         }
 
         &--goleft {
-            -webkit-animation:bounce_ball_left 12s linear forwards;
+            -webkit-animation:bounce_ball_left 20s linear forwards;
         }
     }
 }

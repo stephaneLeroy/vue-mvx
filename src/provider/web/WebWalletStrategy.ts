@@ -17,8 +17,12 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         this._lastStatus = undefined;
     }
 
-    name() {
+    id() {
         return "web-wallet";
+    }
+
+    name() {
+        return "Web Wallet";
     }
 
     provider() {

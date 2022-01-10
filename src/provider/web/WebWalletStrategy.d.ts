@@ -8,6 +8,7 @@ declare class WebWalletProviderStrategy implements IProviderStrategy {
     private _lastStatus?;
     private _storage;
     constructor(eventHandler: IProviderStrategyEventHandler, options: WebWalletOption);
+    id(): string;
     name(): string;
     provider(): WalletProvider;
     callbackReceived(url: string): void;

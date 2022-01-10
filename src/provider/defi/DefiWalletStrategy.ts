@@ -17,8 +17,12 @@ class DefiWalletProviderStrategy implements IProviderStrategy {
     this._lastStatus = undefined;
   }
 
-  name() {
+  id() {
     return "defi-wallet";
+  }
+
+  name() {
+      return "Defi Wallet";
   }
 
   provider() {

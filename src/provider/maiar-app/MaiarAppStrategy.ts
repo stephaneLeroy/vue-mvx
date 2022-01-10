@@ -45,8 +45,12 @@ class MaiarAppStrategy implements IProviderStrategy {
       this._connexionManager = new MaiarConnexionManager(this._walletConnect, options);
     }
 
-    name() {
+    id() {
       return "maiar-app";
+    }
+
+    name() {
+        return "Maiar App";
     }
 
     handleOnClientLogin() {

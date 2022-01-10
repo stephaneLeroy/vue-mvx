@@ -18,8 +18,12 @@ class LedgerProviderManager implements IProviderStrategy {
         this._hwProvider = new HWProvider(this._proxy);
     }
 
-    name() {
+    id() {
         return "ledger";
+    }
+
+    name() {
+        return "Ledger Wallet";
     }
 
     init() {
