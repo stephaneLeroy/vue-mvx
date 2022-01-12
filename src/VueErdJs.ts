@@ -6,6 +6,7 @@ export default class VueErdJs {
     private _store: VueErdJsStore;
     private _providers: Providers;
     private _explorerUrl: string;
+    private _test?:string
 
     constructor(providers: Providers, store: VueErdJsStore, explorerUrl: string) {
         this._store = store;
