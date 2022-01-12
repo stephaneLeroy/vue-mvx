@@ -31,8 +31,6 @@ export default function VueErdJsPlugin(Vue: typeof _Vue, options?: ProviderOptio
     const vueErdJs = new VueErdJs(providers, vueErdJsStore, options.explorer.url);
 
     Vue.prototype.$erd = vueErdJs;
-    Vue.prototype.$erdProxy = erdProxy;
-    Vue.prototype.$erdApi = erdApi;
     Vue.mixin({
         mounted() {
             vueErdJs.providers.init();

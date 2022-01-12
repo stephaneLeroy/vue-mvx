@@ -56,7 +56,7 @@ export default class VueErdJs {
     }
 
     get proxy() {
-        return this._providers.proxy;
+        return this.providers.proxy;
     }
 
     get api() {
