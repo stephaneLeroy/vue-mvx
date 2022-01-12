@@ -5,6 +5,7 @@ import {Address, NetworkConfig, ApiProvider, ProxyProvider} from "@elrondnetwork
 import Components from "./components";
 import {ProviderOption} from "./providers/config";
 import VueErdJs from "./VueErdJs";
+import { Transaction } from "@elrondnetwork/erdjs/out";
 
 const vueErdJsStore = new VueErdJsStore();
 export { vueErdJsStore }
@@ -26,14 +27,20 @@ export default function VueErdJsPlugin(Vue: typeof _Vue, options?: ProviderOptio
         () => {
             vueErdJsStore.state.$data.walletAddress = null;
             vueErdJsStore.state.$data.token = null;
+        },
+        (transaction: Transaction) => {
+            vueErdJsStore.$emit('transaction', transaction);
         });
 
     const vueErdJs = new VueErdJs(providers, vueErdJsStore, options.explorer.url);
 
     Vue.prototype.$erd = vueErdJs;
     Vue.mixin({
-        mounted() {
+        beforeCreate() {
             vueErdJs.providers.init();
+        },
+        beforeMount() {
+            vueErdJs.providers.onUrl(window.location);
         }
     })
 

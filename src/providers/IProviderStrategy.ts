@@ -7,6 +7,7 @@ interface IProviderStrategy {
   logout(): void;
   load(): void;
   provider(): IDappProvider;
+  onUrl?(url: Location): void;
 }
 
 export default IProviderStrategy;

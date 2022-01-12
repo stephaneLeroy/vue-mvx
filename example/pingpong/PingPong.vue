@@ -31,6 +31,15 @@ export default {
             hasPing: false
         }
     },
+    created() {
+        this.$erd.$on('transaction', (transaction) => {
+            console.log("transaction", transaction);
+            const trans = transaction[0];
+            if (!trans.status.isSuccessful()) {
+                this.error = `Transaction failed : ${trans.getSmartContractResults().getImmediate().getReturnMessage()}`;
+            }
+        })
+    },
     mounted() {
         this.pingPong = new PingPongSC(this.$erd.providers, this.$erdProxy);
         this.pingPong.pingAmount().then((amount) => {
@@ -60,14 +69,9 @@ export default {
             this.pingPong.dateToPong(this.$erd.walletAddress);
 
             try {
-                 await this.pingPong.ping(this.$erd.walletAddress, this.pingAmount).then((transaction) => {
-                     if (!transaction.status.isSuccessful()) {
-                         throw new Error(`Transaction failed : ${transaction.getSmartContractResults().getImmediate().getReturnMessage()}`)
-                     }
-                 });
+                 await this.pingPong.ping(this.$erd.walletAddress, this.pingAmount);
             } catch (error) {
                 this.goRight = false;
-                this.error = error.message;
             }
         },
         pong() {

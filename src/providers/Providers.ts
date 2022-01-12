@@ -7,6 +7,7 @@ import IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import IProviderStrategy from "./IProviderStrategy";
 import DefiWallet from "./defi/DefiWalletStrategy";
 import TransactionResult from "./TransactionResult";
+import {TransactionHash} from "@elrondnetwork/erdjs/out";
 
 const PROVIDER_STRATEGY_STORAGE = "vue-erdjs-strategy";
 
@@ -14,6 +15,7 @@ class Providers implements IProviderStrategyEventHandler {
     currentStrategy?: IProviderStrategy;
     private onLogin: Function;
     private onLogout: Function;
+    private onTransaction: Function;
     private _maiarApp: MaiarAppStrategy;
     private _ledger: LedgerStrategy;
     private _webWallet: WebWalletStrategy;
@@ -22,12 +24,13 @@ class Providers implements IProviderStrategyEventHandler {
     private _proxy: ProxyProvider;
     private _api: ApiProvider
 
-    constructor(proxy: ProxyProvider, api: ApiProvider, options: ProviderOption, onLogin: Function, onLogout: Function) {
+    constructor(proxy: ProxyProvider, api: ApiProvider, options: ProviderOption, onLogin: Function, onLogout: Function, onTransaction: Function) {
         this.currentStrategy = undefined;
         this._proxy = proxy;
         this._api = api;
         this.onLogin = onLogin;
         this.onLogout = onLogout;
+        this.onTransaction = onTransaction;
         this._maiarApp = new MaiarAppStrategy(this, proxy, options.maiar);
         this._ledger = new LedgerStrategy(this, proxy, options.ledger);
         this._webWallet = new WebWalletStrategy(this, options.webWallet);
@@ -39,6 +42,7 @@ class Providers implements IProviderStrategyEventHandler {
     async init() {
         if (!window || this.initialised) return;
 
+        console.log("Providers init!")
         this.initialised = true;
 
         let strategyStorage = window.localStorage.getItem(PROVIDER_STRATEGY_STORAGE);
@@ -60,6 +64,12 @@ class Providers implements IProviderStrategyEventHandler {
 
         if (storedStrategy) {
             storedStrategy.load();
+        }
+    }
+
+    onUrl(url: Location) {
+        if(this.currentStrategy && this.currentStrategy.onUrl) {
+            this.currentStrategy.onUrl(url);
         }
     }
 
@@ -109,9 +119,12 @@ class Providers implements IProviderStrategyEventHandler {
         return this.signAndSend(transaction).then((result) => this.transactionResult(result));
     }
 
-    signAndSend(transaction: Transaction) {
+    async signAndSend(transaction: Transaction) {
         if (!this.currentProvider) {
             throw new Error("No available provider");
+        }
+        if(this.currentStrategy instanceof WebWalletStrategy) {
+            return this.currentProvider.sendTransaction(transaction);
         }
         return this.currentProvider.signTransaction(transaction).then((transaction) => {
             return transaction.send(this._proxy).then(() => transaction);
@@ -119,7 +132,10 @@ class Providers implements IProviderStrategyEventHandler {
     }
 
     transactionResult(transaction: Transaction) {
-        return new TransactionResult(transaction, this._proxy, this._api).watch();
+        return new TransactionResult(transaction.getHash(), this._proxy, this._api).watch().then((transaction) => {
+            this.onTransaction(transaction);
+            return transaction;
+        });
     }
 
     handleLoginStart(provider: IProviderStrategy) {
@@ -143,6 +159,14 @@ class Providers implements IProviderStrategyEventHandler {
         window.localStorage.removeItem(PROVIDER_STRATEGY_STORAGE);
         this.currentStrategy = undefined;
         this.onLogout();
+    }
+
+    handleTransaction(transaction: { status: string, txHash: string}) {
+        new TransactionResult(new TransactionHash(transaction.txHash), this._proxy, this._api)
+            .watch()
+            .then((transaction) => {
+                this.onTransaction(transaction);
+            })
     }
 
 }

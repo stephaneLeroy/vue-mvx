@@ -30,8 +30,8 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         return this._webWallet;
     }
 
-    callbackReceived(url: string) {
-        const urlSearchParams = new URLSearchParams(url);
+    callbackReceived(url: Location) {
+        const urlSearchParams = new URLSearchParams(url.toString());
 
         const address = urlSearchParams.get('address');
         const token = urlSearchParams.get('token');
@@ -65,6 +65,15 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         let stored = this._storage.get();
         if (stored) {
             this._eventHandler.handleLogin(this, new Address(stored.wallet), stored.token);
+        }
+    }
+
+    onUrl(url: Location) {
+        const urlSearchParams = new URLSearchParams(url.search);
+        const status = urlSearchParams.get('status');
+        const txHash = urlSearchParams.get('txHash');
+        if(status && txHash) {
+            this._eventHandler.handleTransaction({ status, txHash });
         }
     }
 }

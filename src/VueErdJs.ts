@@ -1,6 +1,7 @@
 import {Transaction} from "@elrondnetwork/erdjs";
 import VueErdJsStore from "./VueErdJsStore";
 import Providers from "./providers/Providers";
+import Vue from "vue";
 
 export default class VueErdJs {
     private _store: VueErdJsStore;
@@ -69,6 +70,18 @@ export default class VueErdJs {
 
     explorerTransactionUrl(transaction: Transaction) {
         return `${this._explorerUrl}/transactions/${transaction.getHash()}`;
+    }
+
+    $on(event: string | string[], callback: Function): Vue {
+        return this._store.$on(event, callback);
+    }
+
+    $once(event: string | string[], callback: Function): Vue {
+        return this._store.$once(event, callback);
+    }
+
+    $off(event?: string | string[], callback?: Function): Vue {
+        return this._store.$off(event, callback);
     }
 }
 
