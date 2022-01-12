@@ -1,9 +1,6 @@
-import { ApiProvider, ProxyProvider } from "@elrondnetwork/erdjs";
+import _Vue from "vue";
+import VueErdJsStore from './VueErdJsStore';
 import { ProviderOption } from "./providers/config";
-declare const _default: {
-    isLogged(): boolean;
-    erdProxy(): ProxyProvider;
-    erdApi(): ApiProvider;
-    install(Vue: any, options: ProviderOption): void;
-};
-export default _default;
+declare const vueErdJsStore: VueErdJsStore;
+export { vueErdJsStore };
+export default function VueErdJsPlugin(Vue: typeof _Vue, options?: ProviderOption): void;

@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import VueErdjs from '../../src'
 import Home from '../home/Home.vue'
 import VueErdjsConnect from "../../src/components/VueErdjsConnect";
 import PingPong from "../pingpong/PingPong";
 import CustomQRCodeHandler from "./CustomQRCodeHandler";
+import { vueErdJsStore } from '../../src'
 
 Vue.use(VueRouter)
 
@@ -39,7 +39,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     if (!to.matched.some(record => record.meta.requiresAuth)) {
         next();
-    } else if (!VueErdjs.isLogged()) {
+    } else if (!vueErdJsStore.logged) {
         next({
             path: '/authenticate',
             query: {fromUrl: to.fullPath}

@@ -1,6 +1,6 @@
 import qrcodeOptions from './qrcode-style';
 import QRCodeStyling from 'qr-code-styling';
-import { IQRCodeHandler } from "../../src/components/maiar/IQRCodeHandler";
+import { IQRCodeHandler } from "../../src";
 require('../assets/elrond-logo.png');
 
 class CustomQRCodeHandler implements IQRCodeHandler {

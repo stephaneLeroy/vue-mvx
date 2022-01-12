@@ -1,11 +1,11 @@
 import { Transaction } from "@elrondnetwork/erdjs";
-import ElrondVueStore from "./ElrondVueStore";
+import VueErdJsStore from "./VueErdJsStore";
 import Providers from "./providers/Providers";
 export default class VueErdJs {
     private _store;
     private _providers;
     private _explorerUrl;
-    constructor(providers: Providers, store: ElrondVueStore, explorerUrl: string);
+    constructor(providers: Providers, store: VueErdJsStore, explorerUrl: string);
     get logged(): boolean;
     get walletAddress(): any;
     get token(): any;

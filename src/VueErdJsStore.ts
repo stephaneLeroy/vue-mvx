@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-class ElrondVueStore {
+class VueErdJsStore {
     state: Vue;
 
     constructor() {
@@ -12,6 +12,9 @@ class ElrondVueStore {
         });
     }
 
+    get logged() {
+        return this.walletAddress != null
+    }
     get walletAddress() {
         return this.state.$data.walletAddress;
     }
@@ -22,4 +25,4 @@ class ElrondVueStore {
 
 }
 
-export default ElrondVueStore;
+export default VueErdJsStore;

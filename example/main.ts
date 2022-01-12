@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router/index';
-import ElronVue from '../src'
+import VueErdJsPlugin from '../src'
 
-Vue.use(ElronVue, {
+Vue.use(VueErdJsPlugin, {
   api: {
     url: "https://devnet-api.elrond.com",
     timeout: 2000
