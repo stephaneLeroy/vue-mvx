@@ -6,7 +6,6 @@ export default class VueErdJs {
     private _store: VueErdJsStore;
     private _providers: Providers;
     private _explorerUrl: string;
-    private _test?:string
 
     constructor(providers: Providers, store: VueErdJsStore, explorerUrl: string) {
         this._store = store;
@@ -54,6 +53,14 @@ export default class VueErdJs {
 
     get providers() {
         return this._providers;
+    }
+
+    get proxy() {
+        return this._providers.proxy;
+    }
+
+    get api() {
+        return this.providers.api;
     }
 
     logout() {

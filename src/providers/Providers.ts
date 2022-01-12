@@ -91,6 +91,10 @@ class Providers implements IProviderStrategyEventHandler {
         return this._proxy;
     }
 
+    get api() {
+        return this._api;
+    }
+
     logout() {
         if (this.currentStrategy) {
             this.currentStrategy.logout();
