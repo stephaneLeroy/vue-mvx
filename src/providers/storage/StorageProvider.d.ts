@@ -1,4 +1,4 @@
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 declare class StorageProvider {
     private _key;
     constructor(key: string);

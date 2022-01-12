@@ -3,7 +3,7 @@ import IProviderStrategy from "../IProviderStrategy";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import {DefiWalletOption} from "../config";
 import StorageProvider from "../storage/StorageProvider";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 class DefiWalletProviderStrategy implements IProviderStrategy {
   private _eventHandler: IProviderStrategyEventHandler;

@@ -4,7 +4,7 @@ import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import {Address, ProxyProvider} from "@elrondnetwork/erdjs";
 import {LedgerOption} from "../config";
 import StorageProvider from "../storage/StorageProvider";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 class LedgerProviderManager implements IProviderStrategy {
     private _eventHandler: IProviderStrategyEventHandler;
