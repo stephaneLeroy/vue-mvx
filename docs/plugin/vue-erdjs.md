@@ -58,6 +58,7 @@ const router = new VueRouter({
 ```
 
 You can check if a user is logged before enter a route.
+
 ```
 ...
 import { vueErdJsStore, VueErdjsConnect } from 'vue-erdjs'
@@ -129,12 +130,15 @@ You have 2 way to configure the plugin.
   * ElrondEnvEnum.DEVNET
   * ElrondEnvEnum.TESTNET
   * ElrondEnvEnum.MAINNET
+
 ```
 import VueErdJsPlugin, {ElrondEnvEnum, providersOptions} from 'vue-erdjs'
 
 Vue.use(VueErdJsPlugin, providersOptions(ElrondEnvEnum.DEVNET));
 ```
+
 * Provide all parameters :
+
 ```
 {
     "api": {
