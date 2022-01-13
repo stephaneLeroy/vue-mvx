@@ -5,4 +5,5 @@ import WebWalletLogin from './web/WebWalletLogin';
 import DefiWalletLogin from './defi/DefiWalletLogin';
 import WebWalletCallback from './web/WebWalletCallback';
 
+export { VueErdjsConnect };
 export default [VueErdjsConnect, MaiarLogin, LedgerLogin, WebWalletLogin, DefiWalletLogin, WebWalletCallback];

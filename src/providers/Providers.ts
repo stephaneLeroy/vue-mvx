@@ -1,13 +1,12 @@
 import MaiarAppStrategy from './maiar-app/MaiarAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
 import WebWalletStrategy from './web/WebWalletStrategy';
-import {Address, ProxyProvider, ApiProvider, Transaction} from "@elrondnetwork/erdjs";
-import {ProviderOption} from "./config";
+import {TransactionHash, Address, ProxyProvider, ApiProvider, Transaction} from "@elrondnetwork/erdjs";
+import providersOptions, {ProviderOption} from "./config";
 import IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import IProviderStrategy from "./IProviderStrategy";
 import DefiWallet from "./defi/DefiWalletStrategy";
 import TransactionResult from "./TransactionResult";
-import {TransactionHash} from "@elrondnetwork/erdjs/out";
 
 const PROVIDER_STRATEGY_STORAGE = "vue-erdjs-strategy";
 
@@ -171,4 +170,5 @@ class Providers implements IProviderStrategyEventHandler {
 
 }
 
+export { providersOptions };
 export default Providers;

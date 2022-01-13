@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../home/Home.vue'
-import VueErdjsConnect from "../../src/components/VueErdjsConnect";
 import PingPong from "../pingpong/PingPong";
 import CustomQRCodeHandler from "./CustomQRCodeHandler";
-import { vueErdJsStore } from '../../src'
+import {vueErdJsStore, VueErdjsConnect} from '../../src'
 
 Vue.use(VueRouter)
 

@@ -1,4 +1,4 @@
-import {Transaction} from "@elrondnetwork/erdjs";
+import { Transaction } from "@elrondnetwork/erdjs";
 import VueErdJsStore from "./VueErdJsStore";
 import Providers from "./providers/Providers";
 import Vue from "vue";

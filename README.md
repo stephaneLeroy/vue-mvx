@@ -1,18 +1,30 @@
-# vue-erdjs
-
-> erdjs (Elrond javascript SDK) integration for vuejs
+<div align="center">
+  <h1>Vue ErdJS Plugin</h1>
+  <p>This VueJS plugin provide erdjs (Elrond javascript SDK) integration for your Dapp</p>
+  <p>
+    <a href="https://npmcharts.com/compare/vue-erdjs?minimal=true" alt="NPM weekly downloads">
+      <img src="https://badgen.net/npm/dw/vue-erdjs">
+    </a>
+    <a href="https://www.npmtrends.com/vue-erdjs" alt="NPM total downloads">
+      <img src="https://badgen.net/npm/dt/vue-erdjs">
+    </a>
+    <a href="https://npmjs.com/filemanager-webpack-plugin" alt="NPM version">
+      <img src="https://badgen.net/npm/v/vue-erdjs">
+    </a>
+  </p>
+</div>
 
 > Library is now in release candidate (You are welcome if you want to help)
-
-![](docs/authenticate.png)
+>
+![](_docs/authenticate.png)
 
 [Go to the demo](https://stephaneleroy.github.io/vue-erdjs/authenticate)
 
-You can find this DApp example in [example folder](example).
+You can find a DApp example in [example folder](https://github.com/stephaneLeroy/vue-erdjs/tree/master/example).
 
 ## Getting started with the plugin
 
-You can find the documentation [here](docs/vue-erdjs.md)
+You can find documentation [here](https://stephaneleroy.github.io/vue-erdjs/plugin/vue-erdjs.html)
 
 ## Getting started for developers
 
@@ -43,5 +55,7 @@ npm run build
 - [x] Factorize webpack configuration
 - [x] Publish DApp example on github page
 - [x] release candidate :tada:
-- [ ] Parameters, library and styling documentation
+- [x] Parameters, library
+- [ ] Styling documentation
+- [ ] Vue3 /next branch and compatibility
 - [ ] Vuex support

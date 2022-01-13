@@ -60,9 +60,6 @@ export default {
       }
     },
     methods: {
-        logout() {
-            this.$erd.logout();
-        },
         async ping() {
             this.goLeft = false;
             this.goRight = true;

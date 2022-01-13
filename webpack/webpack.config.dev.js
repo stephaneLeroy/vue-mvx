@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const {merge} = require("webpack-merge")
 const common = require("./webpack.config.common")
 const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 const webpack_config = merge(common,
     {
@@ -21,6 +23,26 @@ const webpack_config = merge(common,
                 title: 'Vue Erd example App',
                 template: path.resolve(__dirname, '../example/template.html'),
                 showErrors: true
+            }),
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: "src/_docs/",
+                        to: "plugin/"
+                    }
+                ],
+            }),
+            new FileManagerPlugin({
+                events: {
+                    onEnd: [{
+                        copy: [
+                            {
+                                source: 'docs/index.html',
+                                destination: 'docs/404.html'
+                            }
+                        ]
+                    }]
+                }
             })
         ],
         devServer: {

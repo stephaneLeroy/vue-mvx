@@ -1,0 +1,23 @@
+{
+    "api": {
+        "url": "https://testnet-api.elrond.com",
+        "timeout": 2000
+    },
+    "proxy": {
+        "url": "https://testnet-gateway.elrond.com",
+        "timeout": 2000
+    },
+    "explorer": {
+        "url": "https://testnet-explorer.elrond.com"
+    },
+    "maiar": {
+        "walletConnectBridgeUrl": "https://bridge.walletconnect.org",
+        "walletConnectDeepLink": "https://maiar.page.link/?apn=com.elrond.maiar.wallet&isi=1519405832&ibi=com.elrond.maiar.wallet.dev&link=https://maiar.com/",
+        "heartbeatInterval": 5000,
+        "heartbeatEnabled": false,
+        "connexionTimeout": 30000
+    },
+    "webWallet": {
+        "url": "https://testnet-wallet.elrond.com"
+    }
+}

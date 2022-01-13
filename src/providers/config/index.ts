@@ -73,4 +73,24 @@ class ProviderOption {
 
 }
 
-export { ProviderOption, MaiarAppOption, LedgerOption, WebWalletOption, DefiWalletOption, ProxyOption, ApiOption, ExplorerOption };
+enum ElrondEnvEnum {
+    DEVNET,
+    TESTNET,
+    MAINNET
+}
+const devnet = require('./devnet-config.json');
+const testnet = require('./testnet-config.json');
+const mainnet = require('./mainnet-config.json');
+
+export { ProviderOption, MaiarAppOption, LedgerOption, WebWalletOption, DefiWalletOption, ProxyOption, ApiOption, ExplorerOption, ElrondEnvEnum };
+export default (env: ElrondEnvEnum) => {
+    switch (env) {
+        case ElrondEnvEnum.MAINNET:
+            return new ProviderOption(mainnet);
+        case ElrondEnvEnum.TESTNET:
+            return new ProviderOption(testnet);
+        case ElrondEnvEnum.DEVNET:
+        default:
+            return new ProviderOption(devnet);
+    }
+}

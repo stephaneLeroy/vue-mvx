@@ -1,17 +1,16 @@
 import _Vue from "vue";
-import VueErdJsStore from './VueErdJsStore';
+import {Transaction, Address, ApiProvider, NetworkConfig, ProxyProvider} from "@elrondnetwork/erdjs";
 import Providers from "./providers/Providers";
-import {Address, NetworkConfig, ApiProvider, ProxyProvider} from "@elrondnetwork/erdjs";
-import Components from "./components";
-import {ProviderOption} from "./providers/config";
+import VueErdJsStore from './VueErdJsStore';
+import Components, { VueErdjsConnect } from "./components";
+import providerConfig, {ElrondEnvEnum, ProviderOption} from "./providers/config";
 import VueErdJs from "./VueErdJs";
-import { Transaction } from "@elrondnetwork/erdjs/out";
 
 const vueErdJsStore = new VueErdJsStore();
-export { vueErdJsStore }
+export { vueErdJsStore, ProviderOption, ElrondEnvEnum, VueErdjsConnect }
 export default function VueErdJsPlugin(Vue: typeof _Vue, options?: ProviderOption) {
     if(!options) {
-        options = new ProviderOption();
+        options = providerConfig(ElrondEnvEnum.DEVNET);
     }
     const erdApi = new ApiProvider(options.api.url, {timeout: options.api.timeout});
     const erdProxy = new ProxyProvider(options.proxy.url, {timeout: options.proxy.timeout});
