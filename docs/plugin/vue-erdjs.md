@@ -11,14 +11,14 @@ npm install vue-erdjs @elrondnetwork/erdjs qrcode
 ```
 
 Add plugin to your Vue application (default configuration is on devnet)
-````
+```
 import VueErdJsPlugin from 'vue-erdjs'
 
 Vue.use(VueErdJsPlugin)
-````
+```
 
 Then you can simply add the vue-erdjs-connect component to your login page :
-````
+```
 <template>
     <div>
        <vue-erdjs-connect></vue-erdjs-connect>
@@ -31,13 +31,13 @@ export default {
     name: 'Login'
 }
 </script>
-````
+```
 You now have a Login page with all Elrond available wallet connexion types.
 
 ## Using vue-router
 
 You can add **vue-erdjs-connect** directly into vue-router configuration.
-````
+```
 import VueRouter from 'vue-router'
 import VueErdjsConnect from "vue-erdjs";
 
@@ -55,10 +55,10 @@ const router = new VueRouter({
     routes
 })
 ...
-````
+```
 
 You can check if a user is logged before enter a route.
-````
+```
 ...
 import { vueErdJsStore, VueErdjsConnect } from 'vue-erdjs'
 
@@ -97,7 +97,7 @@ router.beforeEach((to, from, next) => {
         next();
     }
 })
-````
+```
 
 ## Components tooling
 
@@ -129,13 +129,13 @@ You have 2 way to configure the plugin.
   * ElrondEnvEnum.DEVNET
   * ElrondEnvEnum.TESTNET
   * ElrondEnvEnum.MAINNET
-````
+```
 import VueErdJsPlugin, {ElrondEnvEnum, providersOptions} from 'vue-erdjs'
 
 Vue.use(VueErdJsPlugin, providersOptions(ElrondEnvEnum.DEVNET));
-````
+```
 * Provide all parameters :
-````
+```
 {
     "api": {
         "url": "https://devnet-api.elrond.com",
@@ -159,7 +159,7 @@ Vue.use(VueErdJsPlugin, providersOptions(ElrondEnvEnum.DEVNET));
         "url": "https://devnet-wallet.elrond.com"
     }
 }
-````
+```
 
 ## Customize styling
 
