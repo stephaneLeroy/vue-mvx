@@ -16,7 +16,7 @@
 
 > Library is now in release candidate (You are welcome if you want to help)
 >
-![](_docs/authenticate.png)
+![](src/_docs/authenticate.png)
 
 [Go to the demo](https://stephaneleroy.github.io/vue-erdjs/authenticate)
 
