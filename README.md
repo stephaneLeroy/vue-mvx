@@ -8,7 +8,7 @@
     <a href="https://www.npmtrends.com/vue-erdjs" alt="NPM total downloads">
       <img src="https://badgen.net/npm/dt/vue-erdjs">
     </a>
-    <a href="https://npmjs.com/filemanager-webpack-plugin" alt="NPM version">
+    <a href="https://npmjs.com/vue-erdjs" alt="NPM version">
       <img src="https://badgen.net/npm/v/vue-erdjs">
     </a>
   </p>
