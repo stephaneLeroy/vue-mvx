@@ -130,8 +130,8 @@ class Providers implements IProviderStrategyEventHandler {
         });
     }
 
-    transactionResult(transaction: Transaction) {
-        return new TransactionResult(transaction.getHash(), this._proxy, this._api).watch().then((transaction) => {
+    transactionResult(transaction: Transaction, delay:number=0) {
+        return new TransactionResult(transaction.getHash(), this._proxy, this._api, delay).watch().then((transaction) => {
             this.onTransaction(transaction);
             return transaction;
         });
