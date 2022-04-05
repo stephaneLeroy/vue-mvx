@@ -1,11 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../home/Home.vue'
-import PingPong from "../pingpong/PingPong";
+import PingPong from "../pingpong/PingPong.vue";
 import CustomQRCodeHandler from "./CustomQRCodeHandler";
 import {vueErdJsStore, VueErdjsConnect} from '../../src'
-
-Vue.use(VueRouter)
 
 const routes = [
     {
@@ -29,9 +26,8 @@ const routes = [
     }
 ]
 
-const router = new VueRouter({
-    mode: 'history',
-    base: '/vue-erdjs/',
+const router = createRouter({
+    history: createWebHistory('/vue-erdjs/'),
     routes
 })
 

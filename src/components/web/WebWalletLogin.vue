@@ -4,9 +4,11 @@
         @select-mode="login($event)"></vue-erdjs-tab>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent} from "vue";
 import VueErdjsTab from './../VueErdjsTab.vue';
-export default {
+
+export default defineComponent({
     name: 'WebWalletLogin',
     components: {
         VueErdjsTab
@@ -17,6 +19,7 @@ export default {
             type: String
         }
     },
+    emits: ['select-mode'],
     mounted() {
         this.$erd.webWallet.callbackReceived(window.location.search);
     },
@@ -27,5 +30,5 @@ export default {
             this.$erd.webWallet.login(options);
         }
     }
-}
+})
 </script>

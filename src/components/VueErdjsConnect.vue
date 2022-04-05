@@ -37,11 +37,13 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
+
 import VueErdjsTab from './VueErdjsTab.vue';
 import QRCodeDefaultHandler from "./maiar/QRCodeDefaultHandler";
 
-export default {
+export default defineComponent({
     components: { VueErdjsTab },
     name:"VueErdjsConnect",
     props: {
@@ -59,24 +61,21 @@ export default {
             selectedMode: ''
         }
     },
-    mounted() {
-        this.redirect();
-    },
     methods: {
-        redirect() {
+        redirect: async function() {
             if (this.$router && this.$erd.walletAddress && this.$route.query.fromUrl) {
-                this.$router.push(this.$route.query.fromUrl);
+                await this.$router.push(this.$route.params['fromUrl'].toString());
             }
         }
     },
     watch: {
-    "$erd.walletAddress": function(address) {
-      if(address != null){
+    '$erd.walletAddress'(address) {
+            if(address != null){
                 this.redirect();
             }
         }
     }
-}
+})
 </script>
 
 <style lang="scss">

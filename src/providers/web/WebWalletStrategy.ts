@@ -30,8 +30,8 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         return this._webWallet;
     }
 
-    callbackReceived(url: Location) {
-        const urlSearchParams = new URLSearchParams(url.toString());
+    callbackReceived(url: string) {
+        const urlSearchParams = new URLSearchParams(url);
 
         const address = urlSearchParams.get('address');
         const token = urlSearchParams.get('token');

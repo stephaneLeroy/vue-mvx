@@ -1,42 +1,28 @@
-import Vue from 'vue';
+import {Ref, ref} from "@vue/reactivity";
+import {Address} from "@elrondnetwork/erdjs";
 
 class VueErdJsStore {
-    state: Vue;
-
-    constructor() {
-        this.state = new Vue({
-            data: {
-                walletAddress: null,
-                token: null
-            }
-        });
-    }
+    private _walletAddress: Ref<Address | undefined > = ref();
+    private _token: Ref<String | undefined > = ref();
 
     get logged() {
-        return this.walletAddress != null
+        return this.walletAddress != undefined
     }
-    get walletAddress() {
-        return this.state.$data.walletAddress;
+
+    get walletAddress(): Address | undefined {
+        return this._walletAddress.value;
+    }
+
+    set walletAddress(walletAddress: Address | undefined)  {
+        this._walletAddress.value = walletAddress;
     }
 
     get token() {
-        return this.state.$data.token;
+        return this._token.value;
     }
 
-    $emit(event: string, ...args: any[]): Vue {
-        return this.state.$emit(event, args);
-    }
-
-    $on(event: string | string[], callback: Function): Vue {
-        return this.state.$on(event, callback);
-    }
-
-    $once(event: string | string[], callback: Function): Vue {
-        return this.state.$once(event, callback);
-    }
-
-    $off(event?: string | string[], callback?: Function): Vue {
-        return this.state.$off(event, callback);
+    set token(token: String | undefined) {
+        this._token.value = token
     }
 }
 

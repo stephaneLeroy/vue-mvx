@@ -1,3 +1,4 @@
+// @ts-ignore
 import qrcodeOptions from './qrcode-style';
 import QRCodeStyling from 'qr-code-styling';
 import { IQRCodeHandler } from "../../src";

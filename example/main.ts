@@ -1,12 +1,9 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router/index';
+import router from './router';
 import VueErdJsPlugin, {ElrondEnvEnum, providersOptions} from '../src'
 
-Vue.use(VueErdJsPlugin, providersOptions(ElrondEnvEnum.DEVNET));
-
-new Vue({
-  router,
-  el: '#app',
-  render: h => h(App)
-})
+const app = createApp(App);
+app.use(VueErdJsPlugin, providersOptions(ElrondEnvEnum.DEVNET));
+app.use(router);
+app.mount('#app');

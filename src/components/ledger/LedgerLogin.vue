@@ -28,8 +28,10 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent} from "vue";
+
+export default defineComponent({
     name: 'LedgerLogin',
     data () {
         return {
@@ -92,5 +94,5 @@ export default {
             this.$erd.ledger.login({ addressIndex: index, ...token })
         }
     }
-}
+})
 </script>

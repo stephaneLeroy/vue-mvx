@@ -32,6 +32,9 @@ class PingPongSC {
     }
 
     async didUserPing(wallet: Address) {
+        if(wallet == undefined) {
+            return true;
+        }
         let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
         let result = await contract.runQuery(this._provider.proxy, {
             func: new ContractFunction("didUserPing"),
@@ -43,6 +46,9 @@ class PingPongSC {
     }
 
     async dateToPong(wallet: Address) {
+        if(!wallet) {
+            return null;
+        }
         let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
         let result = await contract.runQuery(this._provider.proxy, {
             func: new ContractFunction("getTimeToPong"),
@@ -52,7 +58,7 @@ class PingPongSC {
         return result;
     }
 
-    async pingAmount() {
+    async pingAmount(): Promise<BigNumber> {
         let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
         let result = await contract.runQuery(this._provider.proxy, {
             func: new ContractFunction("getPingAmount"),

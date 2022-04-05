@@ -1,5 +1,5 @@
 var webpack = require('webpack')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const { VueLoaderPlugin } = require('vue-loader')
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
 
 module.exports = {
@@ -62,17 +62,12 @@ module.exports = {
         }
       },
       {
-        test: /\.tsx?$/,
+        test: /\.ts?$/,
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
           appendTsSuffixTo: [/\.vue$/],
         }
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -91,7 +86,7 @@ module.exports = {
       buffer: require.resolve("buffer")
     },
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue': '@vue/runtime-dom'
     },
     extensions: ['.ts', '.js', '.vue', '.json']
   },

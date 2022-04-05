@@ -13,11 +13,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent} from "vue";
 import PingPongSC from './PingPongSC'
 import {Balance} from "@elrondnetwork/erdjs";
+import {BigNumber} from "bignumber.js";
 
-export default {
+export default defineComponent({
     name: 'PingPong',
     data () {
         return {
@@ -25,23 +27,25 @@ export default {
             deepLink: null,
             goRight: false,
             goLeft: false,
-            error: null,
-            pingPong: null,
-            pingAmount: 0,
+            error: '',
+            pingPong: new PingPongSC(this.$erd.providers),
+            pingAmount: new BigNumber(0),
             hasPing: false
         }
     },
     created() {
-        this.$erd.$on('transaction', (transaction) => {
-            console.log("transaction", transaction);
-            const trans = transaction[0];
-            if (!trans.status.isSuccessful()) {
-                this.error = `Transaction failed : ${trans.getSmartContractResults().getImmediate().getReturnMessage()}`;
-            }
-        })
+        // TODO this.$erd.$on('transaction', (transaction) => {
+        //     console.log("transaction", transaction);
+        //     const trans = transaction[0];
+        //     if (!trans.status.isSuccessful()) {
+        //         this.error = `Transaction failed : ${trans.getSmartContractResults().getImmediate().getReturnMessage()}`;
+        //     }
+        // })
     },
     mounted() {
-        this.pingPong = new PingPongSC(this.$erd.providers, this.$erdProxy);
+        if(!this.$erd.walletAddress) {
+            return;
+        }
         this.pingPong.pingAmount().then((amount) => {
             this.pingAmount = amount;
         });
@@ -61,12 +65,15 @@ export default {
     },
     methods: {
         async ping() {
+            if(!this.$erd.walletAddress || !this.pingAmount) {
+                return;
+            }
             this.goLeft = false;
             this.goRight = true;
             this.pingPong.dateToPong(this.$erd.walletAddress);
 
             try {
-                 await this.pingPong.ping(this.$erd.walletAddress, this.pingAmount);
+                 await this.pingPong.ping(this.$erd.walletAddress, new BigNumber(0));
             } catch (error) {
                 this.goRight = false;
             }
@@ -76,5 +83,5 @@ export default {
           this.goLeft = true;
         }
     },
-}
+})
 </script>

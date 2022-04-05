@@ -13,8 +13,10 @@
     </button>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent} from "vue";
+
+export default defineComponent({
     data () {
         return {
             logos: {
@@ -39,6 +41,7 @@ export default {
             default: ''
         }
     },
+    emits: ['select-mode'],
     computed: {
         nameToClass () {
             return this.name.toLowerCase().replaceAll(' ','-');
@@ -53,5 +56,5 @@ export default {
             }
         }
     }
-}
+})
 </script>

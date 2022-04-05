@@ -21,8 +21,10 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent} from "vue";
+
+export default defineComponent({
     name: 'DefiWalletLogin',
     data () {
         return {
@@ -40,6 +42,7 @@ export default {
             type: String
         }
     },
+    emits: ['select-mode'],
     watch: {
         selectedMode (selectedMode) {
             console.log("Defi", selectedMode)
@@ -58,5 +61,5 @@ export default {
             this.$erd.defiWallet.login(options);
         }
     }
-}
+})
 </script>

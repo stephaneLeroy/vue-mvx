@@ -71,7 +71,7 @@ class MaiarAppStrategy implements IProviderStrategy {
       this.eventHandler.handleLogout(this);
     }
 
-    login(options?: { addressIndex?: number, callbackUrl?: string, token: string }): Promise<any> {
+    login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any> {
       return this._walletConnect.login().then((walletConnectUri) => {
         if (walletConnectUri) {
             if(options && options.token) {

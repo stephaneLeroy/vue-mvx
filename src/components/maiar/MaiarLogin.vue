@@ -14,11 +14,12 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent} from "vue";
 import platform from "platform";
 import QRCodeDefaultHandler from "./QRCodeDefaultHandler";
 
-export default {
+export default defineComponent({
     name: 'MaiarLogin',
     data () {
         return {
@@ -41,6 +42,7 @@ export default {
             type: String
         }
     },
+    emits: ['login'],
     watch: {
         selectedMode (selectedMode) {
             if ( selectedMode === 'Maiar' ) {
@@ -54,24 +56,22 @@ export default {
         isMobile() {
             return platform.os.family === "iOS" || platform.os.family === "Android";
         },
-        login() {
+        async login() {
             console.log("Maiar App Login")
             this.openContent = true;
             this.qrcode = null;
-            this.deepLink = null;
-            const that = this;
-            const options = this.token ? { token: this.token } : {}
-            this.$erd.maiarApp.login(options).then((loginData) => {
+            this.deeplink = null;
+            this.$erd.maiarApp.login({ token: this.token }).then((loginData) => {
                 console.log(loginData)
                 this.qrcodeHandler.handle(loginData.qrCodeData, this.$refs.qrcode).then((svg) => {
                     if(svg) {
                         this.qrcode = svg;
                     }
                 })
-                that.deeplink = loginData.deeplink;
-                that.$emit('login', loginData);
+                this.deeplink = loginData.deeplink;
+                //TODO : mitt this.$emit('login', loginData);
             });
         }
     }
-}
+})
 </script>
