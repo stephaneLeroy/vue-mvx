@@ -1,4 +1,4 @@
-import { IQRCodeHandler } from "./IQRCodeHandler";
+import type IQRCodeHandler from "./IQRCodeHandler";
 
 class QRCodeDefaultHandler implements IQRCodeHandler {
     async handle(data: string, element: HTMLElement): Promise<any> {

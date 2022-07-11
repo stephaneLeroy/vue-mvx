@@ -1,6 +1,6 @@
-import { Transaction } from "@elrondnetwork/erdjs";
-import VueErdJsStore from "./VueErdJsStore";
-import Providers from "./providers/Providers";
+import type {Transaction} from "@elrondnetwork/erdjs";
+import type VueErdJsStore from "./VueErdJsStore";
+import type Providers from "./providers/Providers";
 
 export default class VueErdJs {
     private _store: VueErdJsStore;

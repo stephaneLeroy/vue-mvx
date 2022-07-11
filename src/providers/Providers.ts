@@ -1,12 +1,12 @@
 import MaiarAppStrategy from './maiar-app/MaiarAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
 import WebWalletStrategy from './web/WebWalletStrategy';
-import {TransactionHash, Address, ProxyProvider, ApiProvider, Transaction} from "@elrondnetwork/erdjs";
+import {Address, Transaction, TransactionWatcher} from "@elrondnetwork/erdjs";
+import type {ApiNetworkProvider, ProxyNetworkProvider, NetworkConfig} from "@elrondnetwork/erdjs-network-providers";
 import providersOptions, {ProviderOption} from "./config";
-import IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
-import IProviderStrategy from "./IProviderStrategy";
+import type IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
+import type IProviderStrategy from "./IProviderStrategy";
 import DefiWallet from "./defi/DefiWalletStrategy";
-import TransactionResult from "./TransactionResult";
 
 const PROVIDER_STRATEGY_STORAGE = "vue-erdjs-strategy";
 
@@ -20,18 +20,19 @@ class Providers implements IProviderStrategyEventHandler {
     private _webWallet: WebWalletStrategy;
     private _defiWallet: DefiWallet;
     private initialised: boolean;
-    private _proxy: ProxyProvider;
-    private _api: ApiProvider
+    private _proxy: ProxyNetworkProvider;
+    private _api: ApiNetworkProvider
+    private _networkConfig: NetworkConfig | undefined;
 
-    constructor(proxy: ProxyProvider, api: ApiProvider, options: ProviderOption, onLogin: Function, onLogout: Function, onTransaction: Function) {
+    constructor(proxy: ProxyNetworkProvider, api: ApiNetworkProvider, options: ProviderOption, onLogin: Function, onLogout: Function, onTransaction: Function) {
         this.currentStrategy = undefined;
         this._proxy = proxy;
         this._api = api;
         this.onLogin = onLogin;
         this.onLogout = onLogout;
         this.onTransaction = onTransaction;
-        this._maiarApp = new MaiarAppStrategy(this, proxy, options.maiar);
-        this._ledger = new LedgerStrategy(this, proxy, options.ledger);
+        this._maiarApp = new MaiarAppStrategy(this, options.maiar);
+        this._ledger = new LedgerStrategy(this, options.ledger);
         this._webWallet = new WebWalletStrategy(this, options.webWallet);
         this._defiWallet = new DefiWallet(this, options.defiWallet);
         this.initialised = false;
@@ -41,6 +42,9 @@ class Providers implements IProviderStrategyEventHandler {
     async init() {
         if (!window || this.initialised) return;
 
+        this._proxy.getNetworkConfig().then((config) => {
+            this._networkConfig = config;
+        })
         console.log("Providers init!")
         this.initialised = true;
 
@@ -67,13 +71,13 @@ class Providers implements IProviderStrategyEventHandler {
     }
 
     onUrl(url: Location) {
-        if(this.currentStrategy && this.currentStrategy.onUrl) {
+        if (this.currentStrategy && this.currentStrategy.onUrl) {
             this.currentStrategy.onUrl(url);
         }
     }
 
     get currentProvider() {
-        return this.currentStrategy?.provider();
+        return this.currentStrategy;
     }
 
     get currentProviderName() {
@@ -104,6 +108,13 @@ class Providers implements IProviderStrategyEventHandler {
         return this._api;
     }
 
+    get chainID() {
+        if (!this._networkConfig) {
+            throw new Error('Network config not initialized')
+        }
+        return this._networkConfig.ChainID;
+    }
+
     logout() {
         if (this.currentStrategy) {
             this.currentStrategy.logout();
@@ -115,33 +126,33 @@ class Providers implements IProviderStrategyEventHandler {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
-        return this.signAndSend(transaction).then((result) => this.transactionResult(result));
+        return this.signAndSend(transaction).then((result) => {
+            return this.transactionResult(transaction)
+        });
     }
 
     async signAndSend(transaction: Transaction) {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
-        if(this.currentStrategy instanceof WebWalletStrategy) {
-            return this.currentProvider.sendTransaction(transaction);
+        if (this.currentStrategy instanceof WebWalletStrategy) {
+            return this._proxy.sendTransaction(transaction);
         }
-        return this.currentProvider.signTransaction(transaction).then((transaction) => {
-            return transaction.send(this._proxy).then(() => transaction);
+        return this.currentProvider.signTransaction(transaction).then(() => {
+            return this._api.sendTransaction(transaction).then(() => transaction);
         });
     }
 
-    transactionResult(transaction: Transaction, delay:number=0) {
-        return new TransactionResult(transaction.getHash(), this._proxy, this._api, delay).watch().then((transaction) => {
-            this.onTransaction(transaction);
-            return transaction;
-        });
+    async transactionResult(transaction: Transaction, pollingInterval: number = 0, timeout = 60) {
+        const watcher = new TransactionWatcher(this._proxy, pollingInterval, timeout)
+        await watcher.awaitCompleted(transaction)
     }
 
     handleLoginStart(provider: IProviderStrategy) {
         console.log("Login start", provider);
     }
 
-    handleLogin(provider: IProviderStrategy, address: Address, token?:string) {
+    handleLogin(provider: IProviderStrategy, address: Address, token?: string) {
         console.log("Login", provider, address, token);
         window.localStorage.setItem(PROVIDER_STRATEGY_STORAGE, JSON.stringify({name: provider.id()}));
         this.currentStrategy = provider;
@@ -160,15 +171,15 @@ class Providers implements IProviderStrategyEventHandler {
         this.onLogout();
     }
 
-    handleTransaction(transaction: { status: string, txHash: string}) {
-        new TransactionResult(new TransactionHash(transaction.txHash), this._proxy, this._api)
-            .watch()
-            .then((transaction) => {
-                this.onTransaction(transaction);
-            })
+    handleTransaction(transaction: { status: string, txHash: string }) {
+        //TODO new TransactionResult(new TransactionHash(transaction.txHash), this._proxy, this._api)
+        //    .watch()
+        //    .then((transaction) => {
+        //        this.onTransaction(transaction);
+        //    })
     }
 
 }
 
-export { providersOptions };
+export {providersOptions};
 export default Providers;

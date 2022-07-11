@@ -2,17 +2,24 @@
     <span></span>
 </template>
 
-<script lang="ts">
-import { defineComponent} from "vue";
+<script lang="ts" setup>
+import {defineEmits, inject, onMounted} from "vue";
+import type VueErdJs from "@/VueErdJs";
 
-export default defineComponent({
-    name: 'WebWalletCallback',
-    emits: ['logged'],
-    mounted() {
-        this.$erd.webWallet.callbackReceived(window.location.search);
-        if (this.$erd.logged) {
-            this.$emit('logged', {address: this.$erd.walletAddress, token: this.$erd.token})
-        }
-    },
+const emit = defineEmits<{
+    (event: 'logged', param: Object): void
+}>()
+
+const erdJS = inject<VueErdJs>('$erd');
+
+onMounted(() => {
+    if (!erdJS) {
+        throw new Error('ErdJs instance not provided');
+    }
+    erdJS.webWallet.callbackReceived(window.location.search);
+    if (erdJS.logged) {
+        emit('logged', {address: erdJS.walletAddress, token: erdJS.token})
+    }
 })
+
 </script>

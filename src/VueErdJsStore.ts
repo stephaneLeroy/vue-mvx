@@ -1,9 +1,10 @@
-import {Ref, ref} from "@vue/reactivity";
-import {Address} from "@elrondnetwork/erdjs";
+import {ref} from "@vue/reactivity";
+import type {Ref} from "@vue/reactivity";
+import type {Address} from "@elrondnetwork/erdjs";
 
 class VueErdJsStore {
-    private _walletAddress: Ref<Address | undefined > = ref();
-    private _token: Ref<String | undefined > = ref();
+    private _walletAddress: Ref<Address | undefined> = ref();
+    private _token: Ref<String | undefined> = ref();
 
     get logged() {
         return this.walletAddress != undefined
@@ -13,7 +14,7 @@ class VueErdJsStore {
         return this._walletAddress.value;
     }
 
-    set walletAddress(walletAddress: Address | undefined)  {
+    set walletAddress(walletAddress: Address | undefined) {
         this._walletAddress.value = walletAddress;
     }
 

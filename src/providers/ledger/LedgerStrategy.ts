@@ -1,22 +1,20 @@
-import {HWProvider} from "@elrondnetwork/erdjs";
-import IProviderStrategy from "../IProviderStrategy";
-import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
-import {Address, ProxyProvider} from "@elrondnetwork/erdjs";
-import {LedgerOption} from "../config";
+import {HWProvider} from "@elrondnetwork/erdjs-hw-provider";
+import type IProviderStrategy from "../IProviderStrategy";
+import type IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
+import {Address, Transaction} from "@elrondnetwork/erdjs";
+import type {LedgerOption} from "../config";
 import StorageProvider from "../storage/StorageProvider";
 import dayjs from "dayjs";
 
 class LedgerProviderManager implements IProviderStrategy {
     private _eventHandler: IProviderStrategyEventHandler;
-    private _proxy: ProxyProvider;
     private _hwProvider: HWProvider;
     private _storage = new StorageProvider('ledger-strategy');
     private _timeoutInMinutes = 30;
 
-    constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: LedgerOption) {
+    constructor(eventHandler: IProviderStrategyEventHandler, options: LedgerOption) {
         this._eventHandler = eventHandler;
-        this._proxy = proxy;
-        this._hwProvider = new HWProvider(this._proxy);
+        this._hwProvider = new HWProvider();
     }
 
     id() {
@@ -60,7 +58,7 @@ class LedgerProviderManager implements IProviderStrategy {
             });
     }
 
-    standardLogin(addressIndex: number): Promise<any>{
+    standardLogin(addressIndex: number): Promise<any> {
         return this._hwProvider.login({addressIndex})
             .then((address) => {
                 this._storage.set({
@@ -77,7 +75,7 @@ class LedgerProviderManager implements IProviderStrategy {
     tokenLogin(addressIndex: number, token: string): Promise<any> {
         const that = this;
         return this._hwProvider.tokenLogin({token: Buffer.from(`${token}{}`)})
-            .then(({ address, signature }) => {
+            .then(({address, signature}) => {
                 let signedToken = signature.hex();
                 this._storage.set({
                     wallet: address,
@@ -111,6 +109,10 @@ class LedgerProviderManager implements IProviderStrategy {
 
     provider() {
         return this._hwProvider;
+    }
+
+    signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<void> {
+        return this.signTransaction(transaction, options)
     }
 }
 

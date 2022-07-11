@@ -5,7 +5,7 @@
         <div
             class="vue3rdj5__mode-error"
             v-if="error">
-            {{error}}
+            {{ error }}
         </div>
         <div v-else class="vue3rdj5__infos">
             <p class="vue3rdj5__infos-txt">
@@ -15,51 +15,54 @@
                 If Nothing happen, you migth not have installed the Maiar Defi Wallet Extension.
             </p>
             <p class="vue3rdj5__infos-txt">
-                You can download it <a class="vue3rdj5__infos-link" href="https://chrome.google.com/webstore/detail/maiar-defi-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm">here</a>
+                You can download it <a class="vue3rdj5__infos-link"
+                                       href="https://chrome.google.com/webstore/detail/maiar-defi-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm">here</a>
             </p>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent} from "vue";
+<script lang="ts" setup>
+import {defineEmits, defineProps, inject, watchEffect} from "vue";
+import {ref} from "@vue/reactivity";
+import type VueErdJs from "@/VueErdJs";
 
-export default defineComponent({
-    name: 'DefiWalletLogin',
-    data () {
-        return {
-            error: null,
-            openContent: false
+const error = ref();
+const openContent = ref(false);
+
+const props = defineProps({
+    selectedMode: {
+        type: String,
+        default: () => {
+            return ''
         }
     },
-    props: {
-        selectedMode: {
-            type: String,
-            default: ''
-        },
-        token: {
-            require: false,
-            type: String
-        }
-    },
-    emits: ['select-mode'],
-    watch: {
-        selectedMode (selectedMode) {
-            console.log("Defi", selectedMode)
-            if ( selectedMode === 'Defi Wallet' ) {
-                this.login(selectedMode)
-                this.openContent = true;
-            } else {
-                this.openContent = false;
-            }
-        }
-    },
-    methods: {
-        login (name) {
-            this.$emit('select-mode', name);
-            const options = this.token ? { token: this.token, callbackUrl: window.location  } : {};
-            this.$erd.defiWallet.login(options);
-        }
+    token: {
+        require: false,
+        type: String
     }
 })
+
+const emit = defineEmits<{
+    (event: 'select-mode', mode: String): void
+}>()
+
+const erdJS = inject<VueErdJs>('$erd');
+if (!erdJS) {
+    throw new Error('Cannot load erdjs. Please check your configuration')
+}
+
+const login = (name: String) => {
+    emit('select-mode', name);
+    const options = props.token ? {token: props.token, callbackUrl: window.location.toString()} : {};
+    erdJS.defiWallet.login(options);
+}
+watchEffect(() => {
+    if (props.selectedMode === 'Defi Wallet') {
+        login(props.selectedMode)
+        openContent.value = true;
+    } else {
+        openContent.value = false;
+    }
+});
 </script>

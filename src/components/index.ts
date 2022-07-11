@@ -5,5 +5,12 @@ import WebWalletLogin from './web/WebWalletLogin.vue';
 import DefiWalletLogin from './defi/DefiWalletLogin.vue';
 import WebWalletCallback from './web/WebWalletCallback.vue';
 
-export { VueErdjsConnect };
-export default [VueErdjsConnect, MaiarLogin, LedgerLogin, WebWalletLogin, DefiWalletLogin, WebWalletCallback];
+export {VueErdjsConnect};
+export default new Map<string, Object>([
+    ["VueErdjsConnect", VueErdjsConnect],
+    ["MaiarLogin", MaiarLogin],
+    ["LedgerLogin", LedgerLogin],
+    ["DefiWalletLogin", DefiWalletLogin],
+    ["WebWalletLogin", WebWalletLogin],
+    ["WebWalletCallback", WebWalletCallback],
+]);

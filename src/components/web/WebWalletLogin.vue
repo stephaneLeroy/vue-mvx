@@ -4,31 +4,29 @@
         @select-mode="login($event)"></vue-erdjs-tab>
 </template>
 
-<script lang="ts">
-import { defineComponent} from "vue";
+<script lang="ts" setup>
+import {defineEmits, defineProps, inject} from "vue";
 import VueErdjsTab from './../VueErdjsTab.vue';
+import type VueErdJs from "@/VueErdJs";
 
-export default defineComponent({
-    name: 'WebWalletLogin',
-    components: {
-        VueErdjsTab
-    },
-    props: {
-        token: {
-            require: false,
-            type: String
-        }
-    },
-    emits: ['select-mode'],
-    mounted() {
-        this.$erd.webWallet.callbackReceived(window.location.search);
-    },
-    methods: {
-        login (name) {
-            this.$emit('select-mode', name);
-            const options = this.token ? { token: this.token } : {};
-            this.$erd.webWallet.login(options);
-        }
+const props = defineProps({
+    token: {
+        require: false,
+        type: String
     }
 })
+
+const emit = defineEmits<{
+    (event: 'select-mode', mode: String): void
+}>()
+
+const erdJS = inject<VueErdJs>('$erd');
+
+function login(name: String) {
+    emit('select-mode', name);
+    const options = props.token ? {token: props.token} : {};
+    if (erdJS) {
+        erdJS.webWallet.login(options);
+    }
+}
 </script>

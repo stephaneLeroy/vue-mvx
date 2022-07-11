@@ -1,7 +1,8 @@
-import {Address, WalletProvider} from "@elrondnetwork/erdjs";
-import IProviderStrategy from "../IProviderStrategy";
-import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
-import {WebWalletOption} from "../config";
+import {Address, Transaction} from "@elrondnetwork/erdjs";
+import {WalletProvider} from '@elrondnetwork/erdjs-web-wallet-provider';
+import type IProviderStrategy from "../IProviderStrategy";
+import type IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
+import type {WebWalletOption} from "../config";
 import StorageProvider from "../storage/StorageProvider";
 import dayjs from "dayjs";
 
@@ -36,7 +37,7 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         const address = urlSearchParams.get('address');
         const token = urlSearchParams.get('token');
         if (address) {
-            this._storage.set({ wallet: address, token: token  } , dayjs().add(this._timeoutInMinutes, 'minute'))
+            this._storage.set({wallet: address, token: token}, dayjs().add(this._timeoutInMinutes, 'minute'))
             this._eventHandler.handleLogin(this, new Address(address))
         }
 
@@ -72,9 +73,13 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         const urlSearchParams = new URLSearchParams(url.search);
         const status = urlSearchParams.get('status');
         const txHash = urlSearchParams.get('txHash');
-        if(status && txHash) {
-            this._eventHandler.handleTransaction({ status, txHash });
+        if (status && txHash) {
+            this._eventHandler.handleTransaction({status, txHash});
         }
+    }
+
+    signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<void> {
+        return this.signTransaction(transaction, options);
     }
 }
 

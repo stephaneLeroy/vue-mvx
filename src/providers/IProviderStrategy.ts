@@ -1,13 +1,21 @@
-import {IDappProvider} from "@elrondnetwork/erdjs";
+import type {Transaction} from "@elrondnetwork/erdjs";
 
 interface IProviderStrategy {
-  id(): string;
-  name(): string;
-  login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any>;
-  logout(): void;
-  load(): void;
-  provider(): IDappProvider;
-  onUrl?(url: Location): void;
+    id(): string;
+
+    name(): string;
+
+    login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any>;
+
+    logout(): void;
+
+    load(): void;
+
+    onUrl?(url: Location): void;
+
+    signTransaction(transaction: Transaction, options?: {
+        callbackUrl?: string;
+    }): Promise<void>;
 }
 
 export default IProviderStrategy;

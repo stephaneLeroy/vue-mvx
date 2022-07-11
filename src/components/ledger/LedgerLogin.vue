@@ -4,9 +4,9 @@
         v-if="openContent">
         <div
             class="vue3rdj5__mode-error"
-            v-if="error"
+            v-if="error !== ''"
             :error="error">
-            {{error}}
+            {{ error }}
         </div>
         <div v-else-if="accounts.length === 0" class="vue3rdj5__infos">
             <p class="vue3rdj5__infos-txt">Please connect and unlock your Ledger Wallet.</p>
@@ -28,71 +28,80 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent} from "vue";
+<script lang="ts" setup>
+import {defineProps, inject, reactive, watchEffect} from "vue";
+import {ref} from "@vue/reactivity";
+import type VueErdJs from "@/VueErdJs";
 
-export default defineComponent({
-    name: 'LedgerLogin',
-    data () {
-        return {
-            startIndex: 0,
-            accounts: [],
-            error: null,
-            openContent: false
+const startIndex = ref(0);
+const accounts = ref([] as string[]);
+const error = ref('');
+const openContent = ref(true);
+
+const props = defineProps({
+    addressPageSize: {
+        type: Number,
+        default: 5
+    },
+    selectedMode: {
+        type: String,
+        default: () => {
+            return ''
         }
     },
-    props: {
-        addressPageSize: {
-            type: Number,
-            default: 5
-        },
-        selectedMode: {
-            type: String,
-            default: ''
-        },
-        token: {
-            require: false,
-            type: String
-        }
-    },
-    watch: {
-        selectedMode (selectedMode) {
-            if ( selectedMode === 'Ledger' ) {
-                this.fetchAccounts();
-            } else {
-                this.openContent = false;
-            }
-        }
-    },
-    methods: {
-        async fetchAccounts() {
-            this.openContent = true;
-            this.error = null;
-            this.accounts.splice(0);
-            this.accounts = await this.$erd.ledger.accounts(this.startIndex, this.startIndex + this.addressPageSize).catch((error) => {
-                this.error = "Error while trying to read your Ledger wallet. " +
-                    "Please make sure you have unlock it and that your Elrond app is opened";
-                return [];
-            });
-        },
-        next() {
-            this.startIndex = this.startIndex + this.addressPageSize;
-            this.fetchAccounts();
-        },
-        previous() {
-            if (this.startIndex == 0) {
-                return;
-            }
-            this.startIndex=this.startIndex - this.addressPageSize;
-            if(this.startIndex <= 0) {
-                this.startIndex = 0;
-            }
-            this.fetchAccounts();
-        },
-        login(index) {
-            const token = this.token ? { token: this.token } : {}
-            this.$erd.ledger.login({ addressIndex: index, ...token })
-        }
+    token: {
+        require: false,
+        type: String
     }
 })
+
+const erdJS = inject<VueErdJs>('$erd');
+if (!erdJS) {
+    throw new Error('Cannot load erdjs. Please check your configuration')
+}
+
+watchEffect(() => {
+    if (props.selectedMode === 'Ledger') {
+        fetchAccounts();
+    } else {
+        openContent.value = true;
+    }
+});
+
+const fetchAccounts = async () => {
+    openContent.value = true;
+    error.value = '';
+    accounts.value.splice(0);
+    const fetchedAccounts = await erdJS.ledger.accounts(startIndex.value, startIndex.value + props.addressPageSize)
+        .catch(() => {
+            error.value = "Error while trying to read your Ledger wallet. " +
+                "Please make sure you have unlock it and that your Elrond app is opened";
+            return [];
+        })
+    fetchedAccounts.forEach(account => {
+        accounts.value.push(account)
+    })
+}
+
+const next = () => {
+    startIndex.value = startIndex.value + props.addressPageSize;
+    fetchAccounts();
+}
+
+const previous = () => {
+    if (startIndex.value == 0) {
+        return;
+    }
+    startIndex.value = startIndex.value - props.addressPageSize;
+    if (startIndex.value <= 0) {
+        startIndex.value = 0;
+    }
+    fetchAccounts();
+}
+
+const login = (index: number) => {
+    const token = props.token ? {token: props.token} : {}
+    erdJS.ledger.login({addressIndex: index, ...token})
+}
+
 </script>

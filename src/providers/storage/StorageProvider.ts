@@ -9,12 +9,12 @@ class StorageProvider {
 
     get() {
         let item = localStorage.getItem(this._key);
-        if(!item) {
+        if (!item) {
             return;
         }
 
         let stored = JSON.parse(item);
-        if(stored.expire == 0 || dayjs().isBefore(dayjs(stored.expire))) {
+        if (stored.expire == 0 || dayjs().isBefore(dayjs(stored.expire))) {
             return stored.data;
         }
         this.clear();

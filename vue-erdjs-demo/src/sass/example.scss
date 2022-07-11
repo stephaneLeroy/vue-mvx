@@ -1,0 +1,21 @@
+@import './reset';
+@import './palette';
+@import './menu';
+@import './pingpong';
+
+body {
+    background-color: $baby-powder;
+    font-family: sans-serif;
+    line-height: 1;
+}
+
+.main {
+    &__content {
+        padding: 20px;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}
