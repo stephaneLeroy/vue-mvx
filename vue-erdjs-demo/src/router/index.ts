@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import {VueErdjsConnect, vueErdJsStore} from "vue-erdjs";
+import {VueErdjsConnect} from "vue-erdjs";
 import CustomQRCodeHandler from "./CustomQRCodeHandler";
+import 'vue-erdjs/dist/index.css'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,17 +24,17 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-    if (!to.matched.some(record => record.meta.requiresAuth)) {
-        next();
-    } else if (!vueErdJsStore.logged) {
-        next({
-            path: '/authenticate',
-            query: {fromUrl: to.fullPath}
-        })
-    } else {
-        next();
-    }
-})
+// router.beforeEach((to, from, next) => {
+//     if (!to.matched.some(record => record.meta.requiresAuth)) {
+//         next();
+//     } else if (!vueErdJsStore.logged) {
+//         next({
+//             path: '/authenticate',
+//             query: {fromUrl: to.fullPath}
+//         })
+//     } else {
+//         next();
+//     }
+// })
 
 export default router
