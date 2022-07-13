@@ -7,6 +7,9 @@ import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
 
 
 export default defineConfig({
+    define: {
+        global: {},
+    },
     resolve: {
         alias: {
             // This Rollup aliases are extracted from @esbuild-plugins/node-modules-polyfill,
@@ -65,9 +68,7 @@ export default defineConfig({
     build: {
         rollupOptions: {
             plugins: [
-                rollupNodePolyFill({
-                    crypto: true
-                })
+                rollupNodePolyFill()
             ],
         }
     }

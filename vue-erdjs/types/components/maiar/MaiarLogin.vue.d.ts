@@ -6,8 +6,8 @@ declare const _default: {
         $: import("vue").ComponentInternalInstance;
         $data: {};
         $props: Partial<{
-            qrcodeHandler: IQRCodeHandler;
             selectedMode: string;
+            qrcodeHandler: IQRCodeHandler;
         }> & Omit<Readonly<import("vue").ExtractPropTypes<{
             selectedMode: {
                 type: StringConstructor;
@@ -24,7 +24,7 @@ declare const _default: {
             };
         }>> & {
             onLogin?: ((mode: String) => any) | undefined;
-        } & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, "qrcodeHandler" | "selectedMode">;
+        } & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, "selectedMode" | "qrcodeHandler">;
         $attrs: {
             [x: string]: unknown;
         };
@@ -57,8 +57,8 @@ declare const _default: {
         }, {}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {
             login: (mode: String) => void;
         }, string, {
-            qrcodeHandler: IQRCodeHandler;
             selectedMode: string;
+            qrcodeHandler: IQRCodeHandler;
         }> & {
             beforeCreate?: ((() => void) | (() => void)[]) | undefined;
             created?: ((() => void) | (() => void)[]) | undefined;
@@ -118,8 +118,8 @@ declare const _default: {
 }, {}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {
     login: (mode: String) => void;
 }, string, {
-    qrcodeHandler: IQRCodeHandler;
     selectedMode: string;
+    qrcodeHandler: IQRCodeHandler;
 }> & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps & (new () => {
     $slots: {};
 });

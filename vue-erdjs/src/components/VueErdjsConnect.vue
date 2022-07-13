@@ -40,8 +40,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import QRCodeDefaultHandler from "./maiar/QRCodeDefaultHandler";
+import VueErdjsTab from "@/components/VueErdjsTab.vue";
 
 export default defineComponent({
+    components: {
+        VueErdjsTab
+    },
     props: {
         qrcodeHandler: {
             require: true,

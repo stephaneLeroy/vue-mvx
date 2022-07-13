@@ -43,10 +43,12 @@ export default defineConfig({
             vm: 'rollup-plugin-node-polyfills/polyfills/vm',
             zlib: 'rollup-plugin-node-polyfills/polyfills/zlib',
             tty: 'rollup-plugin-node-polyfills/polyfills/tty',
-            domain: 'rollup-plugin-node-polyfills/polyfills/domain'
+            domain: 'rollup-plugin-node-polyfills/polyfills/domain',
+            "vue-erdjs": ""
         }
     },
     optimizeDeps: {
+        include: ["vue-erdjs"],
         esbuildOptions: {
             // Node.js global to browser globalThis
             define: {
@@ -65,9 +67,7 @@ export default defineConfig({
     build: {
         rollupOptions: {
             plugins: [
-                rollupNodePolyFill({
-                    crypto: true
-                })
+                rollupNodePolyFill()
             ],
         }
     }

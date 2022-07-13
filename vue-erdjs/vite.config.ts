@@ -2,7 +2,7 @@ import path from "path"
 import vue from "@vitejs/plugin-vue"
 import {defineConfig} from "vite"
 import {fileURLToPath, URL} from "url";
-import nodeConfig from "./vite.config.node";
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 const commonConfig = defineConfig({
     plugins: [
@@ -20,7 +20,6 @@ const commonConfig = defineConfig({
 
 export default defineConfig({
     ...commonConfig,
-    ...nodeConfig,
     build: {
         minify: true,
         lib: {
@@ -44,6 +43,7 @@ export default defineConfig({
                     return assetInfo.name
                 },
             },
+            plugins: [ peerDepsExternal() ]
         }
     }
 })
