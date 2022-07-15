@@ -40,6 +40,7 @@ class LedgerProviderManager implements IProviderStrategy {
     async accounts(startIndex: number, addressesPerPage: number) {
         return await this.init()
             .then(() => {
+                console.log("Ledger initialised")
                 return this._hwProvider.getAccounts(startIndex, addressesPerPage);
             });
     }

@@ -1,8 +1,7 @@
 import path from "path"
+import {fileURLToPath, URL} from "url";
 import vue from "@vitejs/plugin-vue"
 import {defineConfig} from "vite"
-import {fileURLToPath, URL} from "url";
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 const commonConfig = defineConfig({
     plugins: [
@@ -15,7 +14,7 @@ const commonConfig = defineConfig({
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         }
-    }
+    },
 })
 
 export default defineConfig({
@@ -32,6 +31,7 @@ export default defineConfig({
             // into your library
             external: ["vue"],
             output: {
+                sourcemap: false,
                 // Provide global variables to use in the UMD build
                 // for externalized deps
                 globals: {
@@ -42,8 +42,7 @@ export default defineConfig({
                     if (assetInfo.name == "style.css") return "index.css"
                     return assetInfo.name
                 },
-            },
-            plugins: [ peerDepsExternal() ]
+            }
         }
     }
 })

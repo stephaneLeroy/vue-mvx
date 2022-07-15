@@ -1,12 +1,12 @@
 <template>
     <div class="vue3rdj5">
-        <div class="vue3rdj5__logged" v-if="$erd.walletAddress">
-            <div class="vue3rdj5__logged-address">{{ $erd.obfuscatedWalletAddress }}</div>
-            <button class="vue3rdj5__logged-logout" @click.prevent="$erd.logout()">Logout</button>
+        <div class="vue3rdj5__logged" v-if="$erdLogin.address">
+            <div class="vue3rdj5__logged-address">{{ $erdLogin.obfuscatedAddress() }}</div>
+            <button class="vue3rdj5__logged-logout" @click.prevent="logout()">Logout</button>
         </div>
         <div
             class="vue3rdj5__modes"
-            v-if="!$erd.walletAddress">
+            v-else>
             <vue-erdjs-tab
                 name="Defi Wallet"
                 @select-mode="selectedMode = $event as string"
@@ -63,8 +63,14 @@ export default defineComponent({
             selectedMode: ''
         }
     },
+    methods: {
+        logout() {
+            this.$erd.logout()
+            this.selectedMode = '';
+        }
+    },
     watch: {
-        "$erd.walletAddress": function(address) {
+        "$erdLogin.address": function(address) {
             if(address != null){
                 const searchParams = new URLSearchParams(window.location.search);
                 const fromUrl = searchParams.get('fromUrl');

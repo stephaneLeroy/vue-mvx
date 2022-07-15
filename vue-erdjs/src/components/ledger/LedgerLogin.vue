@@ -8,7 +8,7 @@
             :error="error">
             {{ error }}
         </div>
-        <div v-else-if="accounts.length === 0" class="vue3rdj5__infos">
+        <div v-if="accounts.length === 0" class="vue3rdj5__infos">
             <p class="vue3rdj5__infos-txt">Please connect and unlock your Ledger Wallet.</p>
             <p class="vue3rdj5__infos-txt">Don't forget to open Elrond APP</p>
         </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import {defineProps, inject, reactive, watchEffect} from "vue";
+import {computed, defineProps, inject, reactive, watchEffect} from "vue";
 import {ref} from "@vue/reactivity";
 import type VueErdJs from "@/VueErdJs";
 
@@ -62,25 +62,29 @@ if (!erdJS) {
 
 watchEffect(() => {
     if (props.selectedMode === 'Ledger') {
+        console.log("Ledger", props.selectedMode)
+        openContent.value = true;
         fetchAccounts();
     } else {
-        openContent.value = true;
+        openContent.value = false
     }
 });
 
-const fetchAccounts = async () => {
-    openContent.value = true;
+async function fetchAccounts()  {
     error.value = '';
     accounts.value.splice(0);
+    console.log("Ledger fetch account");
     const fetchedAccounts = await erdJS.ledger.accounts(startIndex.value, startIndex.value + props.addressPageSize)
-        .catch(() => {
-            error.value = "Error while trying to read your Ledger wallet. " +
-                "Please make sure you have unlock it and that your Elrond app is opened";
-            return [];
-        })
+    .catch(() => {
+        error.value = "Error while trying to read your Ledger wallet. " +
+            "Please make sure you have unlock it and that your Elrond app is opened";
+        return [];
+    })
+    console.log("Ledger fetched", fetchedAccounts);
     fetchedAccounts.forEach(account => {
         accounts.value.push(account)
     })
+
 }
 
 const next = () => {
@@ -103,5 +107,9 @@ const login = (index: number) => {
     const token = props.token ? {token: props.token} : {}
     erdJS.ledger.login({addressIndex: index, ...token})
 }
+
+const selected = computed(() => {
+    return props.selectedMode === 'Ledger'
+})
 
 </script>

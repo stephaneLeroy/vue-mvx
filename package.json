@@ -3,5 +3,11 @@
     "workspaces": [
         "vue-erdjs",
         "vue-erdjs-demo"
-    ]
+    ],
+    "scripts": {
+        "lib:dev": "npm run dev -w vue-erdjs",
+        "lib:build": "npm run build -w vue-erdjs",
+        "demo:dev": "npm run dev -w vue-erdjs-demo",
+        "demo:build": "npm run build -w vue-erdjs-demo"
+    }
 }

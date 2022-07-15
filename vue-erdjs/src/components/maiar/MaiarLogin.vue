@@ -76,7 +76,6 @@ const login = async () => {
             }
         })
         deeplink.value = loginData.deeplink;
-        //TODO : mitt this.$emit('login', loginData);
     });
 }
 

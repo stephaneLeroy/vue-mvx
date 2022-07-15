@@ -2,15 +2,15 @@
     "name": "vue-erdjs-demo",
     "version": "0.0.0",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --force",
         "build": "run-p type-check build-only",
-        "preview": "vite preview --port 4173",
         "build-only": "vite build",
         "type-check": "vue-tsc --noEmit",
-        "trace": "tsc -traceResolution",
+        "serve": "webserver 8080 dist",
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
     },
     "dependencies": {
+        "@elrondnetwork/erdjs": "^10.2.7",
         "vue": "^3.2.37",
         "vue-erdjs": "1.0.0-vue3-erdjs10-alpha1",
         "vue-router": "^4.0.16"
@@ -18,9 +18,10 @@
     "devDependencies": {
         "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
         "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
+        "@rollup/plugin-commonjs": "^22.0.1",
         "@rushstack/eslint-patch": "^1.1.0",
         "@types/node": "^16.11.41",
-        "@vitejs/plugin-vue": "^2.3.3",
+        "@vitejs/plugin-vue": "^3.0.0",
         "@vue/eslint-config-prettier": "^7.0.0",
         "@vue/eslint-config-typescript": "^11.0.0",
         "@vue/tsconfig": "^0.1.3",
@@ -32,7 +33,8 @@
         "rollup-plugin-node-polyfills": "^0.2.1",
         "sass": "^1.53.0",
         "typescript": "~4.7.4",
-        "vite": "^2.9.12",
-        "vue-tsc": "^0.38.1"
+        "vite": "^3.0.0",
+        "vue-tsc": "^0.38.1",
+        "webserver": "^5.0.1"
     }
 }

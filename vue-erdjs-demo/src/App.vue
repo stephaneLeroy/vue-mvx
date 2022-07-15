@@ -11,8 +11,8 @@ import { RouterLink, RouterView } from 'vue-router'
             <div class="menu__items">
                 <router-link class="menu__items-link" active-class="menu__items-link--active" to="/pingpong">Ping Pong</router-link>
                 <router-link class="menu__items-link" to="/authenticate">
-                    {{$erd.walletAddress ? $erd.obfuscatedWalletAddress : 'Authenticated' }}
-                    <span v-if="$erd.token" class="menu__items-token">Token : {{$erd.token}}</span>
+                    {{$erdLogin.address ? $erdLogin.obfuscatedAddress() : 'Authenticated' }}
+                    <span v-if="$erdLogin.token" class="menu__items-token">Token : {{$erdLogin.token}}</span>
                 </router-link>
             </div>
         </nav>

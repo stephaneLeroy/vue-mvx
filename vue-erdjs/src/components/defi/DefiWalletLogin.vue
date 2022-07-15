@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import {defineEmits, defineProps, inject, watchEffect} from "vue";
+import {defineProps, inject, watchEffect} from "vue";
 import {ref} from "@vue/reactivity";
 import type VueErdJs from "@/VueErdJs";
 
@@ -43,23 +43,18 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits<{
-    (event: 'select-mode', mode: String): void
-}>()
-
 const erdJS = inject<VueErdJs>('$erd');
 if (!erdJS) {
     throw new Error('Cannot load erdjs. Please check your configuration')
 }
 
-const login = (name: String) => {
-    emit('select-mode', name);
+const login = () => {
     const options = props.token ? {token: props.token, callbackUrl: window.location.toString()} : {};
     erdJS.defiWallet.login(options);
 }
 watchEffect(() => {
     if (props.selectedMode === 'Defi Wallet') {
-        login(props.selectedMode)
+        login()
         openContent.value = true;
     } else {
         openContent.value = false;
