@@ -1,22 +1,20 @@
-import {HWProvider} from "@elrondnetwork/erdjs";
+import {HWProvider} from "@elrondnetwork/erdjs-hw-provider";
 import IProviderStrategy from "../IProviderStrategy";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
-import {Address, ProxyProvider} from "@elrondnetwork/erdjs";
+import {Address} from "@elrondnetwork/erdjs";
 import {LedgerOption} from "../config";
 import StorageProvider from "../storage/StorageProvider";
 import dayjs from "dayjs";
 
 class LedgerProviderManager implements IProviderStrategy {
     private _eventHandler: IProviderStrategyEventHandler;
-    private _proxy: ProxyProvider;
     private _hwProvider: HWProvider;
     private _storage = new StorageProvider('ledger-strategy');
     private _timeoutInMinutes = 30;
 
-    constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: LedgerOption) {
+    constructor(eventHandler: IProviderStrategyEventHandler, options: LedgerOption) {
         this._eventHandler = eventHandler;
-        this._proxy = proxy;
-        this._hwProvider = new HWProvider(this._proxy);
+        this._hwProvider = new HWProvider();
     }
 
     id() {

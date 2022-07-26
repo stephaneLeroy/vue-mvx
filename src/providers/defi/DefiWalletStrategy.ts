@@ -1,4 +1,5 @@
-import { Address, ExtensionProvider } from "@elrondnetwork/erdjs";
+import { Address } from "@elrondnetwork/erdjs";
+import {ExtensionProvider} from "@elrondnetwork/erdjs-extension-provider";
 import IProviderStrategy from "../IProviderStrategy";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import {DefiWalletOption} from "../config";

@@ -1,4 +1,6 @@
-import { Address, ProxyProvider, WalletConnectProvider } from "@elrondnetwork/erdjs";
+import { Address } from "@elrondnetwork/erdjs";
+import {WalletConnectProvider} from '@elrondnetwork/erdjs-wallet-connect-provider';
+import {ProxyNetworkProvider} from "@elrondnetwork/erdjs-network-providers/out";
 import MaiarConnexionManager from './MaiarConnexionManager'
 import {MaiarAppOption} from "../config";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
@@ -17,20 +19,19 @@ class MaiarAppLoginData {
 
 class MaiarAppStrategy implements IProviderStrategy {
   private eventHandler: IProviderStrategyEventHandler;
-  private _proxy: ProxyProvider;
+  private _proxy: ProxyNetworkProvider;
   private _walletConnectDeepLink: string;
   private _walletConnectBridgeUrl: string;
   private _walletConnect: WalletConnectProvider;
   private _connexionManager: MaiarConnexionManager;
 
-    constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyProvider, options: MaiarAppOption) {
+    constructor(eventHandler: IProviderStrategyEventHandler, proxy: ProxyNetworkProvider, options: MaiarAppOption) {
       this.eventHandler = eventHandler;
       this._proxy = proxy;
       this._walletConnectDeepLink = options.walletConnectDeepLink;
       this._walletConnectBridgeUrl = options.walletConnectBridgeUrl;
 
       this._walletConnect = new WalletConnectProvider(
-          this._proxy,
           this._walletConnectBridgeUrl,
           {
               onClientLogin: () => this.handleOnClientLogin(),

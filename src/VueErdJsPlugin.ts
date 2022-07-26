@@ -1,5 +1,6 @@
 import _Vue from "vue";
-import {Transaction, Address, ApiProvider, NetworkConfig, ProxyProvider} from "@elrondnetwork/erdjs";
+import {Transaction, Address} from "@elrondnetwork/erdjs";
+import {ApiNetworkProvider, ProxyNetworkProvider} from "@elrondnetwork/erdjs-network-providers";
 import Providers from "./providers/Providers";
 import VueErdJsStore from './VueErdJsStore';
 import Components, { VueErdjsConnect } from "./components";
@@ -12,10 +13,9 @@ export default function VueErdJsPlugin(Vue: typeof _Vue, options?: ProviderOptio
     if(!options) {
         options = providerConfig(ElrondEnvEnum.DEVNET);
     }
-    const erdApi = new ApiProvider(options.api.url, {timeout: options.api.timeout});
-    const erdProxy = new ProxyProvider(options.proxy.url, {timeout: options.proxy.timeout});
+    const erdApi = new ApiNetworkProvider(options.api.url, {timeout: options.api.timeout});
+    const erdProxy = new ProxyNetworkProvider(options.proxy.url, {timeout: options.proxy.timeout});
 
-    NetworkConfig.getDefault().sync(erdProxy);
     const providers = new Providers(erdProxy, erdApi, options,
         (address: Address, token?: string) => {
             vueErdJsStore.state.$data.walletAddress = address;

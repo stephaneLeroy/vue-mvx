@@ -15,7 +15,7 @@
 
 <script>
 import PingPongSC from './PingPongSC'
-import {Balance} from "@elrondnetwork/erdjs";
+import {TokenPayment} from "@elrondnetwork/erdjs";
 
 export default {
     name: 'PingPong',
@@ -45,16 +45,13 @@ export default {
         this.pingPong.pingAmount().then((amount) => {
             this.pingAmount = amount;
         });
-        this.pingPong.didUserPing(this.$erd.walletAddress).then((hasPing) => {
-            this.hasPing = hasPing;
-        })
     },
     computed: {
       pingEgldPrice() {
           if(this.pingAmount) {
-              let amount = Balance.egld(this.pingAmount.valueOf());
-              let denominated = amount.valueOf().shiftedBy(-amount.token.decimals).toFixed(2);
-              return `${denominated} ${amount.token.getTokenIdentifier()}`;
+              console.log(this.pingAmount)
+              let amount = TokenPayment.egldFromBigInteger(this.pingAmount)
+              return amount.toPrettyString();
           }
           return '- EGLD';
       }
@@ -63,11 +60,12 @@ export default {
         async ping() {
             this.goLeft = false;
             this.goRight = true;
-            this.pingPong.dateToPong(this.$erd.walletAddress);
 
             try {
                  await this.pingPong.ping(this.$erd.walletAddress, this.pingAmount);
+                 this.goRight = false;
             } catch (error) {
+                console.log("Ping error!", error);
                 this.goRight = false;
             }
         },

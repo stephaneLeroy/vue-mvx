@@ -1,66 +1,61 @@
-import { BooleanType, BigUIntType, BinaryCodec, AddressValue, SmartContract, IDappProvider, IProvider, Address, Balance, ContractFunction, GasLimit, TransactionPayload, Account, Transaction } from "@elrondnetwork/erdjs";
+import {SmartContractAbi, AbiRegistry, ResultsParser, SmartContract, ContractFunction, TokenPayment, Address, Account } from "@elrondnetwork/erdjs";
 import { BigNumber } from "bignumber.js";
 import Providers from "../../src/providers/Providers";
 
-const Codec = new BinaryCodec();
-
 class PingPongSC {
-    private readonly smartContractAddress: string = "erd1qqqqqqqqqqqqqpgqcsu3pkp7jhp72028vag8lz58luj9garw0eqqn9j476";
+    private readonly smartContractAddress: string = "erd1qqqqqqqqqqqqqpgqzdseamvaf8su6mfc423zg8k4t43n0j3j808qeymyrk";
     private _provider: Providers;
+    private _abi: any;
+
     constructor(provider: Providers) {
-        this._provider = provider;
+       this._provider = provider;
+    }
+
+    async getSmartContract() {
+        if(!this._abi) {
+            const abiJson = await fetch('/vue-erdjs/assets/ping-pong-egld.abi.json').then(response => response.json())
+            let abiRegistry = AbiRegistry.create(abiJson);
+            this._abi = new SmartContractAbi(abiRegistry, ["ping-pong-egld"]);
+        }
+        return new SmartContract({address: new Address(this.smartContractAddress), abi: this._abi})
     }
 
     async ping(wallet: Address, amount: BigNumber) {
-        let account = new Account(wallet);
-        await account.sync(this._provider.proxy);
+        let accountAddress = new Address(wallet);
+        let account = new Account(accountAddress);
+        let accountOnNetwork = await this._provider.proxy.getAccount(accountAddress);
+        account.update(accountOnNetwork);
 
-        const payload = TransactionPayload.contractCall()
-            .setFunction(new ContractFunction("ping"))
-            .setArgs([])
-            .build();
-
-        const transaction = new Transaction({
-            sender: wallet,
-            receiver: new Address(this.smartContractAddress),
-            gasLimit: new GasLimit(10000000),
-            value: Balance.egld(amount),
-            data: payload,
+        const contract = await this.getSmartContract()
+        const transaction = contract.call({
+            func: new ContractFunction("ping"),
+            args: [],
+            value: TokenPayment.egldFromBigInteger(amount),
+            gasLimit: 10000000,
+            chainID: await this._provider.chainID()
         });
-        transaction.setNonce(account.nonce);
-        return this._provider.sendAndWatch(transaction);
-    }
+        transaction.setNonce(account.nonce)
+        console.log("Ping!", transaction)
 
-    async didUserPing(wallet: Address) {
-        let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
-        let result = await contract.runQuery(this._provider.proxy, {
-            func: new ContractFunction("didUserPing"),
-            args: [ new AddressValue(wallet) ]
-        });
-        let decoded = Codec.decodeTopLevel(new Buffer(result.outputUntyped()[0]), new BooleanType());
-        console.log("didUserPing", decoded.valueOf())
-        return decoded.valueOf();
-    }
-
-    async dateToPong(wallet: Address) {
-        let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
-        let result = await contract.runQuery(this._provider.proxy, {
-            func: new ContractFunction("getTimeToPong"),
-            args: [ new AddressValue(wallet) ]
-        });
-        console.log("datePong", result.returnData)
-        return result;
+        return await this._provider.sendAndWatch(transaction);
     }
 
     async pingAmount() {
-        let contract = new SmartContract({ address: new Address(this.smartContractAddress) });
-        let result = await contract.runQuery(this._provider.proxy, {
+        const contract = await this.getSmartContract()
+        const query = contract.createQuery({
             func: new ContractFunction("getPingAmount"),
             args: []
-        });
-        let decoded = Codec.decodeTopLevel(new Buffer(result.outputUntyped()[0]), new BigUIntType());
-        console.log("getPingAmount", decoded.valueOf())
-        return decoded.valueOf();
+        })
+        const response = await this._provider.proxy.queryContract(query)
+        const resultParser = new ResultsParser()
+        const result = resultParser.parseQueryResponse(response, contract.getEndpoint("getPingAmount"))
+        console.log(result.returnCode.isSuccess());
+        console.log(result.returnMessage);
+        if(result.returnCode.isSuccess()) {
+            console.log(result.values[0].valueOf());
+            return result.values[0].valueOf();
+        }
+        return;
     }
 }
 

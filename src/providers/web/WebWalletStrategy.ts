@@ -1,4 +1,5 @@
-import {Address, WalletProvider} from "@elrondnetwork/erdjs";
+import {Address} from "@elrondnetwork/erdjs";
+import {WalletProvider} from '@elrondnetwork/erdjs-web-wallet-provider';
 import IProviderStrategy from "../IProviderStrategy";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import {WebWalletOption} from "../config";

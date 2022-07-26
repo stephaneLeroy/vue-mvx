@@ -1,12 +1,14 @@
 import MaiarAppStrategy from './maiar-app/MaiarAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
 import WebWalletStrategy from './web/WebWalletStrategy';
-import {TransactionHash, Address, ProxyProvider, ApiProvider, Transaction} from "@elrondnetwork/erdjs";
+import {Address, Transaction, TransactionWatcher} from "@elrondnetwork/erdjs";
+import {ProxyNetworkProvider, ApiNetworkProvider} from "@elrondnetwork/erdjs-network-providers";
 import providersOptions, {ProviderOption} from "./config";
 import IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import IProviderStrategy from "./IProviderStrategy";
 import DefiWallet from "./defi/DefiWalletStrategy";
-import TransactionResult from "./TransactionResult";
+import {IDappProvider} from "./IDappProvider";
+import {NetworkConfig} from "@elrondnetwork/erdjs-network-providers/out";
 
 const PROVIDER_STRATEGY_STORAGE = "vue-erdjs-strategy";
 
@@ -20,10 +22,11 @@ class Providers implements IProviderStrategyEventHandler {
     private _webWallet: WebWalletStrategy;
     private _defiWallet: DefiWallet;
     private initialised: boolean;
-    private _proxy: ProxyProvider;
-    private _api: ApiProvider
+    private _proxy: ProxyNetworkProvider;
+    private _api: ApiNetworkProvider;
+    private _networkConfig: NetworkConfig | null = null;
 
-    constructor(proxy: ProxyProvider, api: ApiProvider, options: ProviderOption, onLogin: Function, onLogout: Function, onTransaction: Function) {
+    constructor(proxy: ProxyNetworkProvider, api: ApiNetworkProvider, options: ProviderOption, onLogin: Function, onLogout: Function, onTransaction: Function) {
         this.currentStrategy = undefined;
         this._proxy = proxy;
         this._api = api;
@@ -31,7 +34,7 @@ class Providers implements IProviderStrategyEventHandler {
         this.onLogout = onLogout;
         this.onTransaction = onTransaction;
         this._maiarApp = new MaiarAppStrategy(this, proxy, options.maiar);
-        this._ledger = new LedgerStrategy(this, proxy, options.ledger);
+        this._ledger = new LedgerStrategy(this, options.ledger);
         this._webWallet = new WebWalletStrategy(this, options.webWallet);
         this._defiWallet = new DefiWallet(this, options.defiWallet);
         this.initialised = false;
@@ -73,7 +76,7 @@ class Providers implements IProviderStrategyEventHandler {
     }
 
     get currentProvider() {
-        return this.currentStrategy?.provider();
+        return this.currentStrategy?.provider() as IDappProvider;
     }
 
     get currentProviderName() {
@@ -122,16 +125,13 @@ class Providers implements IProviderStrategyEventHandler {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
-        if(this.currentStrategy instanceof WebWalletStrategy) {
-            return this.currentProvider.sendTransaction(transaction);
-        }
         return this.currentProvider.signTransaction(transaction).then((transaction) => {
-            return transaction.send(this._proxy).then(() => transaction);
+            return this._proxy.sendTransaction(transaction).then(() => transaction)
         });
     }
 
     transactionResult(transaction: Transaction, delay:number=0) {
-        return new TransactionResult(transaction.getHash(), this._proxy, this._api, delay).watch().then((transaction) => {
+        return new TransactionWatcher(this._proxy).awaitCompleted(transaction).then((transaction) => {
             this.onTransaction(transaction);
             return transaction;
         });
@@ -161,11 +161,34 @@ class Providers implements IProviderStrategyEventHandler {
     }
 
     handleTransaction(transaction: { status: string, txHash: string}) {
-        new TransactionResult(new TransactionHash(transaction.txHash), this._proxy, this._api)
-            .watch()
+        const tx = {
+            getHash() {
+               return {
+                   hex() {
+                       return transaction.txHash
+                   }
+                }
+            }
+        }
+        new TransactionWatcher(this._proxy)
+            .awaitCompleted(tx)
             .then((transaction) => {
                 this.onTransaction(transaction);
             })
+    }
+
+    async networkConfig() {
+        if(!this._networkConfig) {
+            this._networkConfig = await this._proxy.getNetworkConfig()
+        }
+        return this._networkConfig;
+    }
+    async chainID() {
+        const networkConfig = await this.networkConfig()
+        if(!networkConfig) {
+            throw new Error("Cannot load network configuration")
+        }
+        return networkConfig?.ChainID;
     }
 
 }

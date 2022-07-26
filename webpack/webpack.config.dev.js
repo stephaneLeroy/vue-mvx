@@ -6,6 +6,7 @@ const common = require("./webpack.config.common")
 const TerserPlugin = require("terser-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const FileManagerPlugin = require('filemanager-webpack-plugin');
+const express = require('express');
 
 const webpack_config = merge(common,
     {
@@ -39,6 +40,10 @@ const webpack_config = merge(common,
                             {
                                 source: 'docs/index.html',
                                 destination: 'docs/404.html'
+                            },
+                            {
+                                source: "example/assets/**",
+                                destination: "docs/assets"
                             }
                         ]
                     }]
@@ -55,6 +60,11 @@ const webpack_config = merge(common,
             historyApiFallback: {
                 index: '/vue-erdjs/index.html'
             },
+            setupMiddlewares: (middlewares, devServer) => {
+                console.log('serve static dir', path.resolve(__dirname, 'docs/assets'))
+                devServer.app.use('/vue-erdjs/assets/', express.static(path.resolve(__dirname, '..', 'docs/assets')));
+                return middlewares;
+            }
         },
         devtool: 'inline-source-map'
     }
