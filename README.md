@@ -64,6 +64,6 @@ npm run build
 ### 1.0.0-vue2 : Vue 2 and erdjs 9 compatibility
 ### 1.0.1-vue2-erdjs10 : Vue 2 and erdjs 10 compatibility
 
-- Fix webwallet login ( PR #3 )
+- Fix webwallet logout ( PR #3 )
 
 ### 1.0.1-vue3-erdjs (in progress) : Vue 3 and erdjs 10 compatibility
