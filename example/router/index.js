@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../home/Home.vue'
-import PingPong from "../pingpong/PingPong";
+import Transaction from "../transaction/Transaction";
 import CustomQRCodeHandler from "./CustomQRCodeHandler";
 import {vueErdJsStore, VueErdjsConnect} from '../../src'
 
@@ -14,9 +14,9 @@ const routes = [
         component: Home
     },
     {
-        path: '/pingpong',
-        name: 'PingPong',
-        component: PingPong,
+        path: '/transaction',
+        name: 'Transaction',
+        component: Transaction,
         meta: {
             requiresAuth: true
         }

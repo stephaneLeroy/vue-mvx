@@ -121,7 +121,7 @@ class Providers implements IProviderStrategyEventHandler {
         return this.signAndSend(transaction).then((result) => this.transactionResult(result));
     }
 
-    async signAndSend(transaction: Transaction) {
+    signAndSend(transaction: Transaction) {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
@@ -160,21 +160,8 @@ class Providers implements IProviderStrategyEventHandler {
         this.onLogout();
     }
 
-    handleTransaction(transaction: { status: string, txHash: string}) {
-        const tx = {
-            getHash() {
-               return {
-                   hex() {
-                       return transaction.txHash
-                   }
-                }
-            }
-        }
-        new TransactionWatcher(this._proxy)
-            .awaitCompleted(tx)
-            .then((transaction) => {
-                this.onTransaction(transaction);
-            })
+    async handleTransaction(transaction: Transaction) {
+        this._proxy.sendTransaction(transaction).then(() => this.transactionResult(transaction));
     }
 
     async networkConfig() {

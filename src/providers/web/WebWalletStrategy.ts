@@ -1,10 +1,11 @@
-import {Address} from "@elrondnetwork/erdjs";
+import {Address, TransactionVersion, Transaction, TransactionOptions, TransactionPayload} from "@elrondnetwork/erdjs";
 import {WalletProvider} from '@elrondnetwork/erdjs-web-wallet-provider';
 import IProviderStrategy from "../IProviderStrategy";
 import IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import {WebWalletOption} from "../config";
 import StorageProvider from "../storage/StorageProvider";
 import dayjs from "dayjs";
+import {isStringBase64} from "./base64Utils";
 
 class WebWalletProviderStrategy implements IProviderStrategy {
     private _eventHandler: IProviderStrategyEventHandler;
@@ -35,7 +36,7 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         const urlSearchParams = new URLSearchParams(url.toString());
 
         const address = urlSearchParams.get('address');
-        const token = urlSearchParams.get('token');
+        const token = urlSearchParams.get('signature');
         if (address) {
             this._storage.set({ wallet: address, token: token  } , dayjs().add(this._timeoutInMinutes, 'minute'))
             this._eventHandler.handleLogin(this, new Address(address))
@@ -71,12 +72,42 @@ class WebWalletProviderStrategy implements IProviderStrategy {
     }
 
     onUrl(url: Location) {
-        const urlSearchParams = new URLSearchParams(url.search);
-        const status = urlSearchParams.get('status');
-        const txHash = urlSearchParams.get('txHash');
-        if(status && txHash) {
-            this._eventHandler.handleTransaction({ status, txHash });
+        const transactions = this._webWallet.getTransactionsFromWalletUrl();
+        if(!transactions || transactions.length <= 0) {
+            return
         }
+
+        transactions.forEach((rawTransaction) => {
+
+            const { data } = rawTransaction;
+            const dataPayload = isStringBase64(data ?? '')
+                ? TransactionPayload.fromEncoded(data)
+                : new TransactionPayload(data);
+
+            const transaction = new Transaction({
+                value: rawTransaction.value.valueOf(),
+                data: dataPayload,
+                nonce: rawTransaction.nonce.valueOf(),
+                receiver: new Address(rawTransaction.receiver),
+                sender: new Address(rawTransaction.sender),
+                gasLimit: rawTransaction.gasLimit.valueOf(),
+                gasPrice: rawTransaction.gasPrice.valueOf(),
+                chainID: rawTransaction.chainID.valueOf(),
+                version: new TransactionVersion(rawTransaction.version),
+                ...(rawTransaction.options
+                    ? { options: new TransactionOptions(rawTransaction.options) }
+                    : {})
+            });
+
+            transaction.applySignature(
+                {
+                    hex: () => rawTransaction.signature || ''
+                },
+                new Address(rawTransaction.sender)
+            );
+            this._eventHandler.handleTransaction(transaction);
+
+        })
     }
 }
 

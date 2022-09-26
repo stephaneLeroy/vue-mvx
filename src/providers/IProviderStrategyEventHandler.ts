@@ -1,5 +1,6 @@
 import IProviderStrategy from "./IProviderStrategy";
 import {Address} from "@elrondnetwork/erdjs";
+import {Transaction} from "@elrondnetwork/erdjs";
 
 interface IProviderStrategyEventHandler {
 
@@ -7,7 +8,7 @@ interface IProviderStrategyEventHandler {
   handleLoginStart(provider: IProviderStrategy): void;
   handleLoginError(provider: IProviderStrategy, err: Error): void;
   handleLogout(provider: IProviderStrategy): void;
-  handleTransaction(transaction: { status: string, txHash: string}): void;
+  handleTransaction(transaction: Transaction): void;
 
 }
 

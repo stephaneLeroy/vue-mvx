@@ -66,4 +66,6 @@ npm run build
 
 - Fix webwallet logout ( PR #3 )
 
-### 1.0.1-vue3-erdjs (in progress) : Vue 3 and erdjs 10 compatibility
+### 1.0.2-vue2-erdjs11 : Vue 2 and erdjs 11 compatibility
+
+- Fix webwallet signed transaction ( PR #4 )
