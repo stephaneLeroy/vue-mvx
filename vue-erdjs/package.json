@@ -1,7 +1,7 @@
 {
     "name": "vue-erdjs",
     "description": "erdjs (Elrond javascript SDK) integration for vuejs",
-    "version": "1.0.0-vue3-erdjs11-rc1",
+    "version": "1.0.0-vue3-erdjs11-rc2",
     "author": "leroys",
     "license": "MIT",
     "main": "./dist/index.umd.js",
@@ -19,7 +19,8 @@
     "style": "dist/index.css",
     "files": [
         "src",
-        "dist"
+        "dist",
+        "types"
     ],
     "sideEffects": true,
     "repository": {
