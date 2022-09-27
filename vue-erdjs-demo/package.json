@@ -13,7 +13,7 @@
         "@elrondnetwork/erdjs": "^11.1.0",
         "mitt": "^3.0.0",
         "vue": "^3.2.37",
-        "vue-erdjs": "1.0.0-vue3-erdjs11-rc1",
+        "vue-erdjs": "1.0.0-vue3-erdjs11-rc2",
         "vue-router": "^4.0.16"
     },
     "devDependencies": {
