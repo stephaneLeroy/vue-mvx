@@ -1,14 +1,15 @@
-import {inject, reactive, readonly, watchEffect} from "vue";
+import {readonly} from "vue";
 import type {App, Plugin} from "vue";
-import type {Transaction, Address} from "@elrondnetwork/erdjs";
+import type {ITransactionOnNetwork, Address} from "@elrondnetwork/erdjs";
 import {ApiNetworkProvider, ProxyNetworkProvider} from "@elrondnetwork/erdjs-network-providers";
 import Providers from "./providers/Providers";
 import Components, {VueErdjsConnect} from "./components";
 import providerConfig, {ElrondEnvEnum, ProviderOption} from "./providers/config";
 import VueErdJs from "./VueErdJs";
-import VueErdJsLogin from "@/VueErdJsLogin";
+import VueErdJsAccount from "@/VueErdJsAccount";
+import mitt from "mitt";
+import type {VueErdEvents} from "@/events/VueErdEvents";
 
-const ErdJsSymbol = Symbol();
 export {ProviderOption, ElrondEnvEnum, VueErdjsConnect}
 export const VueErdJsPlugin: Plugin = {
     async install(app: App, options: ProviderOption) {
@@ -18,27 +19,27 @@ export const VueErdJsPlugin: Plugin = {
         }
         const erdApi = new ApiNetworkProvider(options.api.url, {timeout: options.api.timeout});
         const erdProxy = new ProxyNetworkProvider(options.proxy.url, {timeout: options.proxy.timeout});
-
+        const emitter = mitt<VueErdEvents>()
         const providers = new Providers(erdProxy, erdApi, options,
             (address: Address, token?: string) => {
                 console.log("Login! => Update address", address)
-                VueErdJsLogin.address =  address;
-                VueErdJsLogin.token = token;
+                VueErdJsAccount.address =  address;
+                VueErdJsAccount.token = token;
             },
             () => {
                 console.log("Logout!")
-                VueErdJsLogin.address =  undefined;
-                VueErdJsLogin.token = undefined;
+                VueErdJsAccount.address =  undefined;
+                VueErdJsAccount.token = undefined;
             },
-            (transaction: Transaction) => {
-                //TODO : mitt vueErdJsStore.$emit('transaction', transaction);
+            (transaction: ITransactionOnNetwork) => {
+                emitter.emit('transaction', transaction)
             });
 
-        const vueErdJs = new VueErdJs(providers, options.explorer.url);
+        const vueErdJs = new VueErdJs(providers, options.explorer.url, emitter);
         app.config.globalProperties.$erd = vueErdJs;
         app.provide('$erd', vueErdJs)
 
-        app.config.globalProperties.$erdLogin = readonly(VueErdJsLogin);
+        app.config.globalProperties.$erdAccount = readonly(VueErdJsAccount);
 
         for (const component of Components.entries()) {
             app.component(component[0], component[1])
@@ -52,12 +53,4 @@ export const VueErdJsPlugin: Plugin = {
             }
         })
     }
-}
-
-export function useErdJs() {
-    const erdJs = inject(ErdJsSymbol)
-    if (!erdJs) {
-        // throw error, no store provided
-    }
-    return erdJs
 }

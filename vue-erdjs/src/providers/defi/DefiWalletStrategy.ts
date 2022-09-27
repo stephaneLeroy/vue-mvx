@@ -70,8 +70,8 @@ class DefiWalletProviderStrategy implements IProviderStrategy {
         this._defiWallet.logout();
     }
 
-    signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<void> {
-        return this.signTransaction(transaction, options)
+    signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<Transaction | void> {
+        return this.provider().signTransaction(transaction)
     }
 
 }

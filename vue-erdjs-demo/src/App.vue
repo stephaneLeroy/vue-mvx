@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
@@ -9,10 +8,10 @@ import { RouterLink, RouterView } from 'vue-router'
                 <router-link class="menu__title-link" exact-active-class="menu__title--active" to="/">Vue-ERD-JS</router-link>
             </div>
             <div class="menu__items">
-                <router-link class="menu__items-link" active-class="menu__items-link--active" to="/pingpong">Ping Pong</router-link>
+                <router-link class="menu__items-link" active-class="menu__items-link--active" to="/">Transaction</router-link>
                 <router-link class="menu__items-link" to="/authenticate">
-                    {{$erdLogin.address ? $erdLogin.obfuscatedAddress() : 'Authenticated' }}
-                    <span v-if="$erdLogin.token" class="menu__items-token">Token : {{$erdLogin.token}}</span>
+                    {{$erdAccount.address ? $erdAccount.obfuscatedAddress() : 'Authenticated' }}
+                    <span v-if="$erdAccount.token" class="menu__items-token">Token : {{$erdAccount.token}}</span>
                 </router-link>
             </div>
         </nav>

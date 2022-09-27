@@ -5,7 +5,7 @@ import type {MaiarAppOption} from "../config";
 import type IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import type IProviderStrategy from "../IProviderStrategy";
 
-class MaiarAppLoginData {
+export class MaiarAppLoginData {
     qrCodeData: string;
     deeplink: string;
 
@@ -69,7 +69,7 @@ class MaiarAppStrategy implements IProviderStrategy {
         this.eventHandler.handleLogout(this);
     }
 
-    login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any> {
+    login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<MaiarAppLoginData | undefined> {
         return this._walletConnect.login().then((walletConnectUri) => {
             if (walletConnectUri) {
                 if (options && options.token) {
@@ -104,8 +104,8 @@ class MaiarAppStrategy implements IProviderStrategy {
         return `${this._walletConnectDeepLink}?wallet-connect=${encodeURIComponent(url)}`;
     }
 
-    signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<void> {
-        return this.signTransaction(transaction, options)
+    signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<Transaction | void> {
+        return this.provider().signTransaction(transaction)
     }
 
 }

@@ -1,16 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Transaction from '../views/Transaction.vue'
 import {VueErdjsConnect} from "vue-erdjs";
 import CustomQRCodeHandler from "./CustomQRCodeHandler";
 import 'vue-erdjs/dist/index.css'
+import type {App} from "vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'transaction',
+      component: Transaction,
         meta: {
             requiresAuth: true
         }
@@ -24,17 +25,20 @@ const router = createRouter({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//     if (!to.matched.some(record => record.meta.requiresAuth)) {
-//         next();
-//     } else if (!vueErdJsStore.logged) {
-//         next({
-//             path: '/authenticate',
-//             query: {fromUrl: to.fullPath}
-//         })
-//     } else {
-//         next();
-//     }
-// })
-
-export default router
+export default {
+    install(app: App) {
+        router.install(app)
+        router.beforeEach(( to, from, next) => {
+            if (!to.matched.some(record => record.meta.requiresAuth)) {
+                next();
+            } else if (!app.config.globalProperties.$erdAccount.logged()) {
+                next({
+                    path: '/authenticate',
+                    query: {fromUrl: to.fullPath}
+                })
+            } else {
+                next();
+            }
+        })
+    }
+}

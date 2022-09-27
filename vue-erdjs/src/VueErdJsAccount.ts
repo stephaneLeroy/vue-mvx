@@ -2,7 +2,7 @@ import type {Address} from "@elrondnetwork/erdjs";
 import {reactive} from "vue";
 import type {UnwrapNestedRefs} from "@vue/reactivity";
 
-export interface IVueErdJsLogin {
+export interface IVueErdJsAccount {
     address: undefined | Address
     token: undefined | string
     logged(): boolean
@@ -25,5 +25,5 @@ export default reactive({
             '...' +
             this.address.bech32().slice(-keepNbChar);
     }
-}) as UnwrapNestedRefs<IVueErdJsLogin>;
+}) as UnwrapNestedRefs<IVueErdJsAccount>;
 

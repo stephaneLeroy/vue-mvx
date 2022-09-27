@@ -5,6 +5,7 @@ import nodePolyfills from "rollup-plugin-polyfill-node";
 export default defineConfig({
     define: {
         global: "globalThis",
+        'process.env': process.env
     },
     build: {
         rollupOptions: {

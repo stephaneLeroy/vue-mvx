@@ -15,7 +15,7 @@ interface IProviderStrategy {
 
     signTransaction(transaction: Transaction, options?: {
         callbackUrl?: string;
-    }): Promise<void>;
+    }): Promise<Transaction | void>;
 }
 
 export default IProviderStrategy;

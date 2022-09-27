@@ -1,5 +1,5 @@
 import type IProviderStrategy from "./IProviderStrategy";
-import type {Address} from "@elrondnetwork/erdjs";
+import type {Address, Transaction} from "@elrondnetwork/erdjs";
 
 interface IProviderStrategyEventHandler {
 
@@ -11,7 +11,7 @@ interface IProviderStrategyEventHandler {
 
     handleLogout(provider: IProviderStrategy): void;
 
-    handleTransaction(transaction: { status: string, txHash: string }): void;
+    handleTransaction(transaction: Transaction): void;
 
 }
 

@@ -1,12 +1,27 @@
 import {
-    onBeforeMount
+    getCurrentInstance,
 } from "vue";
-import type VueErdJs from "@/VueErdJs";
+import {Account} from "@elrondnetwork/erdjs";
 
-export const useVueErd = (vueErdJs: VueErdJs) => {
-    onBeforeMount(() => {
-        vueErdJs.providers.init();
-        vueErdJs.providers.onUrl(window.location);
-    })
-    return;
+export const useVueErd = () => {
+    const currentInstance = getCurrentInstance()
+    if(!currentInstance) {
+        throw new Error("Cannot access vue instance")
+    }
+    const account = currentInstance.appContext.config.globalProperties.$erdAccount
+    const erd = currentInstance.appContext.config.globalProperties.$erd
+
+    const fetchAccount = async () => {
+        console.log("fetchAccount", account)
+        const erdAccount = new Account(account.address);
+        const accountOnNetwork = await erd.proxy.getAccount(account.address);
+        console.log("fetchAccount", accountOnNetwork)
+        erdAccount.update(accountOnNetwork)
+        return erdAccount;
+    }
+    return {
+        account,
+        erd,
+        fetchAccount
+    };
 }

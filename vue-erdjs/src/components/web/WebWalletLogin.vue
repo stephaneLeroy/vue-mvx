@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-import {defineEmits, defineProps, inject} from "vue";
+import {defineEmits, defineProps} from "vue";
 import VueErdjsTab from './../VueErdjsTab.vue';
-import type VueErdJs from "@/VueErdJs";
+import {useVueErd} from "@/composable/useVueErd";
 
 const props = defineProps({
     token: {
@@ -20,13 +20,13 @@ const emit = defineEmits<{
     (event: 'select-mode', mode: String): void
 }>()
 
-const erdJS = inject<VueErdJs>('$erd');
+const { erd } = useVueErd();
 
 function login(name: String) {
     emit('select-mode', name);
     const options = props.token ? {token: props.token} : {};
-    if (erdJS) {
-        erdJS.webWallet.login(options);
+    if (erd) {
+        erd.webWallet.login(options);
     }
 }
 </script>

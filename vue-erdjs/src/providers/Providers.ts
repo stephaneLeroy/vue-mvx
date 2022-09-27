@@ -135,17 +135,17 @@ class Providers implements IProviderStrategyEventHandler {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
-        if (this.currentStrategy instanceof WebWalletStrategy) {
-            return this._proxy.sendTransaction(transaction);
-        }
         return this.currentProvider.signTransaction(transaction).then(() => {
             return this._api.sendTransaction(transaction).then(() => transaction);
         });
     }
 
-    async transactionResult(transaction: Transaction, pollingInterval: number = 0, timeout = 60) {
-        const watcher = new TransactionWatcher(this._proxy, pollingInterval, timeout)
-        await watcher.awaitCompleted(transaction)
+    transactionResult(transaction: Transaction, pollingInterval?: number, timeout?: number ) {
+        return new TransactionWatcher(this._proxy, pollingInterval, timeout)
+            .awaitCompleted(transaction)
+            .then((transactionOnNetwork) => {
+                this.onTransaction(transactionOnNetwork)
+            })
     }
 
     handleLoginStart(provider: IProviderStrategy) {
@@ -171,12 +171,8 @@ class Providers implements IProviderStrategyEventHandler {
         this.onLogout();
     }
 
-    handleTransaction(transaction: { status: string, txHash: string }) {
-        //TODO new TransactionResult(new TransactionHash(transaction.txHash), this._proxy, this._api)
-        //    .watch()
-        //    .then((transaction) => {
-        //        this.onTransaction(transaction);
-        //    })
+    handleTransaction(transaction: Transaction) {
+        this._proxy.sendTransaction(transaction).then(() => this.transactionResult(transaction));
     }
 
 }

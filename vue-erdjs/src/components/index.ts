@@ -4,7 +4,6 @@ import MaiarLogin from './maiar/MaiarLogin.vue';
 import LedgerLogin from './ledger/LedgerLogin.vue';
 import WebWalletLogin from './web/WebWalletLogin.vue';
 import DefiWalletLogin from './defi/DefiWalletLogin.vue';
-import WebWalletCallback from './web/WebWalletCallback.vue';
 
 export {VueErdjsConnect};
 export default new Map<string, Object>([
@@ -14,5 +13,4 @@ export default new Map<string, Object>([
     ["LedgerLogin", LedgerLogin],
     ["DefiWalletLogin", DefiWalletLogin],
     ["WebWalletLogin", WebWalletLogin],
-    ["WebWalletCallback", WebWalletCallback],
 ]);

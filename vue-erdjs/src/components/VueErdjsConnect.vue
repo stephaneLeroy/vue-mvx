@@ -1,7 +1,7 @@
 <template>
     <div class="vue3rdj5">
-        <div class="vue3rdj5__logged" v-if="$erdLogin.address">
-            <div class="vue3rdj5__logged-address">{{ $erdLogin.obfuscatedAddress() }}</div>
+        <div class="vue3rdj5__logged" v-if="$erdAccount.address">
+            <div class="vue3rdj5__logged-address">{{ $erdAccount.obfuscatedAddress() }}</div>
             <button class="vue3rdj5__logged-logout" @click.prevent="logout()">Logout</button>
         </div>
         <div

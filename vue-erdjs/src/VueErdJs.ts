@@ -1,13 +1,18 @@
 import type {Transaction} from "@elrondnetwork/erdjs";
 import type Providers from "./providers/Providers";
+import type {Emitter, Handler} from "mitt";
+import type {VueErdEvents} from "@/events/VueErdEvents";
 
 export default class VueErdJs {
-    private _providers: Providers;
-    private _explorerUrl: string;
+    private readonly _providers: Providers;
+    private readonly _explorerUrl: string;
+    private readonly _emitter: Emitter<VueErdEvents>;
 
-    constructor(providers: Providers, explorerUrl: string) {
+
+    constructor(providers: Providers, explorerUrl: string, emitter: Emitter<VueErdEvents>) {
         this._providers = providers;
         this._explorerUrl = explorerUrl;
+        this._emitter = emitter;
     }
 
     get maiarApp() {
@@ -44,6 +49,10 @@ export default class VueErdJs {
 
     explorerTransactionUrl(transaction: Transaction) {
         return `${this._explorerUrl}/transactions/${transaction.getHash()}`;
+    }
+
+    on<Key extends keyof VueErdEvents>(event: Key, handler: Handler<VueErdEvents[Key]>) {
+        this._emitter.on(event, handler)
     }
 }
 

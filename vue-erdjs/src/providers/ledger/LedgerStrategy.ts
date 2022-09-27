@@ -112,8 +112,8 @@ class LedgerProviderManager implements IProviderStrategy {
         return this._hwProvider;
     }
 
-    signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<void> {
-        return this.signTransaction(transaction, options)
+    signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<Transaction | void> {
+        return this.provider().signTransaction(transaction)
     }
 }
 

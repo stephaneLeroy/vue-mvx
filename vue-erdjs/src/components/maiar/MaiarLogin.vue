@@ -17,13 +17,14 @@
 </template>
 
 <script lang="ts" setup>
-import {defineEmits, defineProps, inject, watchEffect} from "vue";
+import {defineEmits, defineProps, watchEffect} from "vue";
 import type {PropType} from "vue";
 import QRCodeDefaultHandler from "./QRCodeDefaultHandler";
 import type IQRCodeHandler from "./IQRCodeHandler";
 import {ref} from "@vue/reactivity";
-import type VueErdJs from "@/VueErdJs";
 import platform from "platform";
+import {useVueErd} from "@/composable/useVueErd";
+import type {MaiarAppLoginData} from "@/providers/maiar-app/MaiarAppStrategy";
 
 const props = defineProps({
     selectedMode: {
@@ -54,8 +55,8 @@ const emit = defineEmits<{
     (event: 'login', mode: String): void
 }>()
 
-const erdJS = inject<VueErdJs>('$erd');
-if (!erdJS) {
+const { erd } = useVueErd();
+if (!erd) {
     throw new Error('Cannot load erdjs. Please check your configuration')
 }
 
@@ -68,8 +69,10 @@ const login = async () => {
     openContent.value = true;
     qrcode.value = null;
     deeplink.value = null;
-    erdJS.maiarApp.login({token: props.token}).then((loginData) => {
-        console.log(loginData)
+    erd.maiarApp.login({token: props.token}).then((loginData: MaiarAppLoginData | undefined) => {
+        if(!loginData) {
+            return;
+        }
         props.qrcodeHandler.handle(loginData.qrCodeData, qrcodeSvg.value).then((svg) => {
             if (svg) {
                 qrcode.value = svg;

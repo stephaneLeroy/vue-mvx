@@ -23,9 +23,9 @@
 </template>
 
 <script lang="ts" setup>
-import {defineProps, inject, watchEffect} from "vue";
+import {defineProps, watchEffect} from "vue";
 import {ref} from "@vue/reactivity";
-import type VueErdJs from "@/VueErdJs";
+import {useVueErd} from "@/composable/useVueErd";
 
 const error = ref();
 const openContent = ref(false);
@@ -43,14 +43,14 @@ const props = defineProps({
     }
 })
 
-const erdJS = inject<VueErdJs>('$erd');
-if (!erdJS) {
+const { erd } = useVueErd();
+if (!erd) {
     throw new Error('Cannot load erdjs. Please check your configuration')
 }
 
 const login = () => {
     const options = props.token ? {token: props.token, callbackUrl: window.location.toString()} : {};
-    erdJS.defiWallet.login(options);
+    erd.defiWallet.login(options);
 }
 watchEffect(() => {
     if (props.selectedMode === 'Defi Wallet') {

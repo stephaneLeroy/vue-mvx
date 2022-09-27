@@ -29,12 +29,12 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, defineProps, inject, reactive, watchEffect} from "vue";
+import {computed, defineProps, reactive, watchEffect} from "vue";
 import {ref} from "@vue/reactivity";
-import type VueErdJs from "@/VueErdJs";
+import {useVueErd} from "@/composable/useVueErd";
 
 const startIndex = ref(0);
-const accounts = ref([] as string[]);
+const accounts = reactive([] as string[]);
 const error = ref('');
 const openContent = ref(true);
 
@@ -55,8 +55,8 @@ const props = defineProps({
     }
 })
 
-const erdJS = inject<VueErdJs>('$erd');
-if (!erdJS) {
+const { erd } = useVueErd();
+if (!erd) {
     throw new Error('Cannot load erdjs. Please check your configuration')
 }
 
@@ -72,17 +72,17 @@ watchEffect(() => {
 
 async function fetchAccounts()  {
     error.value = '';
-    accounts.value.splice(0);
+    accounts.splice(0);
     console.log("Ledger fetch account");
-    const fetchedAccounts = await erdJS.ledger.accounts(startIndex.value, startIndex.value + props.addressPageSize)
+    const fetchedAccounts = await erd!.ledger.accounts(startIndex.value, startIndex.value + props.addressPageSize)
     .catch(() => {
         error.value = "Error while trying to read your Ledger wallet. " +
             "Please make sure you have unlock it and that your Elrond app is opened";
         return [];
     })
     console.log("Ledger fetched", fetchedAccounts);
-    fetchedAccounts.forEach(account => {
-        accounts.value.push(account)
+    fetchedAccounts.forEach((account: string) => {
+        accounts.push(account)
     })
 
 }
@@ -105,7 +105,7 @@ const previous = () => {
 
 const login = (index: number) => {
     const token = props.token ? {token: props.token} : {}
-    erdJS.ledger.login({addressIndex: index, ...token})
+    erd.ledger.login({addressIndex: index, ...token})
 }
 
 const selected = computed(() => {
