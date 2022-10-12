@@ -55,14 +55,6 @@ const accountBalance = computed(() => {
     return TokenPayment.egldFromBigInteger(account.value.balance.toString()).toPrettyString();
 })
 
-
-async function sendAllTransactions(transactions: Transaction[]){
-    for (let i = 0; i < transactions.length; i++) {
-        let t = await erd.providers.sendTransaction(transactions[i])
-        console.log(t);
-    }        
-}
-
 async function sendTransaction() {
     transactionResult.value = null;
     transactionState.value = null;
@@ -80,7 +72,7 @@ async function sendTransaction() {
     });
     transaction.setNonce(account.value!.getNonceThenIncrement())
     transactionState.value = 'Waiting for transaction to be signed'
-    /*erd.providers.signAndSend(transaction)
+    erd.providers.signAndSend(transaction)
         .then((result: Transaction) => {
             transactionState.value = 'Waiting for transaction to be validated'
             transactionUrl.value = erd.explorerTransactionUrl(result);
@@ -88,41 +80,7 @@ async function sendTransaction() {
         }).catch((error: Error) => {
             console.error(error)
             transactionResult.value = error
-    })*/
-    let tr = [] 
-    const transaction2 = new Transaction({
-        data: new TransactionPayload("vue-erdjs"),
-        gasLimit: 70000,
-        receiver: account.value!.address,
-        value: TokenPayment.egldFromAmount(amount.value),
-        chainID: networkConfig.ChainID,
-        sender: account.value!.address
-    });
-    transaction2.setNonce(account.value!.getNonceThenIncrement())
-    tr[0] = transaction
-    tr[1] = transaction2
-    let signed = await erd.providers.signTransactions(tr);
-    console.log(signed)
-    let test= await sendAllTransactions(signed);//erd.providers.sendAndWatch(tr);
-    console.log(test);
-    //transactionState.value = 'Waiting for transaction to be signed'
-
-    //tr[1] = await erd.providers.sign(transaction2);
-    /*console.log(tr);
-    
-    let test= await erd.providers.sendTransactions({transactions: tr});//erd.providers.sendAndWatch(tr);
-    console.log(test)*/
-
-    /*
-    
-        .then((result: Transaction) => {
-            transactionState.value = 'Waiting for transaction to be validated'
-            transactionUrl.value = erd.explorerTransactionUrl(result);
-            return erd.providers.transactionResult(result);
-        }).catch((error: Error) => {
-            console.error(error)
-            transactionResult.value = error
-    })*/
+    })
 }
 
 </script>
