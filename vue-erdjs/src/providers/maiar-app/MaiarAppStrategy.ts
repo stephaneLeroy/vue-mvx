@@ -107,6 +107,9 @@ class MaiarAppStrategy implements IProviderStrategy {
     signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<Transaction | void> {
         return this.provider().signTransaction(transaction)
     }
+    signTransactions(transaction: Transaction[], options?: { callbackUrl?: string }): Promise<Transaction[] | void> {
+        return this.provider().signTransactions(transaction)
+    }
 
 }
 
