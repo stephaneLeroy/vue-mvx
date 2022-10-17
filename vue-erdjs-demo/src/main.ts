@@ -6,6 +6,6 @@ import {ElrondEnvEnum, providersOptions, VueErdJsPlugin} from "vue-erdjs";
 const app = createApp(App)
 
 app.use(router)
-app.use(VueErdJsPlugin, providersOptions(ElrondEnvEnum.DEVNET))
+app.use(VueErdJsPlugin, providersOptions(ElrondEnvEnum.TESTNET))
 
 app.mount('#app')
