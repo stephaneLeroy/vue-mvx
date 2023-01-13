@@ -1,14 +1,14 @@
 {
     "api": {
-        "url": "https://devnet-api.elrond.com",
+        "url": "https://devnet-api.multiversx.com",
         "timeout": 2000
     },
     "proxy": {
-        "url": "https://devnet-gateway.elrond.com",
+        "url": "https://devnet-gateway.multiversx.com",
         "timeout": 2000
     },
     "explorer": {
-        "url": "https://devnet-explorer.elrond.com"
+        "url": "https://devnet-explorer.multiversx.com"
     },
     "maiar": {
         "walletConnectBridgeUrl": "https://bridge.walletconnect.org",
@@ -18,6 +18,6 @@
         "connexionTimeout": 30000
     },
     "webWallet": {
-        "url": "https://devnet-wallet.elrond.com"
+        "url": "https://devnet-wallet.multiversx.com"
     }
 }

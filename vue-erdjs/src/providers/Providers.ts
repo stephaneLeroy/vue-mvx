@@ -1,8 +1,8 @@
 import MaiarAppStrategy from './maiar-app/MaiarAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
 import WebWalletStrategy from './web/WebWalletStrategy';
-import {Address, Transaction, TransactionWatcher} from "@elrondnetwork/erdjs";
-import type {ApiNetworkProvider, ProxyNetworkProvider, NetworkConfig} from "@elrondnetwork/erdjs-network-providers";
+import {Address, Transaction, TransactionWatcher} from "@multiversx/sdk-core";
+import type {ApiNetworkProvider, ProxyNetworkProvider, NetworkConfig} from "@multiversx/sdk-network-providers";
 import providersOptions, {ProviderOption} from "./config";
 import type IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import type IProviderStrategy from "./IProviderStrategy";
@@ -71,6 +71,7 @@ class Providers implements IProviderStrategyEventHandler {
     }
 
     onUrl(url: Location) {
+        console.log("On Url", this.currentStrategy, url)
         if (this.currentStrategy && this.currentStrategy.onUrl) {
             this.currentStrategy.onUrl(url);
         }
@@ -163,11 +164,13 @@ class Providers implements IProviderStrategyEventHandler {
         console.log("Login start", provider);
     }
 
-    handleLogin(provider: IProviderStrategy, address: Address, token?: string) {
+    handleLogin(provider: IProviderStrategy, address?: Address, token?: string) {
         console.log("Login", provider, address, token);
         window.localStorage.setItem(PROVIDER_STRATEGY_STORAGE, JSON.stringify({name: provider.id()}));
         this.currentStrategy = provider;
-        this.onLogin(address, token);
+        if(address) {
+            this.onLogin(address, token);
+        }
     }
 
     handleLoginError(provider: IProviderStrategy, err: Error) {

@@ -1,7 +1,7 @@
 import {readonly} from "vue";
 import type {App, Plugin} from "vue";
-import type {ITransactionOnNetwork, Address} from "@elrondnetwork/erdjs";
-import {ApiNetworkProvider, ProxyNetworkProvider} from "@elrondnetwork/erdjs-network-providers";
+import type {ITransactionOnNetwork, Address} from "@multiversx/sdk-core";
+import {ApiNetworkProvider, ProxyNetworkProvider} from "@multiversx/sdk-network-providers";
 import Providers from "./providers/Providers";
 import Components, {VueErdjsConnect} from "./components";
 import providerConfig, {ElrondEnvEnum, ProviderOption} from "./providers/config";
@@ -45,11 +45,8 @@ export const VueErdJsPlugin: Plugin = {
             app.component(component[0], component[1])
         }
         app.mixin({
-            beforeCreate() {
-                vueErdJs.providers.init();
-            },
-            beforeMount() {
-                vueErdJs.providers.onUrl(window.location);
+            async beforeCreate() {
+                await vueErdJs.providers.init();
             }
         })
     }

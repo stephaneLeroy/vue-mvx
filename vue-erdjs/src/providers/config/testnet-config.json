@@ -1,14 +1,14 @@
 {
     "api": {
-        "url": "https://testnet-api.elrond.com",
+        "url": "https://testnet-api.multiversx.com",
         "timeout": 2000
     },
     "proxy": {
-        "url": "https://testnet-gateway.elrond.com",
+        "url": "https://testnet-gateway.multiversx.com",
         "timeout": 2000
     },
     "explorer": {
-        "url": "https://testnet-explorer.elrond.com"
+        "url": "https://testnet-explorer.multiversx.com"
     },
     "maiar": {
         "walletConnectBridgeUrl": "https://bridge.walletconnect.org",
@@ -18,6 +18,6 @@
         "connexionTimeout": 30000
     },
     "webWallet": {
-        "url": "https://testnet-wallet.elrond.com"
+        "url": "https://testnet-wallet.multiversx.com"
     }
 }

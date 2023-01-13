@@ -1,5 +1,5 @@
-import {Address, TransactionVersion, Transaction, TransactionOptions, TransactionPayload} from "@elrondnetwork/erdjs";
-import {WalletProvider} from '@elrondnetwork/erdjs-web-wallet-provider';
+import {Address, TransactionVersion, Transaction, TransactionOptions, TransactionPayload} from "@multiversx/sdk-core";
+import {WalletProvider} from '@multiversx/sdk-web-wallet-provider';
 import type IProviderStrategy from "../IProviderStrategy";
 import type IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import type {WebWalletOption} from "../config";
@@ -32,14 +32,14 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         return this._webWallet;
     }
 
-    callbackReceived(url: string) {
-        const urlSearchParams = new URLSearchParams(url);
+    callbackReceived(url: Location) {
+        const urlSearchParams = new URLSearchParams(url.search);
 
         const address = urlSearchParams.get('address');
         const token = urlSearchParams.get('signature');
         if (address) {
             this._storage.set({ wallet: address, token: token  } , dayjs().add(this._timeoutInMinutes, 'minute'))
-            this._eventHandler.handleLogin(this, new Address(address))
+            this._eventHandler.handleLogin(this, new Address(address), token ? token : undefined)
         }
 
         const status = urlSearchParams.get('status');
@@ -55,6 +55,7 @@ class WebWalletProviderStrategy implements IProviderStrategy {
     }
 
     login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any> {
+        this._eventHandler.handleLogin(this);
         return this._webWallet.login(options);
     }
 
@@ -67,11 +68,15 @@ class WebWalletProviderStrategy implements IProviderStrategy {
         let stored = this._storage.get();
         if (stored) {
             this._eventHandler.handleLogin(this, new Address(stored.wallet), stored.token);
+            this.onUrl(window.location)
+        } else {
+            this.callbackReceived(window.location)
         }
     }
 
     onUrl(url: Location) {
         const transactions = this._webWallet.getTransactionsFromWalletUrl();
+        console.log("On Url", url, transactions)
         if(!transactions || transactions.length <= 0) {
             return
         }

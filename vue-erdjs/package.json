@@ -1,7 +1,7 @@
 {
     "name": "vue-erdjs",
     "description": "erdjs (Elrond javascript SDK) integration for vuejs",
-    "version": "1.0.0-vue3-erdjs11-rc3",
+    "version": "2.0.0-vue3-erdjs11-rc1",
     "author": "leroys",
     "license": "MIT",
     "main": "./dist/index.umd.js",
@@ -42,16 +42,16 @@
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
     },
     "dependencies": {
-        "@elrondnetwork/erdjs": "^11.1.0",
-        "@elrondnetwork/erdjs-extension-provider": "2.0.5",
-        "@elrondnetwork/erdjs-hw-provider": "2.0.4",
-        "@elrondnetwork/erdjs-network-providers": "^1.1.1",
-        "@elrondnetwork/erdjs-wallet-connect-provider": "2.0.3",
-        "@elrondnetwork/erdjs-walletcore": "2.1.0",
-        "@elrondnetwork/erdjs-web-wallet-provider": "2.1.1",
+        "@multiversx/sdk-core": "^11.2.0",
+        "@multiversx/sdk-extension-provider": "2.0.7",
+        "@multiversx/sdk-hw-provider": "3.0.1",
+        "@multiversx/sdk-network-providers": "^1.2.1",
+        "@multiversx/sdk-wallet-connect-provider": "3.0.1",
+        "@multiversx/sdk-web-wallet-provider": "2.1.4",
         "dayjs": "^1.10.7",
         "mitt": "^3.0.0",
-        "platform": "^1.3.6"
+        "platform": "^1.3.6",
+        "util": "0.12.5"
     },
     "peerDependencies": {
         "vue": "^3"

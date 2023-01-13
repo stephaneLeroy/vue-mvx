@@ -1,4 +1,4 @@
-import type {WalletConnectProvider} from "@elrondnetwork/erdjs-wallet-connect-provider";
+import type {WalletConnectProvider} from "@multiversx/sdk-wallet-connect-provider";
 import type {MaiarAppOption} from "../config";
 
 class MaiarConnexionManager {

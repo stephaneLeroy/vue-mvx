@@ -1,7 +1,7 @@
 import {
     getCurrentInstance,
 } from "vue";
-import {Account} from "@elrondnetwork/erdjs";
+import {Account} from "@multiversx/sdk-core";
 
 export const useVueErd = () => {
     const currentInstance = getCurrentInstance()

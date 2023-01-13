@@ -1,9 +1,9 @@
 import type IProviderStrategy from "./IProviderStrategy";
-import type {Address, Transaction} from "@elrondnetwork/erdjs";
+import type {Address, Transaction} from "@multiversx/sdk-core";
 
 interface IProviderStrategyEventHandler {
 
-    handleLogin(provider: IProviderStrategy, address: Address, token?: string): void;
+    handleLogin(provider: IProviderStrategy, address?: Address, token?: string): void;
 
     handleLoginStart(provider: IProviderStrategy): void;
 

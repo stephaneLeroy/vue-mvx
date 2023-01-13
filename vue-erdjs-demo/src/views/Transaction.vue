@@ -22,8 +22,8 @@
 
 import {computed, onMounted, ref} from "vue";
 import { useVueErd } from "vue-erdjs";
-import {TokenPayment, Transaction, TransactionPayload} from "@elrondnetwork/erdjs";
-import type {Account, ITransactionOnNetwork} from "@elrondnetwork/erdjs";
+import {TokenPayment, Transaction, TransactionPayload} from "@multiversx/sdk-core";
+import type {Account, ITransactionOnNetwork} from "@multiversx/sdk-core";
 
 const error = ref();
 const amount = ref(0.1);

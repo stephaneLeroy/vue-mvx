@@ -1,4 +1,4 @@
-import type {Transaction} from "@elrondnetwork/erdjs";
+import type {Transaction} from "@multiversx/sdk-core";
 import type Providers from "./providers/Providers";
 import type {Emitter, Handler} from "mitt";
 import type {VueErdEvents} from "@/events/VueErdEvents";

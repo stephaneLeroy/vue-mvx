@@ -1,5 +1,5 @@
-import {Address, Transaction} from "@elrondnetwork/erdjs";
-import {ExtensionProvider} from "@elrondnetwork/erdjs-extension-provider";
+import {Address, Transaction} from "@multiversx/sdk-core";
+import {ExtensionProvider} from "@multiversx/sdk-extension-provider";
 import type IProviderStrategy from "../IProviderStrategy";
 import type IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
 import type {DefiWalletOption} from "../config";

@@ -1,7 +1,7 @@
-import {HWProvider} from "@elrondnetwork/erdjs-hw-provider";
+import {HWProvider} from "@multiversx/sdk-hw-provider";
 import type IProviderStrategy from "../IProviderStrategy";
 import type IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
-import {Address, Transaction} from "@elrondnetwork/erdjs";
+import {Address, Transaction} from "@multiversx/sdk-core";
 import type {LedgerOption} from "../config";
 import StorageProvider from "../storage/StorageProvider";
 import dayjs from "dayjs";

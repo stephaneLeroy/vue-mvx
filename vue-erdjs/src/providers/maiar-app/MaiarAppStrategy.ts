@@ -1,5 +1,5 @@
-import {Address, Transaction} from "@elrondnetwork/erdjs";
-import {WalletConnectProvider} from '@elrondnetwork/erdjs-wallet-connect-provider';
+import {Address, Transaction} from "@multiversx/sdk-core";
+import {WalletConnectProvider} from '@multiversx/sdk-wallet-connect-provider';
 import MaiarConnexionManager from './MaiarConnexionManager'
 import type {MaiarAppOption} from "../config";
 import type IProviderStrategyEventHandler from "../IProviderStrategyEventHandler";
