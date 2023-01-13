@@ -140,6 +140,17 @@ class Providers implements IProviderStrategyEventHandler {
         });
     }
 
+    async signTransactions(transactions: Transaction[]) {
+        if (!this.currentProvider) {
+            throw new Error("No available provider");
+        }
+        return this.currentProvider.signTransactions(transactions);
+    }
+
+    async sendTransaction(transaction: Transaction){
+        return this._api.sendTransaction(transaction).then(() => transaction);
+    }
+
     transactionResult(transaction: Transaction, pollingInterval?: number, timeout?: number ) {
         return new TransactionWatcher(this._proxy, pollingInterval, timeout)
             .awaitCompleted(transaction)

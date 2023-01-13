@@ -112,6 +112,9 @@ class WebWalletProviderStrategy implements IProviderStrategy {
     signTransaction(transaction: Transaction, options?: { callbackUrl?: string }): Promise<Transaction | void> {
         return this.provider().signTransaction(transaction, options);
     }
+    signTransactions(transaction: Transaction[], options?: { callbackUrl?: string }): Promise<Transaction[] | void> {
+        return this.provider().signTransactions(transaction)
+    }
 }
 
 export default WebWalletProviderStrategy;

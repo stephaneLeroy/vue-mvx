@@ -74,6 +74,10 @@ class DefiWalletProviderStrategy implements IProviderStrategy {
         return this.provider().signTransaction(transaction)
     }
 
+    signTransactions(transactions: Transaction[], options?: { callbackUrl?: string }): Promise<Transaction[] | void> {
+        return this.provider().signTransactions(transactions)
+    }
+
 }
 
 export default DefiWalletProviderStrategy;
