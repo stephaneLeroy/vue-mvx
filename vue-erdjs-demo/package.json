@@ -13,7 +13,7 @@
         "@multiversx/sdk-core": "^11.2.0",
         "mitt": "^3.0.0",
         "vue": "^3.2.37",
-        "vue-erdjs": "2.0.0-vue3-erdjs11-rc1",
+        "vue-erdjs": "2.0.0-vue3-erdjs11-rc3",
         "vue-router": "^4.0.16"
     },
     "devDependencies": {
