@@ -48,13 +48,13 @@ if (!erd) {
     throw new Error('Cannot load erdjs. Please check your configuration')
 }
 
-const login = () => {
+const login = async () => {
     const options = props.token ? {token: props.token, callbackUrl: window.location.toString()} : {};
-    erd.defiWallet.login(options);
+    await erd.defiWallet.login(options);
 }
-watchEffect(() => {
+watchEffect(async () => {
     if (props.selectedMode === 'Defi Wallet') {
-        login()
+        await login()
         openContent.value = true;
     } else {
         openContent.value = false;

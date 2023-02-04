@@ -103,9 +103,9 @@ const previous = () => {
     fetchAccounts();
 }
 
-const login = (index: number) => {
+const login = async (index: number) => {
     const token = props.token ? {token: props.token} : {}
-    erd.ledger.login({addressIndex: index, ...token})
+    await erd.ledger.login({addressIndex: index, ...token})
 }
 
 const selected = computed(() => {

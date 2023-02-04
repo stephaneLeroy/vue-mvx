@@ -1,9 +1,9 @@
 import type IQRCodeHandler from "./IQRCodeHandler";
+import QRCode from 'qrcode';
 
 class QRCodeDefaultHandler implements IQRCodeHandler {
-    async handle(data: string, element: HTMLElement): Promise<any> {
-        let QRCode = require('qrcode');
-        return await QRCode.toString(data, {
+    handle(data: string, element: HTMLElement): Promise<any> {
+        return QRCode.toString(data, {
             type: "svg",
         }).then((svg: any) => {
             return svg;

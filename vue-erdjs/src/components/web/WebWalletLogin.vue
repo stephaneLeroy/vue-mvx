@@ -22,11 +22,11 @@ const emit = defineEmits<{
 
 const { erd } = useVueErd();
 
-function login(name: String) {
+async function login(name: String) {
     emit('select-mode', name);
     const options = props.token ? {token: props.token} : {};
     if (erd) {
-        erd.webWallet.login(options);
+        await erd.webWallet.login(options);
     }
 }
 </script>

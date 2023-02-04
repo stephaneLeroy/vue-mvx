@@ -51,13 +51,17 @@ class DefiWalletProviderStrategy implements IProviderStrategy {
         return this._lastStatus;
     }
 
-    login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any> {
+    async login(options?: { addressIndex?: number, callbackUrl?: string, token?: string }): Promise<any> {
         this._eventHandler.handleLoginStart(this);
         if (!this._defiWallet.isInitialized()) {
-            this._defiWallet.init()
+            await this._defiWallet.init()
         }
         return this._defiWallet.login(options).then(() => {
             const {signature, address} = this._defiWallet.account;
+            if(!address) {
+                console.log("Login failed");
+                return;
+            }
             const token = signature ? {token: signature} : {};
             this._storage.set({wallet: address, ...token}, dayjs().add(this._timeoutInMinutes, 'minute'));
             this._eventHandler.handleLogin(this, new Address(address), signature);
