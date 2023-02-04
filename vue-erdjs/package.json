@@ -37,7 +37,7 @@
         "dev": "vite build --watch",
         "build": "run-p type-check build-only build:tsc",
         "build:tsc": "vue-tsc --emitDeclarationOnly -p tsconfig.json --composite false",
-        "build-only": "vite build --mode development",
+        "build-only": "vite build",
         "type-check": "vue-tsc --noEmit -p tsconfig.json --composite false",
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
     },
