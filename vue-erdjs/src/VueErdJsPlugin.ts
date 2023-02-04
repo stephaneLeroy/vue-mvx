@@ -39,6 +39,7 @@ export const VueErdJsPlugin: Plugin = {
         app.config.globalProperties.$erd = vueErdJs;
         app.provide('$erd', vueErdJs)
 
+        // @ts-ignore
         app.config.globalProperties.$erdAccount = readonly(VueErdJsAccount);
 
         for (const component of Components.entries()) {

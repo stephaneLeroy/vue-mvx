@@ -13,6 +13,9 @@ export const useVueErd = () => {
 
     const fetchAccount = async () => {
         console.log("fetchAccount", account)
+        if(!account.address) {
+            throw new Error("No account address, please login first")
+        }
         const erdAccount = new Account(account.address);
         const accountOnNetwork = await erd.proxy.getAccount(account.address);
         console.log("fetchAccount", accountOnNetwork)

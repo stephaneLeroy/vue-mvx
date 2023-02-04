@@ -1,25 +1,26 @@
 <template>
     <button
         class="vue3rdj5__modes-open"
-        :class="[ selectedMode === name ? 'vue3rdj5__modes-open-active' : '' ]"
-        @click="selectProvider()"
+        :class="[ active ? 'vue3rdj5__modes-open-active' : '' ]"
+        @click="selectProvider(name)"
         type="button">
         <img
             class="vue3rdj5__modes-logo"
             :class="[ 'vue3rdj5__modes-logo-' + nameToClass ]"
-            :src="logos.get(name)"
+            :src="logo"
             :alt="name + ' Logo'">
         {{ name }}
     </button>
+    <div
+        class="vue3rdj5__mode"
+        v-if="active">
+        <slot></slot>
+    </div>
 </template>
 
 <script lang="ts" setup>
 import {computed, defineEmits, defineProps} from 'vue';
-import {ref} from "@vue/reactivity";
-import type {Ref} from "@vue/reactivity";
-import DefaultWalletLogo from "@/components/logos/DefaultWalletLogo";
-import LedgerLogo from "@/components/logos/LedgerLogo";
-import MaiarLogo from "@/components/logos/MaiarLogo";
+import logos from '@/components/logos';
 
 const props = defineProps({
     name: {
@@ -30,9 +31,9 @@ const props = defineProps({
         type: String,
         default: ''
     },
-    selectedMode: {
-        type: String,
-        default: ''
+    active: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -40,21 +41,17 @@ const emit = defineEmits<{
     (event: 'select-mode', mode: String): void
 }>()
 
-function selectProvider() {
-    if (props.selectedMode === props.name) {
+function selectProvider(name: string) {
+    if (props.active) {
         emit('select-mode', '');
     } else {
-        emit('select-mode', props.name);
+        emit('select-mode', name);
     }
 }
 
 const nameToClass = computed(() => props.name.toLowerCase().replace(/ /g, '-'))
-
-const logos: Ref<Map<string, string>> = ref(new Map());
-
-logos.value.set('Defi Wallet', DefaultWalletLogo);
-logos.value.set('Web Wallet', DefaultWalletLogo);
-logos.value.set('Ledger', LedgerLogo);
-logos.value.set('Maiar', MaiarLogo);
+const logo = computed(() => {
+    return logos.get(props.name);
+})
 
 </script>

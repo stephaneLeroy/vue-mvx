@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, defineProps, reactive, watchEffect} from "vue";
+import {defineProps, onMounted, reactive} from "vue";
 import {ref} from "@vue/reactivity";
 import {useVueErd} from "@/composable/useVueErd";
 
@@ -43,12 +43,6 @@ const props = defineProps({
         type: Number,
         default: 5
     },
-    selectedMode: {
-        type: String,
-        default: () => {
-            return ''
-        }
-    },
     token: {
         require: false,
         type: String
@@ -59,16 +53,6 @@ const { erd } = useVueErd();
 if (!erd) {
     throw new Error('Cannot load erdjs. Please check your configuration')
 }
-
-watchEffect(() => {
-    if (props.selectedMode === 'Ledger') {
-        console.log("Ledger", props.selectedMode)
-        openContent.value = true;
-        fetchAccounts();
-    } else {
-        openContent.value = false
-    }
-});
 
 async function fetchAccounts()  {
     error.value = '';
@@ -86,6 +70,7 @@ async function fetchAccounts()  {
     })
 
 }
+onMounted(fetchAccounts)
 
 const next = () => {
     startIndex.value = startIndex.value + props.addressPageSize;
@@ -107,9 +92,5 @@ const login = async (index: number) => {
     const token = props.token ? {token: props.token} : {}
     await erd.ledger.login({addressIndex: index, ...token})
 }
-
-const selected = computed(() => {
-    return props.selectedMode === 'Ledger'
-})
 
 </script>

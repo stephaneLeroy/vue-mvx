@@ -1,7 +1,7 @@
 <template>
     <div class="vue3rdj5">
-        <div class="vue3rdj5__logged" v-if="$erdAccount.address">
-            <div class="vue3rdj5__logged-address">{{ $erdAccount.obfuscatedAddress() }}</div>
+        <div class="vue3rdj5__logged" v-if="account.address">
+            <div class="vue3rdj5__logged-address">{{ account.obfuscatedAddress() }}</div>
             <button class="vue3rdj5__logged-logout" @click.prevent="logout()">Logout</button>
         </div>
         <div
@@ -9,44 +9,34 @@
             v-else>
             <vue-erdjs-tab
                 name="Defi Wallet"
-                @select-mode="selectedMode = $event as string"
-                :selected-mode="selectedMode"></vue-erdjs-tab>
-            <defi-wallet-login
-                :selected-mode="selectedMode"
-                :token="token"></defi-wallet-login>
+                @select-mode="selectMode($event as string)"
+                :active="tabs.activeTab ==='Defi Wallet'">
+                <defi-wallet-login :token="token"></defi-wallet-login>
+            </vue-erdjs-tab>
             <vue-erdjs-tab
                 name="Maiar"
-                @select-mode="selectedMode = $event as string"
-                :selected-mode="selectedMode"></vue-erdjs-tab>
-            <maiar-login
-                :selected-mode="selectedMode"
-                :qrcodeHandler="qrcodeHandler"
-                :token="token"></maiar-login>
+                @select-mode="selectMode($event as string)"
+                :active="tabs.activeTab ==='Maiar'">
+                <maiar-login :qrcodeHandler="qrcodeHandler" :token="token"></maiar-login>
+            </vue-erdjs-tab>
             <vue-erdjs-tab
                 name="Ledger"
-                @select-mode="selectedMode = $event as string"
-                :selected-mode="selectedMode"></vue-erdjs-tab>
-            <ledger-login
-                :selected-mode="selectedMode"
-                :token="token"></ledger-login>
-            <web-wallet-login
-                @select-mode="selectedMode = $event as string"
-                :selected-mode="selectedMode"
-                :token="token"></web-wallet-login>
+                @select-mode="selectMode($event as string)"
+                :active="tabs.activeTab ==='Ledger'">
+                <ledger-login :token="token"></ledger-login>
+            </vue-erdjs-tab>
+
+            <web-wallet-login :token="token"></web-wallet-login>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import {computed, reactive, watch} from "vue";
 import QRCodeDefaultHandler from "./maiar/QRCodeDefaultHandler";
-import VueErdjsTab from "@/components/VueErdjsTab.vue";
+import {useVueErd} from "@/composable/useVueErd";
 
-export default defineComponent({
-    components: {
-        VueErdjsTab
-    },
-    props: {
+const props = defineProps({
         qrcodeHandler: {
             require: true,
             default: function () {
@@ -57,31 +47,29 @@ export default defineComponent({
             require: false,
             type: String
         }
-    },
-    data() {
-        return {
-            selectedMode: ''
-        }
-    },
-    methods: {
-        logout() {
-            this.$erd.logout()
-            this.selectedMode = '';
-        }
-    },
-    watch: {
-        "$erdLogin.address": function(address) {
-            if(address != null){
-                const searchParams = new URLSearchParams(window.location.search);
-                const fromUrl = searchParams.get('fromUrl');
-                if (fromUrl) {
-                    window.location.href = fromUrl;
-                }
-            }
+})
+const { erd, account } = useVueErd();
+
+const tabs = reactive({ activeTab: '' });
+
+async function selectMode(mode: string) {
+    console.log('selectMode', mode)
+    tabs.activeTab = mode;
+}
+const logout = () =>  {
+    erd.logout()
+    tabs.activeTab = '';
+}
+
+watch(() => account.address, (address) => {
+    if(address != null){
+        const searchParams = new URLSearchParams(window.location.search);
+        const fromUrl = searchParams.get('fromUrl');
+        if (fromUrl) {
+            window.location.href = fromUrl;
         }
     }
 });
-
 </script>
 
 <style lang="scss">

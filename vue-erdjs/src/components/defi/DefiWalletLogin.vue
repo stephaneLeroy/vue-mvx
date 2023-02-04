@@ -1,7 +1,4 @@
 <template>
-    <div
-        class="vue3rdj5__mode"
-        v-if="openContent">
         <div
             class="vue3rdj5__mode-error"
             v-if="error">
@@ -19,24 +16,16 @@
                                        href="https://chrome.google.com/webstore/detail/maiar-defi-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm">here</a>
             </p>
         </div>
-    </div>
 </template>
 
 <script lang="ts" setup>
-import {defineProps, watchEffect} from "vue";
+import {defineProps, onBeforeUpdate, onMounted} from "vue";
 import {ref} from "@vue/reactivity";
 import {useVueErd} from "@/composable/useVueErd";
 
 const error = ref();
-const openContent = ref(false);
 
 const props = defineProps({
-    selectedMode: {
-        type: String,
-        default: () => {
-            return ''
-        }
-    },
     token: {
         require: false,
         type: String
@@ -49,15 +38,12 @@ if (!erd) {
 }
 
 const login = async () => {
+    console.log("Defi Extension Login");
     const options = props.token ? {token: props.token, callbackUrl: window.location.toString()} : {};
     await erd.defiWallet.login(options);
 }
-watchEffect(async () => {
-    if (props.selectedMode === 'Defi Wallet') {
-        await login()
-        openContent.value = true;
-    } else {
-        openContent.value = false;
-    }
-});
+onMounted(login);
+onBeforeUpdate(() => {
+    console.log("Defi Extension update");
+})
 </script>
