@@ -157,6 +157,7 @@ class Providers implements IProviderStrategyEventHandler {
             .awaitCompleted(transaction)
             .then((transactionOnNetwork) => {
                 this.onTransaction(transactionOnNetwork)
+                return transactionOnNetwork;
             })
     }
 
