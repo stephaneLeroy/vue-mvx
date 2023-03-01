@@ -1,15 +1,15 @@
 <div align="center">
-  <h1>Vue ErdJS Plugin</h1>
-  <p>This VueJS plugin provide erdjs (Elrond javascript SDK) integration for your Dapp</p>
+  <h1>Vue MultiversX Dapp Plugin</h1>
+  <p>This VueJS plugin provide MultiversX integration for your Dapp</p>
   <p>
-    <a href="https://npmcharts.com/compare/vue-erdjs?minimal=true" alt="NPM weekly downloads">
-      <img src="https://badgen.net/npm/dw/vue-erdjs">
+    <a href="https://npmcharts.com/compare/vue-mvx?minimal=true" alt="NPM weekly downloads">
+      <img src="https://badgen.net/npm/dw/vue-mvx">
     </a>
-    <a href="https://www.npmtrends.com/vue-erdjs" alt="NPM total downloads">
-      <img src="https://badgen.net/npm/dt/vue-erdjs">
+    <a href="https://www.npmtrends.com/vue-mvx" alt="NPM total downloads">
+      <img src="https://badgen.net/npm/dt/vue-mvx">
     </a>
-    <a href="https://npmjs.com/vue-erdjs" alt="NPM version">
-      <img src="https://badgen.net/npm/v/vue-erdjs">
+    <a href="https://npmjs.com/vue-mvx" alt="NPM version">
+      <img src="https://badgen.net/npm/v/vue-mvx">
     </a>
   </p>
 </div>
@@ -18,13 +18,13 @@
 >
 ![](src/_docs/authenticate.png)
 
-[Go to the demo](https://stephaneleroy.github.io/vue-erdjs/authenticate)
+[Go to the demo](https://stephaneleroy.github.io/vue-mvx/authenticate)
 
-You can find a DApp example in [example folder](https://github.com/stephaneLeroy/vue-erdjs/tree/master/example).
+You can find a DApp example in [example folder](https://github.com/stephaneLeroy/vue-mvx/tree/vue3-migration/vue-mvx-demo).
 
 ## Getting started with the plugin
 
-You can find documentation [here](https://stephaneleroy.github.io/vue-erdjs/plugin/vue-erdjs.html)
+You can find documentation [here](https://stephaneleroy.github.io/vue-mvx/plugin/vue-mvx.html)
 
 ## Getting started for developers
 
