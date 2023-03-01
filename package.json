@@ -1,15 +1,15 @@
 {
     "name": "vue-erdjs-workspaces",
     "workspaces": [
-        "vue-erdjs",
-        "vue-erdjs-demo"
+        "vue-mvx",
+        "vue-mvx-demo"
     ],
     "scripts": {
-        "lib:dev": "npm run dev -w vue-erdjs",
-        "lib:build": "npm run build -w vue-erdjs",
+        "lib:dev": "npm run dev -w vue-mvx",
+        "lib:build": "npm run build -w vue-mvx",
         "demo": "run-s lib:build demo:dev",
-        "demo:dev": "npm run dev -w vue-erdjs-demo",
-        "demo:build": "npm run build -w vue-erdjs-demo"
+        "demo:dev": "npm run dev -w vue-mvx-demo",
+        "demo:build": "npm run build -w vue-mvx-demo"
     },
     "devDependencies": {
         "npm-run-all": "^4.1.5"

@@ -1,0 +1,20 @@
+{
+    "api": {
+        "url": "https://api.multiversx.com",
+        "timeout": 2000
+    },
+    "proxy": {
+        "url": "https://gateway.multiversx.com",
+        "timeout": 2000
+    },
+    "explorer": {
+        "url": "https://explorer.multiversx.com"
+    },
+    "maiar": {
+        "walletConnectDeepLink": "https://maiar.page.link/?apn=com.elrond.maiar.wallet&isi=1519405832&ibi=com.elrond.maiar.wallet.dev&link=https://maiar.com/",
+        "walletConnectV2Relay": "wss://relay.walletconnect.com"
+    },
+    "webWallet": {
+        "url": "https://wallet.multiversx.com"
+    }
+}

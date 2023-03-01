@@ -1,0 +1,20 @@
+{
+    "api": {
+        "url": "https://devnet-api.multiversx.com",
+        "timeout": 2000
+    },
+    "proxy": {
+        "url": "https://devnet-gateway.multiversx.com",
+        "timeout": 2000
+    },
+    "explorer": {
+        "url": "https://devnet-explorer.multiversx.com"
+    },
+    "maiar": {
+        "walletConnectDeepLink": "https://maiar.page.link/?apn=com.elrond.maiar.wallet&isi=1519405832&ibi=com.elrond.maiar.wallet.dev&link=https://maiar.com/",
+        "walletConnectV2Relay": "wss://relay.walletconnect.com"
+    },
+    "webWallet": {
+        "url": "https://devnet-wallet.multiversx.com"
+    }
+}
