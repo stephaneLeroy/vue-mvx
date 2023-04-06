@@ -56,6 +56,7 @@ const accountBalance = computed(() => {
 })
 
 async function sendTransaction() {
+    account.value = await fetchAccount();
     transactionResult.value = null;
     transactionState.value = null;
     transactionUrl.value = null;
