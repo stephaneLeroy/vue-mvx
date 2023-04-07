@@ -7,6 +7,7 @@ import providersOptions, {ProviderOption} from "./config";
 import type IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import type IProviderStrategy from "./IProviderStrategy";
 import DefiWallet from "./defi/DefiWalletStrategy";
+import {XPortalHubStrategy} from "@/providers/xportal-hub/XPortalHubStrategy";
 
 const PROVIDER_STRATEGY_STORAGE = "vue-erdjs-strategy";
 
@@ -20,6 +21,7 @@ class Providers implements IProviderStrategyEventHandler {
     private _ledger: LedgerStrategy | undefined;
     private _webWallet: WebWalletStrategy | undefined;
     private _defiWallet: DefiWallet | undefined;
+    private _xportalHub: XPortalHubStrategy | undefined;
     private state: "created" | "loading" | "initialised" = "created";
     private readonly _proxy: ProxyNetworkProvider;
     private readonly _api: ApiNetworkProvider
@@ -48,6 +50,10 @@ class Providers implements IProviderStrategyEventHandler {
         this._ledger = new LedgerStrategy(this, this.options.ledger);
         this._webWallet = new WebWalletStrategy(this, this.options.webWallet);
         this._defiWallet = new DefiWallet(this, this.options.defiWallet);
+        this._xportalHub = new XPortalHubStrategy(this);
+
+        // Check if we are in a webview with accessToken (no user action required)
+        this._xportalHub.load();
 
         let strategyStorage = window.localStorage.getItem(PROVIDER_STRATEGY_STORAGE);
         if (!strategyStorage) return;

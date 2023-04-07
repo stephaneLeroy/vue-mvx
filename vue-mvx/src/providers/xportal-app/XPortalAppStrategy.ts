@@ -92,6 +92,8 @@ class XPortalAppStrategy implements IProviderStrategy {
 
     async load() {
         await this._walletConnect.init();
+        (await this.isConnected()) && this.handleOnClientLogin();
+        
         if (!await this.isConnected()) {
             return this.handleOnClientLogout;
         }
