@@ -20,21 +20,26 @@
 
 <script setup lang="ts">
 
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import { useVueErd } from "vue-mvx";
 import {TokenPayment, Transaction, TransactionPayload} from "@multiversx/sdk-core";
 import type {Account, ITransactionOnNetwork} from "@multiversx/sdk-core";
+import useXportalHub from "@/hub/XPortalHubSimulator";
 
 const error = ref();
 const amount = ref(0.1);
 const account = ref<Account>();
-const sending = ref(false)
+const sending = ref(false);
 const transactionState = ref();
 const transactionResult = ref();
 const transactionUrl = ref();
 
+window.addEventListener('message', (e) => {
+    console.log("xportal message", e)
+});
 const { erd, fetchAccount } = useVueErd();
 onMounted(async () => {
+    await useXportalHub();
     erd.on('transaction', (transaction: ITransactionOnNetwork) => {
         console.log("transaction", transaction);
         transactionState.value = 'Transaction complete'

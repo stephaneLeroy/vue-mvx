@@ -135,7 +135,9 @@ class Providers implements IProviderStrategyEventHandler {
             throw new Error("No available provider");
         }
         return this.signAndSend(transaction).then((result) => {
-            return this.transactionResult(transaction)
+            // Webwallet doesn't return a signed transaction so we cannot send it.
+            if(!result) return;
+            return this.transactionResult(result)
         });
     }
 
@@ -143,8 +145,10 @@ class Providers implements IProviderStrategyEventHandler {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
-        return this.currentProvider.signTransaction(transaction).then(() => {
-            return this._api.sendTransaction(transaction).then(() => transaction);
+        return this.currentProvider.signTransaction(transaction).then((signedTransaction) => {
+            // Webwallet doesn't return a signed transaction so we cannot send it.
+            if(!signedTransaction) return;
+            return this._api.sendTransaction(signedTransaction).then(() => signedTransaction);
         });
     }
 
