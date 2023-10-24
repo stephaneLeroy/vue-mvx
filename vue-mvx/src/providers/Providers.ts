@@ -186,6 +186,15 @@ class Providers implements IProviderStrategyEventHandler {
             method: "POST",
             body: JSON.stringify(body),
         });
+
+        if (!response.ok) {
+            if (response.status === 400) {
+                throw new Error("GuardianError: 400 Bad Request");
+            } else {
+                throw new Error(`HTTPError: ${response.status} ${response.statusText}`);
+            }
+        }
+
         const result = await response.json();
         const signatures = result.data.transactions.map(
             (t: { guardianSignature: string }) => t.guardianSignature
