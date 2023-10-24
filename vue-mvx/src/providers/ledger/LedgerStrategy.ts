@@ -77,7 +77,7 @@ class LedgerProviderManager implements IProviderStrategy {
         const that = this;
         return this._hwProvider.tokenLogin({token: Buffer.from(`${token}{}`)})
             .then(({address, signature}) => {
-                let signedToken = signature.hex();
+                let signedToken = signature.toString('hex');
                 this._storage.set({
                     wallet: address,
                     addressIndex: addressIndex,

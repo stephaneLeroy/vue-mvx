@@ -48,6 +48,14 @@ class ProxyOption {
     }
 }
 
+class ToolsOption {
+    url: string = "https://devnet-tools.multiversx.com/";
+
+    constructor(options?: JSON) {
+        options && Object.assign(this, options);
+    }
+}
+
 class ExplorerOption {
     url: string = "https://devnet-explorer.multiversx.com";
 
@@ -64,6 +72,7 @@ class ProviderOption {
     api: ApiOption = new ApiOption();
     proxy: ProxyOption = new ProxyOption();
     explorer: ExplorerOption = new ExplorerOption();
+    tools: ToolsOption = new ToolsOption();
 
     constructor(walletConnectV2ProjectId: string, options?: Object) {
         options && Object.assign(this, options);
@@ -91,6 +100,7 @@ export {
     ProxyOption,
     ApiOption,
     ExplorerOption,
+    ToolsOption,
     ElrondEnvEnum
 };
 export default (env: ElrondEnvEnum, walletConnectV2ProjectId: string) => {

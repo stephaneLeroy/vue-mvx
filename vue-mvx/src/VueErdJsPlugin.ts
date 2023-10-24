@@ -23,6 +23,7 @@ export const initVueErdJsPlugin = async (options: ProviderOption): Promise<Plugi
             console.log("Login! => Update address", address)
             VueErdJsAccount.address =  address;
             VueErdJsAccount.token = token;
+            providers.setLoggedAccount(address);
         },
         () => {
             console.log("Logout!")

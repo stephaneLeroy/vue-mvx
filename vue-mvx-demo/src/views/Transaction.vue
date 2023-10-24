@@ -25,7 +25,6 @@ import { useVueErd } from "vue-mvx";
 import {TokenPayment, Transaction, TransactionPayload} from "@multiversx/sdk-core";
 import type {Account, ITransactionOnNetwork} from "@multiversx/sdk-core";
 import useXportalHub from "@/hub/XPortalHubSimulator";
-
 const error = ref();
 const amount = ref(0.1);
 const account = ref<Account>();
@@ -70,7 +69,7 @@ async function sendTransaction() {
     const networkConfig = await erd.proxy.getNetworkConfig();
     const transaction = new Transaction({
         data: new TransactionPayload("vue-erdjs"),
-        gasLimit: 70000,
+        gasLimit: 10000000,
         receiver: account.value!.address,
         value: TokenPayment.egldFromAmount(amount.value),
         chainID: networkConfig.ChainID,
@@ -78,7 +77,9 @@ async function sendTransaction() {
     });
     transaction.setNonce(account.value!.getNonceThenIncrement())
     transactionState.value = 'Waiting for transaction to be signed'
-    erd.providers.signAndSend(transaction)
+    console.log(erd.providers.shouldApplyGuardianSignature());
+    if (erd.providers.requiresGuarding) {
+        erd.providers.signAndSend(transaction, '2FA')
         .then((result: Transaction) => {
             transactionState.value = 'Waiting for transaction to be validated'
             transactionUrl.value = erd.explorerTransactionUrl(result);
@@ -87,6 +88,18 @@ async function sendTransaction() {
             console.error(error)
             transactionResult.value = error
     })
+    }
+    else {
+        erd.providers.signAndSend(transaction)
+        .then((result: Transaction) => {
+            transactionState.value = 'Waiting for transaction to be validated'
+            transactionUrl.value = erd.explorerTransactionUrl(result);
+            return erd.providers.transactionResult(result);
+        }).catch((error: Error) => {
+            console.error(error)
+            transactionResult.value = error
+    })
+    }
 }
 
 </script>

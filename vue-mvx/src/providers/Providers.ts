@@ -1,15 +1,22 @@
 import XPortalAppStrategy from './xportal-app/XPortalAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
 import WebWalletStrategy from './web/WebWalletStrategy';
-import {Address, Transaction, TransactionWatcher} from "@multiversx/sdk-core";
+import {Address, Transaction, TransactionWatcher, TransactionVersion} from "@multiversx/sdk-core";
 import type {ApiNetworkProvider, ProxyNetworkProvider, NetworkConfig} from "@multiversx/sdk-network-providers";
 import providersOptions, {ProviderOption} from "./config";
 import type IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import type IProviderStrategy from "./IProviderStrategy";
 import DefiWallet from "./defi/DefiWalletStrategy";
 import {XPortalHubStrategy} from "@/providers/xportal-hub/XPortalHubStrategy";
+import {GuardianData} from "@multiversx/sdk-network-providers/out/accounts";
+import {Signature} from "@multiversx/sdk-core/out/signature";
 
 const PROVIDER_STRATEGY_STORAGE = "vue-erdjs-strategy";
+
+interface LoggedAccount {
+    address: Address;
+    guardian: GuardianData;
+}
 
 class Providers implements IProviderStrategyEventHandler {
     currentStrategy?: IProviderStrategy;
@@ -26,6 +33,8 @@ class Providers implements IProviderStrategyEventHandler {
     private readonly _proxy: ProxyNetworkProvider;
     private readonly _api: ApiNetworkProvider
     private _networkConfig: NetworkConfig | undefined;
+    private loggedAccount?: LoggedAccount | undefined;
+    private requiresGuarding: boolean | undefined;
 
     constructor(proxy: ProxyNetworkProvider, api: ApiNetworkProvider, options: ProviderOption, onLogin: Function, onLogout: Function, onTransaction: Function) {
         this.options = options;
@@ -37,7 +46,6 @@ class Providers implements IProviderStrategyEventHandler {
         this.onTransaction = onTransaction;
         this.state = "created";
     }
-
 
     async init() {
         if (!window || this.state === "loading" || this.state === "initialised") return;
@@ -77,6 +85,20 @@ class Providers implements IProviderStrategyEventHandler {
         }
         this.state = "initialised";
     }
+
+    async setLoggedAccount(address: Address) {
+        try {
+            const guardian = await this.getGuardian(address);
+            this.loggedAccount = {
+                address: address,
+                guardian: guardian,
+            };
+            this.requiresGuarding = this.loggedAccount.guardian.guarded;
+        } catch (error) {
+            console.error('Failed to set logged account:', error);
+        }
+    }
+
     onUrl(url: Location) {
         console.log("On Url", this.currentStrategy, url)
         if (this.currentStrategy && this.currentStrategy.onUrl) {
@@ -141,9 +163,46 @@ class Providers implements IProviderStrategyEventHandler {
         });
     }
 
-    async signAndSend(transaction: Transaction) {
+    // ref: https://github.com/elrond-giants/erd-react-hooks/blob/54d13c245f4c20fa1e09dba14f2c78a541149487/src/utils.ts#L34
+    async guardTransactions(transactions: Transaction[], code: string) {
+        transactions.forEach((tx) => {
+            const guardianAddress = this.loggedAccount?.guardian.getCurrentGuardianAddress();
+            if ( guardianAddress != undefined) {
+                tx.setGuardian(guardianAddress);
+                tx.setVersion(TransactionVersion.withTxOptions());
+                const options = tx.getOptions();
+                if (!options.isWithGuardian()) {
+                    options.setWithGuardian();  
+                    tx.setOptions(options);
+                }
+            }
+        })
+        const url = this.options.tools.url + "/guardian/sign-multiple-transactions"
+        const body = {
+            code,
+            transactions: transactions.map(tx => tx.toSendable()),
+        };
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify(body),
+        });
+        const result = await response.json();
+        const signatures = result.data.transactions.map(
+            (t: { guardianSignature: string }) => t.guardianSignature
+        );
+        return transactions.map((tx, i) => {
+            tx.applyGuardianSignature(new Signature(signatures[i]));
+            return tx;
+        });
+    }
+
+    async signAndSend(transaction: Transaction, guard2FACode?: string) {
         if (!this.currentProvider) {
             throw new Error("No available provider");
+        }
+        if ( this.requiresGuarding && guard2FACode != undefined) {
+            const guardedTx = await this.guardTransactions([transaction], guard2FACode);
+            transaction = guardedTx[0];
         }
         return this.currentProvider.signTransaction(transaction).then((signedTransaction) => {
             // Webwallet doesn't return a signed transaction so we cannot send it.
@@ -164,7 +223,12 @@ class Providers implements IProviderStrategyEventHandler {
     }
 
     transactionResult(transaction: Transaction, pollingInterval?: number, timeout?: number ) {
-        return new TransactionWatcher(this._proxy, pollingInterval, timeout)
+        const options = {
+            pollingIntervalMilliseconds: pollingInterval,
+            timeoutMilliseconds: timeout
+        };
+
+        return new TransactionWatcher(this._proxy, options)
             .awaitCompleted(transaction)
             .then((transactionOnNetwork) => {
                 this.onTransaction(transactionOnNetwork)
@@ -199,6 +263,28 @@ class Providers implements IProviderStrategyEventHandler {
 
     handleTransaction(transaction: Transaction) {
         this._proxy.sendTransaction(transaction).then(() => this.transactionResult(transaction));
+    }
+
+    shouldApplyGuardianSignature() {
+        const strategy_id = this.currentStrategy?.id() ?? '';
+        return [
+            'ledger',
+            'xportal-app',
+        ].includes(strategy_id);
+    };
+
+    async getGuardian(address: Address) {
+        try {
+            if (this.loggedAccount === undefined) {
+                throw new Error('Logged account is undefined');
+                // Or return a default value
+                // return new GuardianData({ guarded: false });
+            }
+            const guardian = await this._proxy.getGuardianData(address);
+            return guardian;
+        } catch (e) {
+            return new GuardianData({ guarded: false });
+        }
     }
 
 }

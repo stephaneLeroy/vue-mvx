@@ -16,5 +16,8 @@
     },
     "webWallet": {
         "url": "https://testnet-wallet.multiversx.com"
+    },
+    "tools": {
+        "url": "https://testnet-tcs-api.multiversx.com"
     }
 }
