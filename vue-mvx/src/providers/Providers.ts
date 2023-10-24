@@ -225,9 +225,8 @@ class Providers implements IProviderStrategyEventHandler {
     transactionResult(transaction: Transaction, pollingInterval?: number, timeout?: number ) {
         const options = {
             pollingIntervalMilliseconds: pollingInterval,
-            timeoutMilliseconds: timeout
+            timeoutMilliseconds: timeout,
         };
-
         return new TransactionWatcher(this._proxy, options)
             .awaitCompleted(transaction)
             .then((transactionOnNetwork) => {
