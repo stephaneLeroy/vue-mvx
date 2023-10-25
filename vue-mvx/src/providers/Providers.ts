@@ -93,7 +93,7 @@ class Providers implements IProviderStrategyEventHandler {
                 address: address,
                 guardian: guardian,
             };
-            this.requiresGuarding = this.loggedAccount.guardian.guarded;
+            this.requiresGuarding = this.loggedAccount.guardian.guarded && this.shouldApplyGuardianSignature();
         } catch (error) {
             console.error('Failed to set logged account:', error);
         }
@@ -209,7 +209,7 @@ class Providers implements IProviderStrategyEventHandler {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
-        if ( this.requiresGuarding && guard2FACode != undefined) {
+        if (this.requiresGuarding && guard2FACode != undefined) {
             const guardedTx = await this.guardTransactions([transaction], guard2FACode);
             transaction = guardedTx[0];
         }
@@ -231,18 +231,24 @@ class Providers implements IProviderStrategyEventHandler {
         return this._api.sendTransaction(transaction).then(() => transaction);
     }
 
-    transactionResult(transaction: Transaction, pollingInterval?: number, timeout?: number ) {
+    transactionResult(transaction: Transaction, pollingInterval?: number, timeout?: number) {
         const options = {
             pollingIntervalMilliseconds: pollingInterval,
             timeoutMilliseconds: timeout,
         };
-        return new TransactionWatcher(this._proxy, options)
+        const fetcher = {
+            getTransaction: async (hash: string) => {
+                return await this._proxy.getTransaction(hash, true);
+            },
+        };
+        return new TransactionWatcher(fetcher, options)
             .awaitCompleted(transaction)
             .then((transactionOnNetwork) => {
-                this.onTransaction(transactionOnNetwork)
+                this.onTransaction(transactionOnNetwork);
                 return transactionOnNetwork;
-            })
+            });
     }
+    
 
     handleLoginStart(provider: IProviderStrategy) {
         console.log("Login start", provider);
