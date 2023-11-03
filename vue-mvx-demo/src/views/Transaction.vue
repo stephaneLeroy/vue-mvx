@@ -6,7 +6,7 @@
         </div>
         <input v-model="amount" type="number"/>
         <button @click="sendTransaction()">Send</button>
-        <VueErdjs2FA v-if="show2FAModal"   :hasError="hasError" @submit="submit2FACode" @reset="reset2FACode" @closed="cancelTransaction"></VueErdjs2FA>
+        <VueErdjs2FA />
         <div v-if="sending" class="transaction">
             <div class="transaction-info">
                 {{ transactionState }}... <div class="loader" v-if="!transactionResult"></div>
@@ -20,25 +20,21 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref} from "vue";
 import { useVueErd, VueErdjs2FA} from "vue-mvx";
 import {TokenPayment, Transaction, TransactionPayload} from "@multiversx/sdk-core";
 import type {Account, ITransactionOnNetwork} from "@multiversx/sdk-core";
 import useXportalHub from "@/hub/XPortalHubSimulator";
 
-const error = ref();
 const amount = ref(0.1);
 const account = ref<Account>();
 const sending = ref(false);
 const transactionState = ref();
 const transactionResult = ref();
 const transactionUrl = ref();
-const show2FAModal = ref(false); // Add a ref to control the visibility of the 2FA modal
-const twoFACode = ref('');
-const hasError = ref(false);
-window.addEventListener('message', (e) => {
+/*window.addEventListener('message', (e) => {
     console.log("xportal message", e)
-});
+});*/
 const { erd, fetchAccount } = useVueErd();
 onMounted(async () => {
     await useXportalHub();
@@ -69,6 +65,7 @@ async function sendTransaction() {
     transactionUrl.value = null;
     sending.value = true;
     console.log("Send transaction", amount.value)
+
     const networkConfig = await erd.proxy.getNetworkConfig();
     const transaction = new Transaction({
         data: new TransactionPayload("vue-erdjs"),
@@ -78,69 +75,19 @@ async function sendTransaction() {
         chainID: networkConfig.ChainID,
         sender: account.value!.address
     });
+
     transaction.setNonce(account.value!.getNonceThenIncrement())
     transactionState.value = 'Waiting for transaction to be signed'
-    if (erd.providers.requiresGuarding) {
-        show2FAModal.value = true; // Show the 2FA modal when sending a transaction
-        // Wait for the user to submit the 2FA code
-        const code = await new Promise<string>((resolve) => {
-        const unwatch = watch(twoFACode, (newCode) => {
-            if (newCode) {
-            resolve(newCode);
-            unwatch();
-            }
-        });
-        });
-        erd.providers.signAndSend(transaction, code)
-        .then((result: Transaction) => {
-            transactionState.value = 'Waiting for transaction to be validated';
-            transactionUrl.value = erd.explorerTransactionUrl(result);
-            hasError.value = false;
-            return erd.providers.transactionResult(result);
-        })
-        .catch((error: Error) => {
-            console.error(error);
-            if (error.message.startsWith("GuardianError:")) {
-            // Handle the 400 Bad Request error from the guardian call
-            twoFACode.value = ''; // Clear the code
-            hasError.value = true;
-            sendTransaction();
-            } else {
-            transactionResult.value = error;
-            }
-        });
-    }
-    else {
-        erd.providers.signAndSend(transaction)
-        .then((result: Transaction) => {
-            transactionState.value = 'Waiting for transaction to be validated'
-            transactionUrl.value = erd.explorerTransactionUrl(result);
-            return erd.providers.transactionResult(result);
-        }).catch((error: Error) => {
-            console.error(error)
-            transactionResult.value = error
-    })
-    }
-}
-
-function submit2FACode(code: string) {
-    // Handle the submission of the 2FA code here
-    console.log('2FA Code Submitted:', code);
-    twoFACode.value = code;
-    show2FAModal.value = false; // Hide the 2FA modal after submitting the code
-}
-
-function reset2FACode() {
-    // Handle the reset of the 2FA code here
-    console.log('2FA Code Reset');
-}
-
-function cancelTransaction() {
-  // Handle the cancellation of the transaction here
-  transactionState.value = 'Transaction cancelled';
-  transactionResult.value = null;
-  transactionUrl.value = null;
-  show2FAModal.value = false;
-  sending.value = false;
+    
+    erd.providers.signAndSend(transaction)
+    .then((result: Transaction) => {
+        transactionState.value = 'Waiting for transaction to be validated'
+        transactionUrl.value = erd.explorerTransactionUrl(result);
+        return erd.providers.transactionResult(result);
+    }).catch((error: Error) => {
+        console.error(error)
+        transactionState.value = ''
+        transactionResult.value = error
+    });
 }
 </script>

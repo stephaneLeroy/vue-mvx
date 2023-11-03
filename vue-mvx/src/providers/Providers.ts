@@ -10,6 +10,8 @@ import DefiWallet from "./defi/DefiWalletStrategy";
 import {XPortalHubStrategy} from "@/providers/xportal-hub/XPortalHubStrategy";
 import {GuardianData} from "@multiversx/sdk-network-providers/out/accounts";
 import {Signature} from "@multiversx/sdk-core/out/signature";
+import { get2FACode } from '@/services/TwoFAService';
+import { EventBus } from '@/events/VueErdEvents';
 
 const PROVIDER_STRATEGY_STORAGE = "vue-erdjs-strategy";
 
@@ -205,16 +207,39 @@ class Providers implements IProviderStrategyEventHandler {
         });
     }
 
-    async signAndSend(transaction: Transaction, guard2FACode?: string) {
+    async getCodeAndGuard(transaction: Transaction) {
+        const guard2FACode = await get2FACode();
+        if (guard2FACode != undefined) {
+            // Get the 2FA code from the user
+            await this.guardTransactions([transaction], guard2FACode)
+            .then((gTx) => {
+                transaction = gTx[0];
+                EventBus.emit('valid-code');
+                return transaction
+            })
+            .catch(async (error: Error) => {
+                console.error(error);
+                if (error.message.startsWith("GuardianError:")) {
+                    EventBus.emit('error');
+                    return await this.getCodeAndGuard(transaction);
+                }
+            });
+        }
+    }
+
+    async signAndSend(transaction: Transaction) {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
-        if (this.requiresGuarding && guard2FACode != undefined) {
-            const guardedTx = await this.guardTransactions([transaction], guard2FACode);
-            transaction = guardedTx[0];
+        if (this.requiresGuarding) {
+            const guardedTx = await this.getCodeAndGuard(transaction);
+            if (guardedTx != undefined) {
+                transaction = guardedTx;
+            }
         }
         return this.currentProvider.signTransaction(transaction).then((signedTransaction) => {
             // Webwallet doesn't return a signed transaction so we cannot send it.
+            EventBus.emit('close-modal');
             if(!signedTransaction) return;
             return this._api.sendTransaction(signedTransaction).then(() => signedTransaction);
         });
