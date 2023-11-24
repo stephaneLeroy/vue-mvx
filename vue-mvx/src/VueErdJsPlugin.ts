@@ -3,14 +3,14 @@ import type {App, Plugin} from "vue";
 import type {ITransactionOnNetwork, Address} from "@multiversx/sdk-core";
 import {ApiNetworkProvider, ProxyNetworkProvider} from "@multiversx/sdk-network-providers";
 import Providers from "./providers/Providers";
-import Components, {VueErdjsConnect} from "./components";
+import Components, {VueErdjsConnect, VueErdjs2FA} from "./components";
 import {ElrondEnvEnum, ProviderOption} from "./providers/config";
 import VueErdJs from "./VueErdJs";
 import VueErdJsAccount from "@/VueErdJsAccount";
 import mitt from "mitt";
 import type {VueErdEvents} from "@/events/VueErdEvents";
 
-export {ProviderOption, ElrondEnvEnum, VueErdjsConnect}
+export {ProviderOption, ElrondEnvEnum, VueErdjsConnect, VueErdjs2FA}
 
 export const initVueErdJsPlugin = async (options: ProviderOption): Promise<Plugin> => {
     console.log("Create VueErdJs plugin", options);
@@ -23,6 +23,7 @@ export const initVueErdJsPlugin = async (options: ProviderOption): Promise<Plugi
             console.log("Login! => Update address", address)
             VueErdJsAccount.address =  address;
             VueErdJsAccount.token = token;
+            providers.setLoggedAccount(address);
         },
         () => {
             console.log("Logout!")

@@ -107,7 +107,7 @@ class WebWalletProviderStrategy implements IProviderStrategy {
                 {
                     hex: () => rawTransaction.signature || ''
                 },
-                new Address(rawTransaction.sender)
+                //new Address(rawTransaction.sender)
             );
             this._eventHandler.handleTransaction(transaction);
 

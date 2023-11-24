@@ -16,5 +16,8 @@
     },
     "webWallet": {
         "url": "https://wallet.multiversx.com"
+    },
+    "tools": {
+        "url": "https://tools.multiversx.com"
     }
 }

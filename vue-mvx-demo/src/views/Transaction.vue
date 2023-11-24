@@ -6,6 +6,7 @@
         </div>
         <input v-model="amount" type="number"/>
         <button @click="sendTransaction()">Send</button>
+        <VueErdjs2FA />
         <div v-if="sending" class="transaction">
             <div class="transaction-info">
                 {{ transactionState }}... <div class="loader" v-if="!transactionResult"></div>
@@ -19,24 +20,21 @@
 </template>
 
 <script setup lang="ts">
-
-import {computed, onMounted, reactive, ref} from "vue";
-import { useVueErd } from "vue-mvx";
+import {computed, onMounted, ref} from "vue";
+import { useVueErd, VueErdjs2FA} from "vue-mvx";
 import {TokenPayment, Transaction, TransactionPayload} from "@multiversx/sdk-core";
 import type {Account, ITransactionOnNetwork} from "@multiversx/sdk-core";
 import useXportalHub from "@/hub/XPortalHubSimulator";
 
-const error = ref();
 const amount = ref(0.1);
 const account = ref<Account>();
 const sending = ref(false);
 const transactionState = ref();
 const transactionResult = ref();
 const transactionUrl = ref();
-
-window.addEventListener('message', (e) => {
+/*window.addEventListener('message', (e) => {
     console.log("xportal message", e)
-});
+});*/
 const { erd, fetchAccount } = useVueErd();
 onMounted(async () => {
     await useXportalHub();
@@ -67,26 +65,29 @@ async function sendTransaction() {
     transactionUrl.value = null;
     sending.value = true;
     console.log("Send transaction", amount.value)
+
     const networkConfig = await erd.proxy.getNetworkConfig();
     const transaction = new Transaction({
         data: new TransactionPayload("vue-erdjs"),
-        gasLimit: 70000,
+        gasLimit: 10000000,
         receiver: account.value!.address,
         value: TokenPayment.egldFromAmount(amount.value),
         chainID: networkConfig.ChainID,
         sender: account.value!.address
     });
+
     transaction.setNonce(account.value!.getNonceThenIncrement())
     transactionState.value = 'Waiting for transaction to be signed'
+    
     erd.providers.signAndSend(transaction)
-        .then((result: Transaction) => {
-            transactionState.value = 'Waiting for transaction to be validated'
-            transactionUrl.value = erd.explorerTransactionUrl(result);
-            return erd.providers.transactionResult(result);
-        }).catch((error: Error) => {
-            console.error(error)
-            transactionResult.value = error
-    })
+    .then((result: Transaction) => {
+        transactionState.value = 'Waiting for transaction to be validated'
+        transactionUrl.value = erd.explorerTransactionUrl(result);
+        return erd.providers.transactionResult(result);
+    }).catch((error: Error) => {
+        console.error(error)
+        transactionState.value = ''
+        transactionResult.value = error
+    });
 }
-
 </script>
