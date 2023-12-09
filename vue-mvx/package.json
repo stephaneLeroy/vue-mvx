@@ -1,8 +1,8 @@
 {
-    "name": "vue-mvx",
+    "name": "@niftywell/vue-mvx",
     "description": "MultiversX js dapp sdk integration for vuejs",
     "version": "1.1.1",
-    "author": "leroys",
+    "author": "leroys, niftywell",
     "license": "MIT",
     "main": "./dist/index.umd.js",
     "module": "./dist/index.es.js",
@@ -25,7 +25,7 @@
     "sideEffects": true,
     "repository": {
         "type": "git",
-        "url": "https://github.com/stephaneLeroy/vue-mvx"
+        "url": "https://github.com/NiftyWell/vue-mvx"
     },
     "keywords": [
         "MultiversX",
