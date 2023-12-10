@@ -1,7 +1,8 @@
 export function isStringBase64(string: string) {
     try {
-        return window.atob(string);
+        const decodedString = window.atob(string)
+        return decodedString.includes("@")
     } catch (err) {
-        return false;
+        return false
     }
 }
