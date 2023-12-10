@@ -1,5 +1,5 @@
 {
-    "name": "@niftywell/vue-erdjs-workspaces",
+    "name": "vue-erdjs-workspaces",
     "workspaces": [
         "vue-mvx",
         "vue-mvx-demo"

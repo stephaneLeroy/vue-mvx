@@ -25,7 +25,7 @@
     "sideEffects": true,
     "repository": {
         "type": "git",
-        "url": "https://github.com/NiftyWell/vue-mvx"
+        "url": "https://github.com/stephaneLeroy/vue-mvx"
     },
     "keywords": [
         "MultiversX",
