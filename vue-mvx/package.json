@@ -42,13 +42,13 @@
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
     },
     "dependencies": {
-        "@multiversx/sdk-core": "^12.8.0",
+        "@multiversx/sdk-core": "^12.11.1",
         "@multiversx/sdk-extension-provider": "^3.0.0",
         "@multiversx/sdk-hw-provider": "^6.4.0",
         "@multiversx/sdk-wallet": "^4.2.0",
-        "@multiversx/sdk-wallet-connect-provider": "^4.0.2",
+        "@multiversx/sdk-wallet-connect-provider": "^4.0.4",
         "@multiversx/sdk-web-wallet-provider": "^3.1.0",
-        "@multiversx/sdk-network-providers": "^2.0.0",
+        "@multiversx/sdk-network-providers": "^2.2.0",
         "dayjs": "^1.10.7",
         "mitt": "^3.0.0",
         "platform": "^1.3.6",

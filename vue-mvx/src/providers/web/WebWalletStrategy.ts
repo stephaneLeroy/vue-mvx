@@ -102,7 +102,13 @@ class WebWalletProviderStrategy implements IProviderStrategy {
                     ? { options: new TransactionOptions(rawTransaction.options) }
                     : {})
             });
-
+            // Add guardian signature when needed
+            if (rawTransaction.guardianSignature) {
+                transaction.applyGuardianSignature({
+                    hex: () => rawTransaction.guardianSignature || "",
+                })
+                transaction.setGuardian(new Address(rawTransaction.guardian))
+            }
             transaction.applySignature(
                 {
                     hex: () => rawTransaction.signature || ''
