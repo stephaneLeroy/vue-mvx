@@ -16,8 +16,5 @@
     },
     "webWallet": {
         "url": "https://devnet-wallet.multiversx.com"
-    },
-    "tools": {
-        "url": "https://devnet-tools.multiversx.com"
     }
 }
