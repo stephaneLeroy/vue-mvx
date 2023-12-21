@@ -1,24 +1,15 @@
 import XPortalAppStrategy from './xportal-app/XPortalAppStrategy';
 import LedgerStrategy from './ledger/LedgerStrategy';
 import WebWalletStrategy from './web/WebWalletStrategy';
-import {Address, Transaction, TransactionWatcher, TransactionVersion} from "@multiversx/sdk-core";
+import {Address, Transaction, TransactionWatcher} from "@multiversx/sdk-core";
 import type {ApiNetworkProvider, ProxyNetworkProvider, NetworkConfig} from "@multiversx/sdk-network-providers";
 import providersOptions, {ProviderOption} from "./config";
 import type IProviderStrategyEventHandler from "./IProviderStrategyEventHandler";
 import type IProviderStrategy from "./IProviderStrategy";
 import DefiWallet from "./defi/DefiWalletStrategy";
 import {XPortalHubStrategy} from "@/providers/xportal-hub/XPortalHubStrategy";
-import {GuardianData} from "@multiversx/sdk-network-providers/out/accounts";
-import {Signature} from "@multiversx/sdk-core/out/signature";
-import { get2FACode } from '@/services/TwoFAService';
-import { EventBus } from '@/events/VueErdEvents';
 
 const PROVIDER_STRATEGY_STORAGE = "vue-erdjs-strategy";
-
-interface LoggedAccount {
-    address: Address;
-    guardian: GuardianData;
-}
 
 class Providers implements IProviderStrategyEventHandler {
     currentStrategy?: IProviderStrategy;
@@ -35,8 +26,6 @@ class Providers implements IProviderStrategyEventHandler {
     private readonly _proxy: ProxyNetworkProvider;
     private readonly _api: ApiNetworkProvider
     private _networkConfig: NetworkConfig | undefined;
-    private loggedAccount?: LoggedAccount | undefined;
-    private requiresGuarding: boolean | undefined;
 
     constructor(proxy: ProxyNetworkProvider, api: ApiNetworkProvider, options: ProviderOption, onLogin: Function, onLogout: Function, onTransaction: Function) {
         this.options = options;
@@ -48,6 +37,7 @@ class Providers implements IProviderStrategyEventHandler {
         this.onTransaction = onTransaction;
         this.state = "created";
     }
+
 
     async init() {
         if (!window || this.state === "loading" || this.state === "initialised") return;
@@ -87,20 +77,6 @@ class Providers implements IProviderStrategyEventHandler {
         }
         this.state = "initialised";
     }
-
-    async setLoggedAccount(address: Address) {
-        try {
-            const guardian = await this.getGuardian(address);
-            this.loggedAccount = {
-                address: address,
-                guardian: guardian,
-            };
-            this.requiresGuarding = this.loggedAccount.guardian.guarded && this.shouldApplyGuardianSignature();
-        } catch (error) {
-            console.error('Failed to set logged account:', error);
-        }
-    }
-
     onUrl(url: Location) {
         console.log("On Url", this.currentStrategy, url)
         if (this.currentStrategy && this.currentStrategy.onUrl) {
@@ -165,81 +141,12 @@ class Providers implements IProviderStrategyEventHandler {
         });
     }
 
-    // ref: https://github.com/elrond-giants/erd-react-hooks/blob/54d13c245f4c20fa1e09dba14f2c78a541149487/src/utils.ts#L34
-    async guardTransactions(transactions: Transaction[], code: string) {
-        transactions.forEach((tx) => {
-            const guardianAddress = this.loggedAccount?.guardian.getCurrentGuardianAddress();
-            if ( guardianAddress != undefined) {
-                tx.setGuardian(guardianAddress);
-                tx.setVersion(TransactionVersion.withTxOptions());
-                const options = tx.getOptions();
-                if (!options.isWithGuardian()) {
-                    options.setWithGuardian();  
-                    tx.setOptions(options);
-                }
-            }
-        })
-        const url = this.options.tools.url + "/guardian/sign-multiple-transactions"
-        const body = {
-            code,
-            transactions: transactions.map(tx => tx.toSendable()),
-        };
-        const response = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify(body),
-        });
-
-        if (!response.ok) {
-            if (response.status === 400) {
-                throw new Error("GuardianError: 400 Bad Request");
-            } else {
-                throw new Error(`HTTPError: ${response.status} ${response.statusText}`);
-            }
-        }
-
-        const result = await response.json();
-        const signatures = result.data.transactions.map(
-            (t: { guardianSignature: string }) => t.guardianSignature
-        );
-        return transactions.map((tx, i) => {
-            tx.applyGuardianSignature(new Signature(signatures[i]));
-            return tx;
-        });
-    }
-
-    async getCodeAndGuard(transaction: Transaction) {
-        const guard2FACode = await get2FACode();
-        if (guard2FACode != undefined) {
-            // Get the 2FA code from the user
-            await this.guardTransactions([transaction], guard2FACode)
-            .then((gTx) => {
-                transaction = gTx[0];
-                EventBus.emit('valid-code');
-                return transaction
-            })
-            .catch(async (error: Error) => {
-                console.error(error);
-                if (error.message.startsWith("GuardianError:")) {
-                    EventBus.emit('error');
-                    return await this.getCodeAndGuard(transaction);
-                }
-            });
-        }
-    }
-
     async signAndSend(transaction: Transaction) {
         if (!this.currentProvider) {
             throw new Error("No available provider");
         }
-        if (this.requiresGuarding) {
-            const guardedTx = await this.getCodeAndGuard(transaction);
-            if (guardedTx != undefined) {
-                transaction = guardedTx;
-            }
-        }
         return this.currentProvider.signTransaction(transaction).then((signedTransaction) => {
             // Webwallet doesn't return a signed transaction so we cannot send it.
-            EventBus.emit('close-modal');
             if(!signedTransaction) return;
             return this._api.sendTransaction(signedTransaction).then(() => signedTransaction);
         });
@@ -273,7 +180,6 @@ class Providers implements IProviderStrategyEventHandler {
                 return transactionOnNetwork;
             });
     }
-    
 
     handleLoginStart(provider: IProviderStrategy) {
         console.log("Login start", provider);
@@ -302,28 +208,6 @@ class Providers implements IProviderStrategyEventHandler {
 
     handleTransaction(transaction: Transaction) {
         this._proxy.sendTransaction(transaction).then(() => this.transactionResult(transaction));
-    }
-
-    shouldApplyGuardianSignature() {
-        const strategy_id = this.currentStrategy?.id() ?? '';
-        return [
-            'ledger',
-            'xportal-app',
-        ].includes(strategy_id);
-    };
-
-    async getGuardian(address: Address) {
-        try {
-            if (this.loggedAccount === undefined) {
-                throw new Error('Logged account is undefined');
-                // Or return a default value
-                // return new GuardianData({ guarded: false });
-            }
-            const guardian = await this._proxy.getGuardianData(address);
-            return guardian;
-        } catch (e) {
-            return new GuardianData({ guarded: false });
-        }
     }
 
 }
